@@ -1,28 +1,25 @@
 #pragma once
-#include "imgui_impl_glfw.h"
 #include <string>
 namespace window {
 
-class GLwindow {
+class Iwindow {
 
 public:
-  bool init(int width, int height, std::string title);
-  bool isRunning();
-  void render();
+  virtual void *getNativeWindow() = 0;
 
-  void setNativeWindow(void *window) { mWindow = (GLFWwindow *)window; }
+  virtual void setNativeWindow(void *window) = 0;
 
-  void onRezise();
+  virtual void onScroll(double delta) = 0;
 
-  void onClose();
+  virtual void onKey(int key, int scancode, int action, int mods) = 0;
+
+  virtual void onResize(int width, int height) = 0;
+
+  virtual void onClose() = 0;
 
   int height;
   int width;
   std::string title;
-
-private:
-  GLFWwindow *mWindow;
-  bool mIsRunning;
 };
 
 }  // namespace window

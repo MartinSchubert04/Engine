@@ -40,10 +40,17 @@ set(IMGUI_SOURCES
 
 set(SOURCES
     src/glad.c
-    include/clases/Camera.cpp
-    include/clases/Mesh.cpp
-    include/clases/Model.cpp
-    include/stb_image.cpp
+    src/Application.cpp
+    src/window/GLwindow.cpp
+    src/renderer/openGLrender.cpp
+
+    src/elements/Camera.cpp
+    src/elements/Mesh.cpp
+    src/elements/Model.cpp
+    src/elements/Shader.cpp
+    src/common.cpp
+
+    include/stb/stb_image.cpp
     ${IMGUI_SOURCES}
 )
 
@@ -52,7 +59,7 @@ set(SOURCES
 # ===============================
 add_executable(${APP}
     ${SOURCE_FILE}
-    ${SOURCES}
+    ${SOURCES} 
 )
 
 # ===============================
@@ -60,11 +67,7 @@ add_executable(${APP}
 # ===============================
 target_include_directories(${APP} PRIVATE
     include
-    include/glad
-    include/GLFW
-    include/glm
-    include/imgui
-    shaders
+    src
 )
 
 # ===============================
@@ -76,13 +79,10 @@ target_compile_definitions(${APP} PRIVATE
 
 set(ASSIMP_DIR ${CMAKE_SOURCE_DIR}/external/assimp)
 
-target_include_directories(openGL PRIVATE
-    ${ASSIMP_DIR}/include
-)
 
 add_custom_command(TARGET openGL POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${ASSIMP_DIR}/bin/libassimp-6.dll
+    ${CMAKE_SOURCE_DIR}/libassimp-6.dll
     $<TARGET_FILE_DIR:openGL>
 )
 
@@ -92,15 +92,17 @@ add_custom_command(TARGET openGL POST_BUILD
 target_link_libraries(${APP} PRIVATE
     OpenGL::GL
     glfw
-    ${ASSIMP_DIR}/lib/libassimp.dll.a
+    "${CMAKE_SOURCE_DIR}/lib/assimp/libassimp.dll.a"
 )
 # ===============================
 # Run + Clean target
 # ===============================
 add_custom_target(run_and_clean
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR}
-    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${APP}
-    COMMAND ${CMAKE_COMMAND} -E rm -f ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${APP}${CMAKE_EXECUTABLE_SUFFIX}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${APP}
+    COMMAND $<TARGET_FILE:${APP}>
+    COMMAND ${CMAKE_COMMAND} -E rm -f $<TARGET_FILE:${APP}>
     DEPENDS ${APP}
-    WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Building, Running, and Cleaning ${APP}..."
+    USES_TERMINAL # This allows you to see the program's output/errors in the console
 )

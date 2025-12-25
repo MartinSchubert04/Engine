@@ -1,12 +1,15 @@
 #pragma once
 
 #include <string>
-#include "window/window.h"
+#include "window/GLwindow.h"
+#include <memory>
 
 class Application {
 
 public:
-  Window mWindow;
-  void start();
+  void run();
   Application(const std::string &name);
+
+private:
+  std::unique_ptr<window::GLwindow> mWindow;
 };

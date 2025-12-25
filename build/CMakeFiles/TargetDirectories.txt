@@ -1,4 +1,0 @@
-C:/Users/Tincho/Desktop/Facultad/model-load/build/CMakeFiles/openGL.dir
-C:/Users/Tincho/Desktop/Facultad/model-load/build/CMakeFiles/run_and_clean.dir
-C:/Users/Tincho/Desktop/Facultad/model-load/build/CMakeFiles/edit_cache.dir
-C:/Users/Tincho/Desktop/Facultad/model-load/build/CMakeFiles/rebuild_cache.dir

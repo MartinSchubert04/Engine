@@ -8,6 +8,7 @@
     "editor.tabSize": 2,
     "editor.detectIndentation": true,
 
+
     "editor.autoIndent": "advanced",
 
     "editor.formatOnSave": true,
