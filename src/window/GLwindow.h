@@ -44,10 +44,6 @@ public:
 
   void handleInput();
 
-  int height;
-  int width;
-  std::string title;
-
 private:
   GLFWwindow *mWindow;
   bool mIsRunning;

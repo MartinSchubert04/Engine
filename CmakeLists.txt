@@ -75,6 +75,7 @@ target_include_directories(${APP} PRIVATE
 # ===============================
 target_compile_definitions(${APP} PRIVATE
     IMGUI_IMPL_OPENGL_LOADER_GLAD
+    ROOT_DIR="${CMAKE_SOURCE_DIR}/"
 )
 
 set(ASSIMP_DIR ${CMAKE_SOURCE_DIR}/external/assimp)
@@ -97,12 +98,22 @@ target_link_libraries(${APP} PRIVATE
 # ===============================
 # Run + Clean target
 # ===============================
+
+# 1. Aseguramos que el ejecutable sea tipo CONSOLA
+if(MINGW OR GNUCXX)
+    # Quitamos -mwindows si existiera y forzamos -mconsole
+    target_link_options(${APP} PRIVATE -mconsole)
+endif()
+
+# 2. Corregimos el Target de Ejecución y Limpieza
 add_custom_target(run_and_clean
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${APP}
-    COMMAND $<TARGET_FILE:${APP}>
-    COMMAND ${CMAKE_COMMAND} -E rm -f $<TARGET_FILE:${APP}>
+    # Ejecutamos directamente (sin 'start') para ver los errores en TU consola
+    COMMAND "$<TARGET_FILE:${APP}>"
+    # El borrado se ejecuta SOLO después de que el .exe se cierra
+    COMMAND ${CMAKE_COMMAND} -E rm -f "$<TARGET_FILE:${APP}>"
     DEPENDS ${APP}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMENT "Building, Running, and Cleaning ${APP}..."
-    USES_TERMINAL # This allows you to see the program's output/errors in the console
+    COMMENT "Compilando, Ejecutando y Limpiando..."
+    USES_TERMINAL
 )

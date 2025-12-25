@@ -21,7 +21,9 @@
       "options": {
         "cwd": "${workspaceFolder}"
       },
-      "problemMatcher": ["$gcc"],
+      "problemMatcher": [
+        "$gcc"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
@@ -38,6 +40,15 @@
       "problemMatcher": [],
       "group": {
         "kind": "none"
+      }
+    },
+    {
+      "label": "build openGL",
+      "type": "shell",
+      "command": "${workspaceFolder}/build.bat",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent"
       }
     }
   ]

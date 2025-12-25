@@ -23,7 +23,7 @@ GLwindow::~GLwindow() {
 }
 
 bool GLwindow::isRunning() {
-  return true;
+  return mIsRunning;
 }
 
 void GLwindow::render() {
@@ -55,7 +55,7 @@ void GLwindow::onClose() {
 
 void GLwindow::handleInput() {
 
-  if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE))
+  if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     mIsRunning = false;
 }
 

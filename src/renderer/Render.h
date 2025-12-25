@@ -18,9 +18,9 @@ public:
     return true;
   }
 
-  virtual void preRender();
-  virtual void postRender();
-  virtual void end();
+  virtual void preRender() = 0;
+  virtual void postRender() = 0;
+  virtual void end() = 0;
 
 protected:
   window::Iwindow *mWindow;

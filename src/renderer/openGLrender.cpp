@@ -37,9 +37,11 @@ bool OpenGLrenderer::init(window::Iwindow *window) {
     fprintf(stderr, "Error: GLFW Window couldn't be initialized\n");
     return false;
   }
+  glfwInit();
 
-  GLFWwindow *glWindow = glfwCreateWindow(window->width, window->height,
-                                          window->title.c_str(), NULL, NULL);
+  auto glWindow = glfwCreateWindow(window->width, window->height,
+                                   window->title.c_str(), nullptr, nullptr);
+
   window->setNativeWindow(glWindow);
 
   glfwSetWindowUserPointer(glWindow, window);
@@ -49,20 +51,25 @@ bool OpenGLrenderer::init(window::Iwindow *window) {
   glfwSetWindowCloseCallback(glWindow, on_window_close_callback);
   glfwMakeContextCurrent(glWindow);
 
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    std::cout << "Failed to initialize GLAD" << std::endl;
+    return -1;
+  }
+
   glEnable(GL_DEPTH_TEST);
 
   return true;
 }
 
 void OpenGLrenderer::preRender() {
-  glViewport(0, 0, mWindow->height, mWindow->height);
+  glViewport(0, 0, mWindow->width, mWindow->height);
   glClearColor(0.2, 0.2, 0.2, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void OpenGLrenderer::postRender() {
   glfwPollEvents();
-  glfwSwapBuffers((GLFWwindow *)mWindow);
+  glfwSwapBuffers((GLFWwindow *)mWindow->getNativeWindow());
 }
 
 void OpenGLrenderer::end() {
