@@ -2,57 +2,83 @@
 setlocal EnableDelayedExpansion
 
 REM ================================
-REM Detectar modo
+REM Configuración general
 REM ================================
 set BUILD_TYPE=Release
+set MSYS2_ROOT=C:\msys64
+set BASH=%MSYS2_ROOT%\usr\bin\bash.exe
+set GDB_PATH=%MSYS2_ROOT%\mingw64\bin\gdb.exe
+
+REM ================================
+REM Detectar modo
+REM ================================
 if /I "%~1"=="debug" (
     echo [INFO] Debug mode enabled
     set BUILD_TYPE=Debug
+    call :check_gdb
 )
 
 if /I "%~1"=="rebuild" (
     echo [INFO] Rebuild mode enabled
-    IF EXIST build (
-        rd /s /q build
-    )
+    if exist build rd /s /q build
 )
 
 REM ================================
 REM Verificar Ninja
 REM ================================
-where ninja >nul 2>nul
-if errorlevel 1 (
+where ninja >nul 2>nul || (
     echo [INFO] Ninja not found. Installing...
-    winget install Ninja-build.Ninja -e --source winget
-    if errorlevel 1 exit /b 1
+    winget install Ninja-build.Ninja -e --source winget || exit /b 1
 )
 
 REM ================================
-REM Configurar y Compilar
+REM Configurar y compilar
 REM ================================
 echo [INFO] Configuring and Building (%BUILD_TYPE%)...
 
-:: Usamos -G Ninja para asegurar consistencia
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE%
-if errorlevel 1 exit /b 1
-
-cmake --build build
-if errorlevel 1 exit /b 1
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% || exit /b 1
+cmake --build build || exit /b 1
 
 REM ================================
-REM Ejecutar y Limpiar (Solo en Debug)
+REM Ejecutar y limpiar (Release)
 REM ================================
 if "%BUILD_TYPE%"=="Release" (
-    echo [INFO] Running application...
-    
     if exist openGL.exe (
+        echo [INFO] Running application...
         .\openGL.exe
-        
-        echo [INFO] Closing program, starting cleanup...
         del /f openGL.exe
         echo [SUCCESS] Executable removed.
     ) else (
-        echo [ERROR] openGL.exe not found in root.
+        echo [ERROR] openGL.exe not found.
     )
 )
+
 endlocal
+exit /b 0
+
+REM ================================
+REM Funciones
+REM ================================
+:check_gdb
+if not exist "%BASH%" (
+    echo [ERROR] MSYS2 not found in %MSYS2_ROOT%
+    exit /b 1
+)
+
+if exist "%GDB_PATH%" (
+    echo [OK] GDB already installed
+    "%GDB_PATH%" --version
+    exit /b 0
+)
+
+echo [INFO] Installing GDB...
+"%BASH%" -lc "pacman -S --needed --noconfirm mingw-w64-x86_64-gdb" || exit /b 1
+
+if not exist "%GDB_PATH%" (
+    echo [ERROR] GDB installation failed
+    exit /b 1
+)
+
+echo [OK] GDB installed successfully
+"%GDB_PATH%" --version
+exit /b 0

@@ -1,11 +1,12 @@
 
 #include "common.h"
-#include "Render.h"
+#include "VertexIndexBuffer.h"
 
 using namespace render;
 
-VertexIndexBuffer::VertexIndexBuffer(const std::vector<Vertex> &vertices,
-                                     const std::vector<unsigned int> &indices) {
+GL_VertexIndexBuffer::GL_VertexIndexBuffer(
+    const std::vector<Vertex> &vertices,
+    const std::vector<unsigned int> &indices) {
   glGenVertexArrays(1, &mVAO);
 
   glGenBuffers(1, &mEBO);
@@ -31,14 +32,18 @@ VertexIndexBuffer::VertexIndexBuffer(const std::vector<Vertex> &vertices,
   glBindVertexArray(0);
 }
 
-VertexIndexBuffer::~VertexIndexBuffer() {
-  glDeleteBuffers(1, &mRedererID);
+GL_VertexIndexBuffer::~GL_VertexIndexBuffer() {
+  destroy();
 }
 
-void VertexIndexBuffer::bind() const {
+void GL_VertexIndexBuffer::bind() const {
   glBindVertexArray(mVAO);
 }
 
-void VertexIndexBuffer::unbind() const {
+void GL_VertexIndexBuffer::unbind() const {
   glBindVertexArray(0);
+}
+
+void GL_VertexIndexBuffer::destroy() {
+  glDeleteBuffers(1, &mRedererID);
 }

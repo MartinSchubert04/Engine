@@ -33,6 +33,11 @@ static void on_window_close_callback(GLFWwindow *window) {
 bool OpenGLrenderer::init(window::Iwindow *window) {
   RenderContext::init(window);
 
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
   if (!glfwInit()) {
     fprintf(stderr, "Error: GLFW Window couldn't be initialized\n");
     return false;

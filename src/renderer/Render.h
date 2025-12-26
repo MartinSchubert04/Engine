@@ -25,17 +25,10 @@ protected:
 
 class VertexIndexBuffer {
 
-private:
-  unsigned int mRedererID;
-  unsigned int mVAO, mVBO, mEBO;
-
 public:
-  VertexIndexBuffer(const std::vector<Vertex> &vertices,
-                    const std::vector<unsigned int> &indices);
-  ~VertexIndexBuffer();
-
   virtual void bind() const = 0;
   virtual void unbind() const = 0;
+  virtual void destroy() = 0;
 };
 
 class FrameBuffer {};
