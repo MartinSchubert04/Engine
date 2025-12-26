@@ -26,14 +26,3 @@
   [this](auto &&...args) -> decltype(auto) { \
     return this->fn(std::forward<decltype(args)>(args)...); \
   }
-
-#define DEBUG
-
-#ifdef DEBUG
-#define GLcall(x) \
-  GLClearError(); \
-  x; \
-  ASSERT(GLLogCall(#x, __FILE__, __LINE__))
-#else
-#define GLcall(x) x
-#endif

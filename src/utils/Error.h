@@ -1,10 +1,6 @@
 #pragma once
 #include "common.h"
 
-#define ASSERT(x) \
-  if (!(x)) \
-    __builtin_trap();
-
 static void GLClearError() {
   while (glGetError() != GL_NO_ERROR)
     ;

@@ -17,7 +17,6 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 }
 
 void Mesh::setupMesh() {
-
   VertexBuffer vb(vertices);
   IndexBuffer ib(indices);
   VertexArray va;
