@@ -41,8 +41,6 @@ protected:
 class Buffer {
 
 public:
-  Buffer() : mRendererID{0} {}
-
   virtual void bind() const = 0;
   virtual void unbind() const = 0;
   virtual void destroy() = 0;

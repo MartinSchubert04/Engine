@@ -20,6 +20,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 
+#include "stb/stb_image.h"
+
 #include "utils/Error.h"
 
 #define BIND_FN(fn) \

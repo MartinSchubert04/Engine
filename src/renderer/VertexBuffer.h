@@ -10,9 +10,7 @@ private:
   GLuint &mVBO = mRendererID;
 
 public:
-  VertexBuffer(const std::vector<Vertex> &vertices);
-  ~VertexBuffer();
-
+  virtual void create(const std::vector<Vertex> &vertices);
   virtual void bind() const override;
   virtual void unbind() const override;
   virtual void destroy() override;

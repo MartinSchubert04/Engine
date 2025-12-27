@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "Render.h"
+namespace render {
 
 struct VertexBufferElement {
   unsigned int type;
@@ -29,33 +30,39 @@ private:
   unsigned int mStride;
 
 public:
-  VertexBufferLayout();
+  VertexBufferLayout() : mStride(0) {};
 
   template <typename T>
-  void push(unsigned int count) {
-    static_assert(false);
-  }
+  void push(unsigned int count);
 
-  template <>
-  void push<float>(unsigned int count) {
-    mElements.push_back({GL_FLOAT, count, GL_FALSE});
-    mStride += count * VertexBufferElement::getSizeOf(GL_FLOAT);
-  }
-
-  template <>
-  void push<unsigned int>(unsigned int count) {
-    mElements.push_back({GL_UNSIGNED_INT, count, GL_FALSE});
-    mStride += count * VertexBufferElement::getSizeOf(GL_UNSIGNED_INT);
-  }
-
-  template <>
-  void push<unsigned char>(unsigned int count) {
-    mElements.push_back({GL_UNSIGNED_BYTE, count, GL_TRUE});
-    mStride += count * VertexBufferElement::getSizeOf(GL_UNSIGNED_BYTE);
-  }
-
-  inline const std::vector<VertexBufferElement> getElements() const & {
+  inline const std::vector<VertexBufferElement> &getElements() const {
     return mElements;
   };
   inline const unsigned int getStride() const { return mStride; }
 };
+
+template <typename T>
+void VertexBufferLayout::push(unsigned int) {
+  static_assert(sizeof(T) == 0,
+                "Unsupported type for VertexBufferLayout::push");
+}
+
+template <>
+inline void VertexBufferLayout::push<float>(unsigned int count) {
+  mElements.push_back({GL_FLOAT, count, GL_FALSE});
+  mStride += count * VertexBufferElement::getSizeOf(GL_FLOAT);
+}
+
+template <>
+inline void VertexBufferLayout::push<unsigned int>(unsigned int count) {
+  mElements.push_back({GL_UNSIGNED_INT, count, GL_FALSE});
+  mStride += count * VertexBufferElement::getSizeOf(GL_UNSIGNED_INT);
+}
+
+template <>
+inline void VertexBufferLayout::push<unsigned char>(unsigned int count) {
+  mElements.push_back({GL_UNSIGNED_BYTE, count, GL_TRUE});
+  mStride += count * VertexBufferElement::getSizeOf(GL_UNSIGNED_BYTE);
+}
+
+}  // namespace render

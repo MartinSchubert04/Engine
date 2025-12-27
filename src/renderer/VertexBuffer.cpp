@@ -1,23 +1,19 @@
 
 #include "common.h"
+#include "renderer/VertexBuffer.h"
 #include "VertexBuffer.h"
 
 namespace render {
 
-VertexBuffer::VertexBuffer(const std::vector<Vertex> &vertices) {
-
+void VertexBuffer::create(const std::vector<Vertex> &vertices) {
   GLcall(glGenBuffers(1, &mVBO));
   GLcall(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
   GLcall(glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex),
                       vertices.data(), GL_STATIC_DRAW));
 }
 
-VertexBuffer::~VertexBuffer() {
-  VertexBuffer::destroy();
-}
-
 void VertexBuffer::bind() const {
-  GLcall(glBindVertexArray(mVBO));
+  GLcall(glBindBuffer(GL_ARRAY_BUFFER, mVBO));
 }
 
 void VertexBuffer::unbind() const {

@@ -10,9 +10,7 @@ private:
   GLuint &mIBO = mRendererID;
 
 public:
-  IndexBuffer(const std::vector<unsigned int> &indices);
-  ~IndexBuffer();
-
+  void create(const std::vector<unsigned int> &indices);
   void bind() const override;
   void unbind() const override;
   void destroy() override;

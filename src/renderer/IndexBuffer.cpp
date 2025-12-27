@@ -4,15 +4,11 @@
 
 namespace render {
 
-IndexBuffer::IndexBuffer(const std::vector<unsigned int> &indices) {
+void IndexBuffer::create(const std::vector<unsigned int> &indices) {
   GLcall(glGenBuffers(1, &mIBO));
   GLcall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO));
   GLcall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint),
                       indices.data(), GL_STATIC_DRAW));
-}
-
-IndexBuffer::~IndexBuffer() {
-  IndexBuffer::destroy();
 }
 
 void IndexBuffer::bind() const {

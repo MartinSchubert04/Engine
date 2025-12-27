@@ -1,14 +1,13 @@
 #include "Mesh.h"
-
-#include "renderer/IndexBuffer.h"
-#include "renderer/VertexBuffer.h"
-#include "renderer/VertexArray.h"
-#include "renderer/VertexBufferLayout.h"
+#include "Shader.h"
+#include "common.h"
+#include "renderer/Render.h"
 
 using namespace render;
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-           std::vector<Texture> textures) {
+           std::vector<Texture> textures)
+    : va() {
   this->vertices = vertices;
   this->indices = indices;
   this->textures = textures;
@@ -16,13 +15,24 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
   setupMesh();
 }
 
+Mesh::~Mesh() {
+  vb.destroy();
+  ib.destroy();
+}
+
 void Mesh::setupMesh() {
-  VertexBuffer vb(vertices);
-  IndexBuffer ib(indices);
-  VertexArray va;
+
   VertexBufferLayout layout;
 
-  layout.push<float>(2);
+  vb.create(vertices);
+  ib.create(indices);
+
+  va.bind();
+  ib.bind();
+
+  layout.push<float>(3);  // position
+  layout.push<float>(3);  // normal
+  layout.push<float>(2);  // texCoords
 
   va.addBuffer(vb, layout);
 
@@ -33,8 +43,8 @@ void Mesh::draw(Shader &shader) {
   unsigned int diffuseNr = 1;
   unsigned int specularNr = 1;
   for (unsigned int i = 0; i < textures.size(); i++) {
-    glActiveTexture(GL_TEXTURE0 +
-                    i);  // activate proper texture unit before binding
+    GLcall(glActiveTexture(GL_TEXTURE0 +
+                           i));  // activate proper texture unit before binding
     // retrieve texture number (the N in diffuse_textureN)
     std::string number;
     std::string name = textures[i].type;
@@ -44,12 +54,15 @@ void Mesh::draw(Shader &shader) {
       number = std::to_string(specularNr++);
 
     shader.setInt(("material." + name + number).c_str(), i);
-    glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    GLcall(glBindTexture(GL_TEXTURE_2D, textures[i].id));
   }
-  glActiveTexture(GL_TEXTURE0);
+  GLcall(glActiveTexture(GL_TEXTURE0));
 
   // draw mesh
-  glBindVertexArray(VAO);
-  glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
+  va.bind();
+  // GLcall(glBindVertexArray(VAO))
+  GLcall(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
+  // GLcall(glBindVertexArray(0))
+
+  va.unbind();
 }
