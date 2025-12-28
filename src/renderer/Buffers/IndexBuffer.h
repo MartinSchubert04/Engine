@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Render.h"
+#include "renderer/Render.h"
 
 namespace render {
 
@@ -10,6 +10,8 @@ private:
   GLuint &mIBO = mRendererID;
 
 public:
+  IndexBuffer() {}
+
   void create(const std::vector<unsigned int> &indices);
   void bind() const override;
   void unbind() const override;

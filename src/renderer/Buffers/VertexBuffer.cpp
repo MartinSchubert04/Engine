@@ -1,6 +1,5 @@
 
 #include "common.h"
-#include "renderer/VertexBuffer.h"
 #include "VertexBuffer.h"
 
 namespace render {

@@ -32,7 +32,7 @@ bool firstMouse = true;
 Camera camera(glm::vec3(0.0, 0.0, 5.0));
 
 int main() {
-  auto app = std::make_unique<Application>("Model loader");
+  auto app = std::make_unique<Core::Application>("Model loader");
 
   app->run();
 

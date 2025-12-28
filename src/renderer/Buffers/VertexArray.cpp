@@ -8,10 +8,6 @@ VertexArray::VertexArray() {
   GLcall(glGenVertexArrays(1, &mVAO));
 }
 
-VertexArray::~VertexArray() {
-  GLcall(glDeleteVertexArrays(1, &mVAO));
-}
-
 void VertexArray::addBuffer(const VertexBuffer &vb,
                             const VertexBufferLayout &layout) {
   bind();
@@ -32,11 +28,14 @@ void VertexArray::addBuffer(const VertexBuffer &vb,
 }
 
 void VertexArray::bind() const {
-  GLcall(glBindVertexArray(mVAO))
+  GLcall(glBindVertexArray(mVAO));
 }
 
 void VertexArray::unbind() const {
-  GLcall(glBindVertexArray(0))
+  GLcall(glBindVertexArray(0));
 }
 
+void VertexArray::destroy() {
+  GLcall(glDeleteVertexArrays(1, &mVAO));
+}
 }  // namespace render

@@ -43,11 +43,12 @@ set(SOURCES
     src/Application.cpp
     src/window/GLwindow.cpp
 
-    src/renderer/openGLrender.cpp
+    src/renderer/GLrenderer.cpp
     src/renderer/Interface.cpp
-    src/renderer/VertexBuffer.cpp
-    src/renderer/VertexArray.cpp
-    src/renderer/IndexBuffer.cpp
+    src/renderer/Buffers/VertexBuffer.cpp
+    src/renderer/Buffers/FrameBuffer.cpp
+    src/renderer/Buffers/VertexArray.cpp
+    src/renderer/Buffers/IndexBuffer.cpp
 
     src/elements/Camera.cpp
     src/elements/Mesh.cpp
@@ -73,6 +74,7 @@ add_executable(${APP}
 target_include_directories(${APP} PRIVATE
     include
     src
+    src/renderer
 )
 
 # ===============================

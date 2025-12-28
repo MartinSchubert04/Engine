@@ -2,12 +2,13 @@
 
 #include "window/Window.h"
 #include "elements/Vertex.h"
+#include <vector>
 
 #define ASSERT(x) \
   if (!(x)) \
     __builtin_trap();
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 #define GLcall(x) \

@@ -1,9 +1,4 @@
 #include "Mesh.h"
-#include "Shader.h"
-#include "common.h"
-#include "renderer/Render.h"
-
-using namespace render;
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
            std::vector<Texture> textures)
@@ -18,6 +13,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
 Mesh::~Mesh() {
   vb.destroy();
   ib.destroy();
+  va.destroy();
 }
 
 void Mesh::setupMesh() {
@@ -58,11 +54,7 @@ void Mesh::draw(Shader &shader) {
   }
   GLcall(glActiveTexture(GL_TEXTURE0));
 
-  // draw mesh
   va.bind();
-  // GLcall(glBindVertexArray(VAO))
   GLcall(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
-  // GLcall(glBindVertexArray(0))
-
   va.unbind();
 }

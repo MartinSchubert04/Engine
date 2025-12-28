@@ -4,6 +4,7 @@
 #include "window/GLwindow.h"
 #include <memory>
 
+namespace Core {
 class Application {
 
 public:
@@ -13,3 +14,5 @@ public:
 private:
   std::unique_ptr<window::GLwindow> mWindow;
 };
+
+}  // namespace Core

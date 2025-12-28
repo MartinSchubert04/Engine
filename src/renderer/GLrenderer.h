@@ -3,7 +3,7 @@
 
 namespace render {
 
-class OpenGLrenderer : public render::RenderContext {
+class GLrenderer : public render::RenderContext {
 public:
   bool init(window::Iwindow *window) override;
 

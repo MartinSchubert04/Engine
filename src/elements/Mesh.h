@@ -2,7 +2,7 @@
 
 #include "Shader.h"
 #include "Vertex.h"
-#include "renderer/VertexArray.h"
+#include "Buffers/VertexArray.h"
 
 using namespace render;
 
@@ -21,9 +21,6 @@ public:
   Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
        std::vector<Texture> textures);
   ~Mesh();
-
-  Mesh(const Mesh &) = delete;
-  Mesh &operator=(const Mesh &) = delete;
 
   void draw(Shader &shader);
 

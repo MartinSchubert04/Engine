@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IndexBuffer.h"
-#include "renderer/VertexBuffer.h"
+#include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
 namespace render {
@@ -11,12 +11,12 @@ private:
 
 public:
   VertexArray();
-  ~VertexArray();
 
   void addBuffer(const VertexBuffer &vb, const VertexBufferLayout &layout);
 
   void bind() const;
   void unbind() const;
+  void destroy();
 };
 
 }  // namespace render

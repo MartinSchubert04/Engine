@@ -11,6 +11,7 @@
 #include "elements/Camera.h"
 #include "elements/Model.h"
 #include "utils/TextureUtil.h"
+#include "utils/Timer.h"
 
 using namespace window;
 
@@ -18,9 +19,6 @@ bool GLwindow::init(int width, int height, std::string title) {
   this->width = width;
   this->height = height;
   this->title = title;
-
-  mLastFrame = glfwGetTime();
-  mFrameCount = 0;
 
   mCamera.Position = glm::vec3(0.0, 0.0, 5.0);
 
@@ -46,58 +44,82 @@ bool GLwindow::isRunning() {
 
 void GLwindow::render() {
   // Clear the view
-  mRender->preRender();
+  {
+    // ScopedTimer t("PreRender Render");
+    mRender->preRender();
+  }
 
   // Initialize UI components
-  mInterface->preRender();
-
+  {
+    // ScopedTimer t("PreRender Interface");
+    mInterface->preRender();
+  }
+  updateFrameRate();
   // render scene to framebuffer and add it to scene view
   // mSceneView->render();
+  {
+    // ScopedTimer t("Draw");
+    GLuint query;
+    glGenQueries(1, &query);
 
-  updateFrameRate();
+    {
+    }
 
-  mShader->use();
+    mShader->use();
 
-  mShader->setFloat("time", glfwGetTime());
-  mShader->setVec3("viewPos", mCamera.Position);
+    mShader->setFloat("time", glfwGetTime());
+    mShader->setVec3("viewPos", mCamera.Position);
 
-  // spot light
-  mShader->setVec3("spotLight.position", mCamera.Position);
-  mShader->setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-  mShader->setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-  mShader->setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-  mShader->setVec3("spotLight.direction", mCamera.Front);
-  mShader->setFloat("spotLight.constant", 1.0f);
-  mShader->setFloat("spotLight.linear", 0.09f);
-  mShader->setFloat("spotLight.quadratic", 0.032f);
-  mShader->setFloat("spotLight.cutOffAngle", glm::cos(glm::radians(12.5f)));
-  mShader->setFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+    // spot light
+    mShader->setVec3("spotLight.position", mCamera.Position);
+    mShader->setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+    mShader->setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+    mShader->setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+    mShader->setVec3("spotLight.direction", mCamera.Front);
+    mShader->setFloat("spotLight.constant", 1.0f);
+    mShader->setFloat("spotLight.linear", 0.09f);
+    mShader->setFloat("spotLight.quadratic", 0.032f);
+    mShader->setFloat("spotLight.cutOffAngle", glm::cos(glm::radians(12.5f)));
+    mShader->setFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
 
-  glm::mat4 view = glm::lookAt(mCamera.Position,
-                               mCamera.Position + mCamera.Front, mCamera.Up);
+    glm::mat4 view = glm::lookAt(mCamera.Position,
+                                 mCamera.Position + mCamera.Front, mCamera.Up);
 
-  // create projection matrix
-  glm::mat4 projection;
-  projection =
-      glm::perspective(glm::radians(mCamera.Zoom),
-                       (float)this->width / (float)this->height, 0.1f, 100.0f);
+    // create projection matrix
+    glm::mat4 projection;
+    projection = glm::perspective(glm::radians(mCamera.Zoom),
+                                  (float)this->width / (float)this->height,
+                                  0.1f, 100.0f);
 
-  mShader->setMat4("projection", projection);
-  mShader->setMat4("view", view);
+    mShader->setMat4("projection", projection);
+    mShader->setMat4("view", view);
 
-  // render the loaded model
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(
-      model,
-      glm::vec3(0.0f, 0.0f,
-                0.0f));  // translate it down so it's at the center of the scene
-  model = glm::scale(
-      model,
-      glm::vec3(1.0f, 1.0f,
-                1.0f));  // it's a bit too big for our scene, so scale it down
-  mShader->setMat4("model", model);
+    // render the loaded model
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(
+        model,
+        glm::vec3(
+            0.0f, 0.0f,
+            0.0f));  // translate it down so it's at the center of the scene
+    model = glm::scale(
+        model,
+        glm::vec3(1.0f, 1.0f,
+                  1.0f));  // it's a bit too big for our scene, so scale it down
+    mShader->setMat4("model", model);
 
-  mModel->draw(*mShader);
+    {
+      // ScopedTimer t("Draw model");
+      glBeginQuery(GL_TIME_ELAPSED, query);
+      mModel->draw(*mShader);
+      glEndQuery(GL_TIME_ELAPSED);
+
+      GLuint64 time;
+      glGetQueryObjectui64v(query, GL_QUERY_RESULT, &time);
+      double gpuMs = time / 1e6;
+
+      // std::cout << "[GPU MODEL DRAW TIME]" << gpuMs << std::endl;
+    }
+  }
 
   // mPropertyPanel->render(mSceneView.get());
 
@@ -110,7 +132,14 @@ void GLwindow::render() {
   handleInput();
 }
 
-void GLwindow::onResize(int width, int height) {}
+void GLwindow::onResize(int width, int height) {
+  this->width = width;
+  this->height = height;
+
+  // sceneView.onResize(this->width, this->height)
+
+  render();
+}
 
 void GLwindow::onClose() {
   mIsRunning = false;
@@ -136,6 +165,9 @@ void GLwindow::handleInput() {
     mCamera.ProcessKeyboard(UP, deltaTime);
   if (glfwGetKey(mWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     mCamera.ProcessKeyboard(DOWN, deltaTime);
+
+  double x, y;
+  glfwGetCursorPos(mWindow, &x, &y);
 }
 
 void GLwindow::onKey(int key, int scancode, int action, int mods) {}
@@ -144,13 +176,19 @@ void GLwindow::onScroll(double delta) {}
 void GLwindow::setTitle(std::string newTitle) {}
 
 void GLwindow::updateFrameRate() {
-  float currentFrame = glfwGetTime();
-  auto deltaTime = currentFrame - mLastFrame;
-  mLastFrame = currentFrame;
-  mFrameCount++;
+  static float lastTime = 0.0f;
+  static int frames = 0;
 
-  float fps = mFrameCount / currentFrame;
+  float currentTime = glfwGetTime();
+  frames++;
 
-  glfwSetWindowTitle(mWindow, (this->title + std::to_string((int)fps)).c_str());
-  mFrameCount = 0;
+  if (currentTime - lastTime >= 1.f) {
+    float fps = frames / (currentTime - lastTime);
+
+    glfwSetWindowTitle(
+        mWindow, (this->title + " | FPS: " + std::to_string((int)fps)).c_str());
+
+    frames = 0;
+    lastTime = currentTime;
+  }
 }

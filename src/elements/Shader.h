@@ -10,13 +10,14 @@
 
 class Shader {
 public:
-  unsigned int ID;
   // constructor generates the shader on the fly
   // ------------------------------------------------------------------------
   Shader(const char *vertexPath, const char *fragmentPath);
   // activate the shader
   // ------------------------------------------------------------------------
   void use() const;
+  void unload() const;
+
   // utility uniform functions
   // ------------------------------------------------------------------------
   void setBool(const std::string &name, bool value) const;
@@ -42,6 +43,8 @@ public:
   void setMat4(const std::string &name, const glm::mat4 &mat) const;
 
 private:
+  unsigned int ID;
+
   // utility function for checking shader compilation/linking errors.
   // ------------------------------------------------------------------------
   void checkCompileErrors(GLuint shader, std::string type);

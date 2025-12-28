@@ -1,36 +1,17 @@
-#include "openGLrender.h"
+#include "GLrenderer.h"
 #include "Render.h"
 #include "common.h"
 
 namespace render {
 
 static void on_key_callback(GLFWwindow *window, int key, int scancode,
-                            int action, int mods) {
-  auto pWindow =
-      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
-  pWindow->onKey(key, scancode, action, mods);
-}
-
+                            int action, int mods);
 static void on_scroll_callback(GLFWwindow *window, double xoffset,
-                               double yoffset) {
-  auto pWindow =
-      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
-  pWindow->onScroll(yoffset);
-}
+                               double yoffset);
+static void on_window_size_callback(GLFWwindow *window, int width, int height);
+static void on_window_close_callback(GLFWwindow *window);
 
-static void on_window_size_callback(GLFWwindow *window, int width, int height) {
-  auto pWindow =
-      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
-  pWindow->onResize(width, height);
-}
-
-static void on_window_close_callback(GLFWwindow *window) {
-  window::Iwindow *pWindow =
-      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
-  pWindow->onClose();
-}
-
-bool OpenGLrenderer::init(window::Iwindow *window) {
+bool GLrenderer::init(window::Iwindow *window) {
   RenderContext::init(window);
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -66,20 +47,48 @@ bool OpenGLrenderer::init(window::Iwindow *window) {
   return true;
 }
 
-void OpenGLrenderer::preRender() {
+void GLrenderer::preRender() {
   glViewport(0, 0, mWindow->width, mWindow->height);
   glClearColor(0.2, 0.2, 0.2, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGLrenderer::postRender() {
+void GLrenderer::postRender() {
   glfwPollEvents();
   glfwSwapBuffers((GLFWwindow *)mWindow->getNativeWindow());
 }
 
-void OpenGLrenderer::end() {
+void GLrenderer::end() {
   glfwDestroyWindow((GLFWwindow *)mWindow->getNativeWindow());
   glfwTerminate();
+}
+
+// ------- callback funs --------
+
+static void on_key_callback(GLFWwindow *window, int key, int scancode,
+                            int action, int mods) {
+  auto pWindow =
+      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
+  pWindow->onKey(key, scancode, action, mods);
+}
+
+static void on_scroll_callback(GLFWwindow *window, double xoffset,
+                               double yoffset) {
+  auto pWindow =
+      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
+  pWindow->onScroll(yoffset);
+}
+
+static void on_window_size_callback(GLFWwindow *window, int width, int height) {
+  auto pWindow =
+      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
+  pWindow->onResize(width, height);
+}
+
+static void on_window_close_callback(GLFWwindow *window) {
+  window::Iwindow *pWindow =
+      static_cast<window::Iwindow *>(glfwGetWindowUserPointer(window));
+  pWindow->onClose();
 }
 
 }  // namespace render

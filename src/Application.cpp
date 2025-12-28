@@ -8,6 +8,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+namespace Core {
+
 Application::Application(const std::string &app_name) {
   mWindow = std::make_unique<window::GLwindow>();
   mWindow->init(1024, 720, app_name);
@@ -18,3 +20,5 @@ void Application::run() {
     mWindow->render();
   }
 }
+
+}  // namespace Core
