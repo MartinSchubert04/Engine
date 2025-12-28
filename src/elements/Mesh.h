@@ -1,29 +1,37 @@
 #pragma once
+
 #include "Shader.h"
 #include "Vertex.h"
-#include <glm/glm.hpp>
-#include <string>
+#include "renderer/VertexArray.h"
 
-using namespace std;
+using namespace render;
 
 struct Texture {
   unsigned int id;
-  string type;
-  string path;
+  std::string type;
+  std::string path;
 };
 
 class Mesh {
 public:
-  vector<Vertex> vertices;
-  vector<unsigned int> indices;
-  vector<Texture> textures;
+  std::vector<Vertex> vertices;
+  std::vector<unsigned int> indices;
+  std::vector<Texture> textures;
 
-  Mesh(vector<Vertex> vertices, vector<unsigned int> indices,
-       vector<Texture> textures);
+  Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
+       std::vector<Texture> textures);
+  ~Mesh();
+
+  Mesh(const Mesh &) = delete;
+  Mesh &operator=(const Mesh &) = delete;
 
   void draw(Shader &shader);
 
 private:
+  VertexBuffer vb;
+  IndexBuffer ib;
+  VertexArray va;
+
   unsigned int VAO, VBO, EBO;
 
   void setupMesh();

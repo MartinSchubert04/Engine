@@ -1,14 +1,15 @@
 #pragma once
 
 #include "common.h"
-#include "renderer/Render.h"
 #include "renderer/openGLrender.h"
+#include "renderer/Interface.h"
+#include "elements/Camera.h"
+#include "elements/Shader.h"
+#include "elements/Model.h"
 
 // #include "renderer/ui_context.h"
 // #include "renderer/opengl_context.h"
 // #include "renderer/opengl_buffer_manager.h"
-
-using namespace render;
 
 namespace window {
 
@@ -16,7 +17,8 @@ class GLwindow : public Iwindow {
 
 public:
   GLwindow() : mIsRunning(true), mWindow(nullptr) {
-    // mUICtx = std::make_unique<UIContext>();
+
+    mInterface = std::make_unique<Interface>();
     mRender = std::make_unique<OpenGLrenderer>();
   }
 
@@ -44,11 +46,25 @@ public:
 
   void handleInput();
 
+  void setTitle(std::string newTitle);
+  void updateFrameRate();
+
 private:
   GLFWwindow *mWindow;
   bool mIsRunning;
 
+  float mLastFrame;
+  float mFrameCount;
+  std::unique_ptr<Model> mModel;
+  std::unique_ptr<Shader> mShader;
+
   std::unique_ptr<OpenGLrenderer> mRender;
+
+  std::unique_ptr<Interface> mInterface;
+
+  Camera mCamera;
+
+  // std::unique_ptr<Interface> mSceneView;
 };
 
 }  // namespace window

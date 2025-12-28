@@ -13,7 +13,7 @@
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
-void updateFrameRate(GLFWwindow *window);
+std::string updateFrameRate(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn);
 unsigned int loadTexture(char const *path);
 
@@ -185,41 +185,6 @@ void processInput(GLFWwindow *window) {
     camera.ProcessKeyboard(DOWN, deltaTime);
 }
 
-unsigned int loadTexture(char const *path) {
-  unsigned int textureID;
-  glGenTextures(1, &textureID);
-
-  int width, height, nrComponents;
-  unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
-  if (data) {
-    GLenum format;
-    if (nrComponents == 1)
-      format = GL_RED;
-    else if (nrComponents == 3)
-      format = GL_RGB;
-    else if (nrComponents == 4)
-      format = GL_RGBA;
-
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
-                 GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    stbi_image_free(data);
-  } else {
-    std::cout << "Texture failed to load at path: " << path << std::endl;
-    stbi_image_free(data);
-  }
-
-  return textureID;
-}
-
 void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
   if (uiMode)
     return;
@@ -243,7 +208,7 @@ void mouse_callback(GLFWwindow *window, double xposIn, double yposIn) {
   camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
-void updateFrameRate(GLFWwindow *window) {
+std::string updateFrameRate(GLFWwindow *window) {
   float currentFrame = glfwGetTime();
   deltaTime = currentFrame - lastFrame;
   lastFrame = currentFrame;
@@ -253,12 +218,14 @@ void updateFrameRate(GLFWwindow *window) {
   if (currentFrame - previousTime >= 0.25) {
     float fps = frameCount / (currentFrame - previousTime);
 
-    std::string newTitle = "LearnOpenGL - FPS: " + std::to_string((int)fps);
-    glfwSetWindowTitle(window, newTitle.c_str());
+    std::string fpsCountString = std::to_string((int)fps);
 
     previousTime = currentFrame;
     frameCount = 0;
+
+    return fpsCountString;
   }
+  return "";
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {

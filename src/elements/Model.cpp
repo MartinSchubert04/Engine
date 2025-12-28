@@ -1,9 +1,6 @@
 #include "Model.h"
-#include "assimp/material.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <stb/stb_image.h>
+#include "common.h"
+#include "renderer/Render.h"
 
 using namespace std;
 
@@ -16,7 +13,7 @@ Model::Model(string path) {
 
 void Model::draw(Shader &shader) {
   for (unsigned int i{0}; i < meshes.size(); i++) {
-    meshes[i].draw(shader);
+    meshes[i]->draw(shader);
   }
 }
 
@@ -47,7 +44,7 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
   }
 }
 
-Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   vector<Vertex> vertices;
   vector<unsigned int> indices;
   vector<Texture> textures;
@@ -96,7 +93,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
   }
 
-  return Mesh(vertices, indices, textures);
+  return make_unique<Mesh>(vertices, indices, textures);
 }
 
 vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
@@ -133,7 +130,7 @@ unsigned int TextureFromFile(const char *path, const string &directory,
   filename = directory + '/' + filename;
 
   unsigned int textureID;
-  glGenTextures(1, &textureID);
+  GLcall(glGenTextures(1, &textureID));
 
   int width, height, nrComponents;
   unsigned char *data =
@@ -147,16 +144,16 @@ unsigned int TextureFromFile(const char *path, const string &directory,
     else if (nrComponents == 4)
       format = GL_RGBA;
 
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
-                 GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    GLcall(glBindTexture(GL_TEXTURE_2D, textureID));
+    GLcall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format,
+                        GL_UNSIGNED_BYTE, data));
+    GLcall(glGenerateMipmap(GL_TEXTURE_2D));
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    GLcall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+    GLcall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+    GLcall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                           GL_LINEAR_MIPMAP_LINEAR));
+    GLcall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
     stbi_image_free(data);
   } else {

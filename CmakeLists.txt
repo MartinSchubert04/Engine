@@ -42,7 +42,12 @@ set(SOURCES
     src/glad.c
     src/Application.cpp
     src/window/GLwindow.cpp
+
     src/renderer/openGLrender.cpp
+    src/renderer/Interface.cpp
+    src/renderer/VertexBuffer.cpp
+    src/renderer/VertexArray.cpp
+    src/renderer/IndexBuffer.cpp
 
     src/elements/Camera.cpp
     src/elements/Mesh.cpp

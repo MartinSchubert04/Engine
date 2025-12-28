@@ -3,6 +3,21 @@
 #include "window/Window.h"
 #include "elements/Vertex.h"
 
+#define ASSERT(x) \
+  if (!(x)) \
+    __builtin_trap();
+
+#define DEBUG
+
+#ifdef DEBUG
+#define GLcall(x) \
+  GLClearError(); \
+  x; \
+  ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+#else
+#define GLcall(x) x
+#endif
+
 namespace render {
 
 class RenderContext {
@@ -23,12 +38,15 @@ protected:
   window::Iwindow *mWindow;
 };
 
-class VertexIndexBuffer {
+class Buffer {
 
 public:
   virtual void bind() const = 0;
   virtual void unbind() const = 0;
   virtual void destroy() = 0;
+
+protected:
+  GLuint mRendererID;
 };
 
 class FrameBuffer {};
