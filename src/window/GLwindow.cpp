@@ -20,7 +20,9 @@ bool GLwindow::init(int width, int height, std::string title) {
   mRender->init(this);
 
   mPreviousTime = glfwGetTime();
-  mModel = std::make_unique<Model>("resources/model/backpack.obj");
+
+  // stbi_set_flip_vertically_on_load(true);
+  mModel = std::make_unique<Model>("resources/model/primitive/Icosphere.obj");
   mShader = std::make_unique<Shader>("shaders/model.vs", "shaders/model.fs");
 
   mInterface->init(this);
@@ -61,8 +63,6 @@ void GLwindow::render() {
 
     mShader->setFloat("time", glfwGetTime());
     mShader->setVec3("viewPos", mCamera.Position);
-    mShader->setFloat("UseTexture", 1.0f);
-    mShader->setVec4("Color", 0.8, 0.8, 0.8, 1.0f);
 
     // spot light
     mShader->setVec3("spotLight.position", mCamera.Position);
@@ -73,8 +73,8 @@ void GLwindow::render() {
     mShader->setFloat("spotLight.constant", 1.0f);
     mShader->setFloat("spotLight.linear", 0.09f);
     mShader->setFloat("spotLight.quadratic", 0.032f);
-    mShader->setFloat("spotLight.cutOffAngle", glm::cos(glm::radians(12.5f)));
-    mShader->setFloat("spotLight.outerCutOff", glm::cos(glm::radians(17.5f)));
+    mShader->setFloat("spotLight.cutOffAngle", glm::cos(glm::radians(72.5f)));
+    mShader->setFloat("spotLight.outerCutOff", glm::cos(glm::radians(97.5f)));
 
     glm::mat4 view = glm::lookAt(mCamera.Position,
                                  mCamera.Position + mCamera.Front, mCamera.Up);
@@ -101,7 +101,7 @@ void GLwindow::render() {
                   1.0f));  // it's a bit too big for our scene, so scale it down
     mShader->setMat4("model", model);
 
-    // ScopedTimer t("Draw model");
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     mModel->draw(*mShader);
   }
 

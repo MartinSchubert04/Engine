@@ -79,26 +79,6 @@ unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
       indices.push_back(face.mIndices[j]);
   }
 
-  for (unsigned int i{0}; i < mesh->mNumVertices; i++) {
-
-    if (scene->mNumMaterials > mesh->mMaterialIndex) {
-      auto &vertex = vertices[i];
-
-      const auto &mat = scene->mMaterials[mesh->mMaterialIndex];
-      aiColor4D diffuse;
-      if (AI_SUCCESS ==
-          aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuse)) {
-        vertex.color = glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-      }
-
-      if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
-        vertex.useDiffuseTexture = 1.f;
-      } else {
-        vertex.useDiffuseTexture = 0.f;
-      }
-    }
-  }
-
   if (mesh->mMaterialIndex >= 0) {
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
