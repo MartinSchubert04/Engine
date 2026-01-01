@@ -4,22 +4,26 @@
 #include "elements/Mesh.h"
 // #include "elements/light.h"
 #include "elements/Shader.h"
+#include "elements/Light.h"
 #include "Buffers/VertexBuffer.h"
 #include "Buffers/IndexBuffer.h"
 #include "Buffers/FrameBuffer.h"
 #include "elements/Input.h"
 #include "elements/Model.h"
 
+namespace UI {
+
 class Scene {
+
 public:
   Scene()
       : mCamera(nullptr), mFrameBuffer(nullptr), mShader(nullptr),
-        /*mLight(nullptr),*/ mSize(800, 600) {
+        mLight(nullptr), mSize(800, 600) {
 
     mFrameBuffer = std::make_unique<FrameBuffer>();
     mFrameBuffer->create(800, 600);
     mShader = std::make_unique<Shader>("shaders/model.vs", "shaders/model.fs");
-    // mLight = std::make_unique<nelems::Light>();
+    mLight = std::make_unique<Light>();
 
     mCamera =
         std::make_unique<Camera>(glm::vec3(0, 0, 3), 45.0f, 1.3f, 0.1f, 100.0f);
@@ -33,11 +37,13 @@ public:
 
   void render();
 
-  void loadMesh(const std::string &filepath);
+  void loadModel(const std::string &filepath);
 
-  void setMesh(std::shared_ptr<Model> model) { mModel = model; }
+  void setModel(std::shared_ptr<Model> model) { mModel = model; }
 
   std::shared_ptr<Model> getModel() { return mModel; }
+
+  Light *getLight() { return mLight.get(); }
 
   void onMouseMove(double x, double y, InputType button);
 
@@ -49,7 +55,9 @@ private:
   std::unique_ptr<Camera> mCamera;
   std::unique_ptr<FrameBuffer> mFrameBuffer;
   std::unique_ptr<Shader> mShader;
-  // std::unique_ptr<nelems::Light> mLight;
+  std::unique_ptr<Light> mLight;
   std::shared_ptr<Model> mModel;
   glm::vec2 mSize;
 };
+
+}  // namespace UI

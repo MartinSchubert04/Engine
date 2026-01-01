@@ -1,8 +1,7 @@
 #include "Scene.h"
 #include "elements/Input.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+
+namespace UI {
 
 void Scene::resize(int32_t width, int32_t height) {
   mSize.x = width;
@@ -12,30 +11,28 @@ void Scene::resize(int32_t width, int32_t height) {
 }
 
 void Scene::onMouseMove(double x, double y, InputType button) {
-  mCamera->on_mouse_move(x, y, button);
+  mCamera->onMouseMove(x, y, button);
 }
 
 void Scene::onMouseWheel(double delta) {
-  mCamera->on_mouse_wheel(delta);
+  mCamera->onMouseWheel(delta);
 }
 
-void Scene::loadMesh(const std::string &filepath) {
+void Scene::loadModel(const std::string &filepath) {
   if (!mModel)
     mModel = std::make_unique<Model>(filepath);
-
-  // mModel->load(filepath);
 }
 
 void Scene::render() {
 
   mShader->use();
 
-  // mLight->update(mShader.get());
+  mLight->update(mShader.get());
 
   mFrameBuffer->bind();
 
   if (mModel) {
-    mModel->draw(mShader.get());
+    mModel->draw(*mShader.get());
   }
 
   mFrameBuffer->unbind();
@@ -55,3 +52,5 @@ void Scene::render() {
 
   ImGui::End();
 }
+
+}  // namespace UI

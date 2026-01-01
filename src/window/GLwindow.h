@@ -6,10 +6,10 @@
 #include "elements/Camera.h"
 #include "elements/Shader.h"
 #include "elements/Model.h"
+#include "ui/Scene.h"
+#include "ui/Panel.h"
 
-// #include "renderer/ui_context.h"
-// #include "renderer/opengl_context.h"
-// #include "renderer/opengl_buffer_manager.h"
+using namespace UI;
 
 namespace window {
 
@@ -46,11 +46,6 @@ public:
 
   void handleInput();
 
-  void setTitle(std::string newTitle);
-  void updateTitle();
-
-  float getFPS();
-
 private:
   GLFWwindow *mWindow;
   bool mIsRunning;
@@ -63,12 +58,16 @@ private:
 
   std::unique_ptr<Model> mModel;
   std::unique_ptr<Shader> mShader;
-
   std::unique_ptr<GLrenderer> mRender;
-
   std::unique_ptr<Interface> mInterface;
+  std::unique_ptr<Scene> mScene;
+  std::unique_ptr<Panel> mPropertyPanel;
 
   Camera mCamera;
+
+  void setTitle(std::string newTitle);
+  void updateTitle();
+  float getFPS();
 
   // std::unique_ptr<Interface> mSceneView;
 };

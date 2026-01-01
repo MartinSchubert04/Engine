@@ -59,7 +59,7 @@ void main()
 
     bool hasTex = useTexture > 0.5;
 
-    result += calcSpotLight(spotLight, norm, FragPos, viewDir, hasTex);
+    // result += calcSpotLight(spotLight, norm, FragPos, viewDir, hasTex);
     result += calcDirLight(dirLight, norm, viewDir, hasTex);
 
     if (hasTex) {

@@ -1,10 +1,6 @@
 #include "Interface.h"
-#include "Render.h"
+#include "common.h"
 #include "window/Window.h"
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
 
 namespace render {
 
@@ -108,6 +104,10 @@ void Interface::postRender() {
     ImGui::RenderPlatformWindowsDefault();
     glfwMakeContextCurrent(backup_current_context);
   }
+}
+
+Interface::~Interface() {
+  end();
 }
 
 void Interface::end() {

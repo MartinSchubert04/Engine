@@ -5,8 +5,8 @@
 enum InputType { iLeft = 0, iRight = 1, iMiddle = 2, inone = 9 };
 
 class Input {
-
-  InputType getInputPressed(GLFWwindow *window) {
+public:
+  static InputType getInputPressed(GLFWwindow *window) {
     InputType result = InputType::inone;
 
     if (glfwGetMouseButton(window, 0) == GLFW_PRESS)

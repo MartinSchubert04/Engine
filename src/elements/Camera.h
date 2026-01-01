@@ -2,6 +2,7 @@
 
 #include "Input.h"
 #include "common.h"
+#include "Shader.h"
 
 // Defines several possible options for camera movement
 enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
@@ -50,7 +51,7 @@ public:
 
     setAspect(mAspect);
 
-    update_view_matrix();
+    updateViewMatrix();
   }
 
   // Camera methods
@@ -65,13 +66,21 @@ public:
   // NEW CAMERA IMPEMENTATION
   // ------------------------------
 
+  void update(Shader *shader) {
+    glm::mat4 model{1.0f};
+    shader->setMat4("model", model);
+    shader->setMat4("view", mViewMatrix);
+    shader->setMat4("projection", getProjection());
+    shader->setVec3("camPos", mPosition);
+  }
+
   void setAspect(float aspect) {
     mProjection = glm::perspective(mFOV, aspect, mNear, mFar);
   }
 
   void setDistance(float offset) {
     mDistance += offset;
-    update_view_matrix();
+    updateViewMatrix();
   }
 
   const glm::mat4 &getProjection() const { return mProjection; }
@@ -92,19 +101,19 @@ public:
 
   glm::mat4 getViewMatrix() const { return mViewMatrix; }
 
-  void on_mouse_wheel(double delta) {
+  void onMouseWheel(double delta) {
     setDistance(delta * 0.5f);
 
-    update_view_matrix();
+    updateViewMatrix();
   }
 
   void reset() {
     mFocus = {0.0f, 0.0f, 0.0f};
     // mDistance = 5.0f;
-    update_view_matrix();
+    updateViewMatrix();
   }
 
-  void on_mouse_move(double x, double y, InputType button) {
+  void onMouseMove(double x, double y, InputType button) {
     glm::vec2 pos2d{x, y};
 
     if (button == InputType::iRight) {
@@ -114,7 +123,7 @@ public:
       mYaw += sign * delta.x * cRotationSpeed;
       mPitch += delta.y * cRotationSpeed;
 
-      update_view_matrix();
+      updateViewMatrix();
     } else if (button == InputType::iMiddle) {
       // TODO: Adjust pan speed for distance
       glm::vec2 delta = (pos2d - mCurrentPos2d) * 0.003f;
@@ -122,13 +131,13 @@ public:
       mFocus += -getRight() * delta.x * mDistance;
       mFocus += getUp() * delta.y * mDistance;
 
-      update_view_matrix();
+      updateViewMatrix();
     }
 
     mCurrentPos2d = pos2d;
   }
 
-  void update_view_matrix() {
+  void updateViewMatrix() {
     mPosition = mFocus - getForward() * mDistance;
 
     glm::quat orientation = getDirection();
