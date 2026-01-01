@@ -12,23 +12,23 @@ permissions:
   contents: write
 
 jobs:
-  # JOB 1: Compilación en Linux (Para asegurar portabilidad)
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # Linux build (ensure portability)
+  # build-linux:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y build-essential cmake ninja-build libglfw3-dev libassimp-dev libgl1-mesa-dev
+  #     - name: Install Dependencies
+  #       run: |
+  #         sudo apt update
+  #         sudo apt install -y build-essential cmake ninja-build libglfw3-dev libassimp-dev libgl1-mesa-dev
 
-      - name: Configure and Build
-        run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
+  #     - name: Configure and Build
+  #       run: |
+  #         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+  #         cmake --build build
 
-  # JOB 2: Compilación en Windows + Creación de Release
+  # JOB 2: Windows Build + Release
   build-windows:
     runs-on: windows-latest
     steps:
