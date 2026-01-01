@@ -46,5 +46,3 @@ void Texture::bind(unsigned int slot) const {
 void Texture::unbind() const {
   GLcall(glBindTexture(GL_TEXTURE_2D, 0));
 }
-
-void Texture::destroy() {}

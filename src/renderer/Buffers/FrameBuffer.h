@@ -2,10 +2,12 @@
 
 #include "renderer/Render.h"
 
+namespace render {
+
 class FrameBuffer : render::Buffer {
 
 private:
-  uint32_t mFBO = mRendererID;
+  uint32_t mFBO = 0;
   uint32_t mTexId = 0;
   uint32_t mDepthId = 0;
   int32_t mWidth = 0;
@@ -20,3 +22,5 @@ public:
   void destroy() override;
   uint32_t getTexture() const;
 };
+
+}  // namespace render

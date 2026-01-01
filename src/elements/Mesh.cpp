@@ -26,9 +26,11 @@ void Mesh::setupMesh() {
   va.bind();
   ib.bind();
 
-  layout.push<float>(3);  // position
-  layout.push<float>(3);  // normal
-  layout.push<float>(2);  // texCoords
+  layout.push<float>(3);  // position (location 0)
+  layout.push<float>(3);  // normal   (location 1)
+  layout.push<float>(2);  // texCoord (location 2)
+  layout.push<float>(4);  // color    (location 3)
+  layout.push<float>(1);  // useTex   (location 4)
 
   va.addBuffer(vb, layout);
 

@@ -50,6 +50,4 @@ protected:
   GLuint mRendererID;
 };
 
-class FrameBuffer {};
-
 }  // namespace render

@@ -12,6 +12,10 @@ using namespace std;
 
 class Model {
 public:
+  glm::vec3 color = {1.0f, 0.0f, 0.0f};
+  float roughness = 0.2f;
+  float metallic = 0.1f;
+
   Model(string path);
 
   void draw(Shader &shader);

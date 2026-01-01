@@ -1,5 +1,8 @@
+#pragma once
+
 #include "Render.h"
 #include "window/Window.h"
+#include "elements/Shader.h"
 
 namespace render {
 

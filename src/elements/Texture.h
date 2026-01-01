@@ -17,7 +17,6 @@ public:
 
   void bind(unsigned int slot = 0) const;
   void unbind() const;
-  void destroy();
 
   inline int getWidth() const { return mWidth; };
   inline int getHeight() const { return mHeight; };
@@ -26,4 +25,5 @@ public:
   inline int getID() const { return mID; };
 
   inline void setType(std::string type) { mType = type; };
+  inline bool isValid() const { return mID != 0; }
 };

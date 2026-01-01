@@ -44,7 +44,7 @@ set(SOURCES
     src/window/GLwindow.cpp
 
     src/renderer/GLrenderer.cpp
-    src/renderer/Interface.cpp
+    src/renderer/UIcontext.cpp
     src/renderer/Buffers/VertexBuffer.cpp
     src/renderer/Buffers/FrameBuffer.cpp
     src/renderer/Buffers/VertexArray.cpp
@@ -55,6 +55,10 @@ set(SOURCES
     src/elements/Model.cpp
     src/elements/Shader.cpp
     src/elements/Texture.cpp
+    
+    src/ui/Scene.cpp
+    src/ui/Panel.cpp
+
     src/common.cpp
 
     include/stb/stb_image.cpp

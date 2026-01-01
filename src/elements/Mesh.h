@@ -19,12 +19,15 @@ public:
 
   void draw(Shader &shader);
 
+  // Getters
+  inline size_t getVertexCount() const { return vertices.size(); }
+  inline size_t getIndexCount() const { return indices.size(); }
+  inline size_t getTextureCount() const { return textures.size(); }
+
 private:
   VertexBuffer vb;
   IndexBuffer ib;
   VertexArray va;
-
-  unsigned int VAO, VBO, EBO;
 
   void setupMesh();
 };

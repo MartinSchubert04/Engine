@@ -2,9 +2,6 @@
 #include "common.h"
 #include "renderer/Render.h"
 
-unsigned int TextureFromFile(const char *path, const string &directory,
-                             bool gamma = false);
-
 Model::Model(string path) {
   loadModel(path);
 }
@@ -25,6 +22,11 @@ void Model::loadModel(string path) {
     cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
     return;
   }
+
+  // Clear previous meshes and textures
+  meshes.clear();
+  texturesLoaded.clear();
+
   directory = path.substr(0, path.find_last_of('/'));
 
   processNode(scene->mRootNode, scene);
@@ -70,6 +72,21 @@ unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     } else
       vertex.texCoords = glm::vec2(0.0f, 0.0f);
 
+    if (scene->mNumMaterials > mesh->mMaterialIndex) {
+      const auto &mat = scene->mMaterials[mesh->mMaterialIndex];
+      aiColor4D diffuse;
+      if (AI_SUCCESS ==
+          aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuse)) {
+        vertex.color = glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+      }
+
+      if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0) {
+        vertex.useDiffuseTexture = 1.f;
+      } else {
+        vertex.useDiffuseTexture = 0.f;
+      }
+    }
+
     vertices.push_back(vertex);
   }
 
@@ -108,7 +125,8 @@ vector<shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial *mat,
 
     bool skip = false;
     for (unsigned int j = 0; j < texturesLoaded.size(); j++) {
-      if (std::strcmp(texturesLoaded[j]->getPath().data(), path.c_str()) == 0) {
+      if (std::strcmp(texturesLoaded[j]->getPath().c_str(), path.c_str()) ==
+          0) {
         textures.push_back(texturesLoaded[j]);
         skip = true;
         break;
@@ -119,8 +137,12 @@ vector<shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial *mat,
       auto texture = make_shared<Texture>(path);
       texture->setType(typeName);
 
-      textures.push_back(texture);
-      texturesLoaded.push_back(texture);  // add to loaded textures
+      if (texture->isValid()) {
+        textures.push_back(texture);
+        texturesLoaded.push_back(texture);
+      } else {
+        std::cerr << "Failed to load texture: " << path << std::endl;
+      }
     }
   }
 
