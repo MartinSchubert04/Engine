@@ -24,7 +24,7 @@ jobs:
           sudo apt install -y build-essential cmake ninja-build \
             libgl1-mesa-dev libx11-dev libxcursor-dev libxinerama-dev \
             libxrandr-dev libxi-dev libxkbcommon-dev libwayland-dev \
-            libwayland-egl1-mesa wayland-protocols
+            libassimp-dev
 
       - name: Configure and Build
         run: |
