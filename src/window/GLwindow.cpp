@@ -74,14 +74,18 @@ void GLwindow::onClose() {
 
 void GLwindow::handleInput() {
 
-  float speed = 50.f;
+  // TODO: move to scene
+
+  auto camera = mScene->getCamera();
+  if (!camera)
+    return;
 
   if (glfwGetKey(mWindow, GLFW_KEY_W) == GLFW_PRESS) {
-    mScene->onMouseWheel(-speed * mDeltaTime);
+    mScene->onMouseWheel(-camera->speed * mDeltaTime);
   }
 
   if (glfwGetKey(mWindow, GLFW_KEY_S) == GLFW_PRESS) {
-    mScene->onMouseWheel(speed * mDeltaTime);
+    mScene->onMouseWheel(camera->speed * mDeltaTime);
   }
 
   if (glfwGetKey(mWindow, GLFW_KEY_F) == GLFW_PRESS) {

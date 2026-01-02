@@ -49,7 +49,7 @@ in float useTexture;
 uniform vec3 viewPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
-
+uniform vec4 modelColor;
 
 void main()
 {    
@@ -63,10 +63,10 @@ void main()
     result += calcDirLight(dirLight, norm, viewDir, hasTex);
 
     if (hasTex) {
-        FragColor = vec4(result, 1.0);
+        FragColor = vec4(result, 1.0) * modelColor;
     } else {
         // Si no hay textura, mezclamos la iluminación con el color del vértice
-        FragColor = vec4(result * color.rgb, 1.0);
+        FragColor = vec4(result * color.rgb, 1.0) * modelColor;
     }
     
 }

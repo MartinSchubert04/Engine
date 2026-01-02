@@ -6,6 +6,7 @@ namespace UI {
 void Panel::render(UI::Scene *scene) {
 
   auto model = scene->getModel();
+  auto camera = scene->getCamera();
 
   ImGui::Begin("Properties");
   if (ImGui::CollapsingHeader("Model", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -30,7 +31,15 @@ void Panel::render(UI::Scene *scene) {
     ImGui::Separator();
     ImGui::Text("Position");
     ImGui::Separator();
-    utils::draw_vec3_widget("Position", scene->getLight()->position, 80.0f);
+    utils::drawVec3_widget("Position", scene->getLight()->position, 80.0f);
+    ImGui::Spacing();
+  }
+
+  if (ImGui::CollapsingHeader("Camera")) {
+
+    ImGui::Spacing();
+    utils::drawFloat_widget("Speed", camera->speed, 80.0f);
+    ImGui::Spacing();
   }
 
   ImGui::End();

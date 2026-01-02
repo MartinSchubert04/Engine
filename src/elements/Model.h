@@ -12,13 +12,19 @@ using namespace std;
 
 class Model {
 public:
-  glm::vec3 color = {1.0f, 0.0f, 0.0f};
+  glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
   float roughness = 0.2f;
   float metallic = 0.1f;
 
   Model(string path);
 
   void draw(Shader &shader);
+  void update(Shader *shader) {
+    shader->setVec4("modelColor", color);
+
+    // shader->setFloat("roughness", roughness);
+    // shader->setFloat("metallic", metallic);
+  }
 
 private:
   vector<unique_ptr<Mesh>> meshes;

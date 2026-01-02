@@ -18,7 +18,8 @@ void Model::loadModel(string path) {
   const uint32_t cMeshImportFlags =
       aiProcess_CalcTangentSpace | aiProcess_Triangulate |
       aiProcess_SortByPType | aiProcess_GenNormals | aiProcess_GenUVCoords |
-      aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure;
+      aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure |
+      aiProcess_FlipUVs;
 
   const aiScene *scene = import.ReadFile(path, cMeshImportFlags);
 

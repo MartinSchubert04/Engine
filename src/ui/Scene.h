@@ -45,6 +45,8 @@ public:
 
   Light *getLight() { return mLight.get(); }
 
+  std::shared_ptr<Camera> getCamera() { return mCamera; }
+
   void onMouseMove(double x, double y, InputType button);
 
   void onMouseWheel(double delta);
@@ -52,7 +54,7 @@ public:
   void resetView() { mCamera->reset(); }
 
 private:
-  std::unique_ptr<Camera> mCamera;
+  std::shared_ptr<Camera> mCamera;
   std::unique_ptr<FrameBuffer> mFrameBuffer;
   std::unique_ptr<Shader> mShader;
   std::unique_ptr<Light> mLight;
