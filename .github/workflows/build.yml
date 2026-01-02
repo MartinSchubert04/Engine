@@ -13,20 +13,23 @@ permissions:
 
 jobs:
   # Linux build (ensure portability)
-  # build-linux:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Install Dependencies
-  #       run: |
-  #         sudo apt update
-  #         sudo apt install -y build-essential cmake ninja-build libglfw3-dev libassimp-dev libgl1-mesa-dev
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential cmake ninja-build \
+            libgl1-mesa-dev libx11-dev libxcursor-dev libxinerama-dev \
+            libxrandr-dev libxi-dev libxkbcommon-dev libwayland-dev \
+            libassimp-dev
 
-  #     - name: Configure and Build
-  #       run: |
-  #         cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
-  #         cmake --build build
+      - name: Configure and Build
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
 
   # JOB 2: Windows Build + Release
   build-windows:
@@ -59,7 +62,7 @@ jobs:
           mv openGL.exe engine.exe
           # Crear un ZIP con el ejecutable, la DLL de Assimp y tus carpetas de datos
           # Agregamos 'resources' y 'shaders' (ajusta los nombres si son distintos)
-          7z a engine-windows-x64.zip engine.exe libassimp-6.dll resources/ shaders/
+          7z a engine-windows-x64.zip engine.exe resources/ shaders/
 
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2

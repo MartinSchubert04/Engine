@@ -20,7 +20,23 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 # OpenGL / GLFW
 # ===============================
 find_package(OpenGL REQUIRED)
-find_package(glfw3 CONFIG REQUIRED)
+if(WIN32)
+    # En Windows seguimos como antes
+    find_package(glfw3 CONFIG REQUIRED)
+else()
+    # En Linux, forzamos la descarga de GLFW 3.4 para que ImGui no falle
+    include(FetchContent)
+    FetchContent_Declare(
+        glfw
+        GIT_REPOSITORY https://github.com/glfw/glfw.git
+        GIT_TAG 3.4
+    )
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(glfw)
+endif()
 
 # ===============================
 # Sources
@@ -88,25 +104,34 @@ target_include_directories(${APP} PRIVATE
 target_compile_definitions(${APP} PRIVATE
     IMGUI_IMPL_OPENGL_LOADER_GLAD
     ROOT_DIR="${CMAKE_SOURCE_DIR}/"
-)
-
-set(ASSIMP_DIR ${CMAKE_SOURCE_DIR}/external/assimp)
-
-
-add_custom_command(TARGET openGL POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_SOURCE_DIR}/libassimp-6.dll
-    $<TARGET_FILE_DIR:openGL>
+    ASSIMP_STATIC_LIB
 )
 
 # ===============================
 # Link libraries
 # ===============================
-target_link_libraries(${APP} PRIVATE
-    OpenGL::GL
-    glfw
-    "${CMAKE_SOURCE_DIR}/lib/assimp/libassimp.dll.a"
-)
+if(WIN32)
+    target_link_libraries(${APP} PRIVATE
+        OpenGL::GL
+        glfw
+        "${CMAKE_SOURCE_DIR}/lib/assimp/libassimp.a"
+        z  # <---(dependencia de Assimp)
+    )
+
+    if(MINGW OR GNUCXX)
+        target_link_options(${APP} PRIVATE -mconsole)
+    endif()
+else()
+    find_package(assimp REQUIRED)
+    find_package(ZLIB REQUIRED) # Linux prefiere buscarla formalmente
+
+    target_link_libraries(${APP} PRIVATE
+        OpenGL::GL
+        glfw
+        assimp::assimp
+        ZLIB::ZLIB
+    )
+endif()
 # ===============================
 # Run + Clean target
 # ===============================
