@@ -88,25 +88,34 @@ target_include_directories(${APP} PRIVATE
 target_compile_definitions(${APP} PRIVATE
     IMGUI_IMPL_OPENGL_LOADER_GLAD
     ROOT_DIR="${CMAKE_SOURCE_DIR}/"
-)
-
-set(ASSIMP_DIR ${CMAKE_SOURCE_DIR}/external/assimp)
-
-
-add_custom_command(TARGET openGL POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    ${CMAKE_SOURCE_DIR}/libassimp-6.dll
-    $<TARGET_FILE_DIR:openGL>
+    ASSIMP_STATIC_LIB
 )
 
 # ===============================
 # Link libraries
 # ===============================
-target_link_libraries(${APP} PRIVATE
-    OpenGL::GL
-    glfw
-    "${CMAKE_SOURCE_DIR}/lib/assimp/libassimp.dll.a"
-)
+if(WIN32)
+    target_link_libraries(${APP} PRIVATE
+        OpenGL::GL
+        glfw
+        "${CMAKE_SOURCE_DIR}/lib/assimp/libassimp.a"
+        z  # <---(dependencia de Assimp)
+    )
+
+    if(MINGW OR GNUCXX)
+        target_link_options(${APP} PRIVATE -mconsole)
+    endif()
+else()
+    find_package(assimp REQUIRED)
+    find_package(ZLIB REQUIRED) # Linux prefiere buscarla formalmente
+
+    target_link_libraries(${APP} PRIVATE
+        OpenGL::GL
+        glfw
+        assimp::assimp
+        ZLIB::ZLIB
+    )
+endif()
 # ===============================
 # Run + Clean target
 # ===============================

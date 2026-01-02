@@ -1,11 +1,6 @@
 #include "GLwindow.h"
-#include "GLFW/glfw3.h"
 #include "common.h"
-#include "window/GLwindow.h"
 
-#include "elements/Camera.h"
-#include "elements/Model.h"
-#include "utils/TextureUtil.h"
 #include "utils/Timer.h"
 
 using namespace window;
@@ -14,8 +9,6 @@ bool GLwindow::init(int width, int height, std::string title) {
   this->width = width;
   this->height = height;
   this->title = title;
-
-  mCamera.Position = glm::vec3(0.0, 0.0, 5.0);
 
   mRender->init(this);
 
