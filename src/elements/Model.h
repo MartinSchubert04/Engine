@@ -19,17 +19,14 @@ public:
   Model(string path);
 
   void draw(Shader &shader);
-  void update(Shader *shader) {
-    shader->setVec4("modelColor", color);
-
-    // shader->setFloat("roughness", roughness);
-    // shader->setFloat("metallic", metallic);
-  }
+  void update(Shader *shader);
 
 private:
   vector<unique_ptr<Mesh>> meshes;
   string directory;
   vector<shared_ptr<Texture>> texturesLoaded;
+
+  glm::vec3 mSize;
 
   void loadModel(string path);
   void processNode(aiNode *node, const aiScene *scene);
@@ -37,4 +34,6 @@ private:
 
   vector<shared_ptr<Texture>>
   loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName);
+
+  glm::vec3 calculateSize(const aiScene *scene);
 };

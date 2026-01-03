@@ -69,8 +69,6 @@ public:
   // ------------------------------
 
   void update(Shader *shader) {
-    glm::mat4 model{1.0f};
-    shader->setMat4("model", model);
     shader->setMat4("view", mViewMatrix);
     shader->setMat4("projection", getProjection());
     shader->setVec3("camPos", mPosition);

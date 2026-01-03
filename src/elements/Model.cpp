@@ -12,14 +12,32 @@ void Model::draw(Shader &shader) {
   }
 }
 
+void Model::update(Shader *shader) {
+  shader->setVec4("modelColor", color);
+
+  // shader->setFloat("roughness", roughness);
+  // shader->setFloat("metallic", metallic);
+
+  glm::mat4 model{1.0f};
+
+  float scale = 1.0f;  // Queremos que mida 1 unidad de alto
+  float factor = scale / mSize.y;
+
+  if (mSize.y >= 15.f || mSize.x >= 20.f || mSize.z >= 20.f) {
+    model = glm::scale(model, glm::vec3(factor));
+  }
+
+  shader->setMat4("model", model);
+}
+
 void Model::loadModel(string path) {
   Assimp::Importer import;
 
   const uint32_t cMeshImportFlags =
       aiProcess_CalcTangentSpace | aiProcess_Triangulate |
       aiProcess_SortByPType | aiProcess_GenNormals | aiProcess_GenUVCoords |
-      aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure |
-      aiProcess_FlipUVs;
+      aiProcess_OptimizeMeshes | aiProcess_ValidateDataStructure
+      /*| aiProcess_FlipUVs */;
 
   const aiScene *scene = import.ReadFile(path, cMeshImportFlags);
 
@@ -36,6 +54,7 @@ void Model::loadModel(string path) {
   directory = path.substr(0, path.find_last_of('/'));
 
   processNode(scene->mRootNode, scene);
+  mSize = calculateSize(scene);
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene) {
@@ -92,7 +111,6 @@ unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vertex.useDiffuseTexture = 0.f;
       }
     }
-
     vertices.push_back(vertex);
   }
 
@@ -153,4 +171,39 @@ vector<shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial *mat,
   }
 
   return textures;
+}
+
+glm::vec3 Model::calculateSize(const aiScene *scene) {
+  float minY = std::numeric_limits<float>::max();
+  float maxY = std::numeric_limits<float>::lowest();
+  float minX = std::numeric_limits<float>::max();
+  float maxX = std::numeric_limits<float>::lowest();
+  float minZ = std::numeric_limits<float>::max();
+  float maxZ = std::numeric_limits<float>::lowest();
+
+  for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
+    aiMesh *mesh = scene->mMeshes[i];
+    for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
+      float y = mesh->mVertices[j].y;
+      float x = mesh->mVertices[j].x;
+      float z = mesh->mVertices[j].z;
+
+      if (y < minY)
+        minY = y;
+      if (y > maxY)
+        maxY = y;
+
+      if (x < minX)
+        minX = x;
+      if (x > maxX)
+        maxX = x;
+
+      if (z < minZ)
+        minZ = z;
+      if (z > maxZ)
+        maxZ = z;
+    }
+  }
+
+  return {maxY - minY, maxX - minX, maxZ - minZ};
 }
