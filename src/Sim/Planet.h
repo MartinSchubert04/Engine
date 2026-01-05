@@ -11,10 +11,19 @@ public:
   glm::vec4 color;
   float scaleFactor;
 
-  Planet(float radius, glm::vec2 segments, glm::vec3 position);
+  float mass;
+  glm::vec3 speed;
+  glm::vec3 acceleration;
 
-  void update(Shader *shader) override;
+  Planet(float radius, glm::vec2 segments, glm::vec3 position, float mass = 0);
+
   void draw(Shader *shader) override;
+
+  void update(glm::vec3 force, float delta) override;
+  void applyForce(glm::vec3 force);
+  void updatePhysics(float delta);
+  void checkCollision(float distance);
+
   void scale(float scalar);
 
   Mesh *getMesh() { return mesh.get(); }

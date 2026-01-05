@@ -1,4 +1,5 @@
 #include "Panel.h"
+#include "imgui/imgui.h"
 #include "utils/imgui_widgets.h"
 
 namespace UI {
@@ -39,6 +40,21 @@ void Panel::render(UI::Scene *scene) {
 
     ImGui::Spacing();
     utils::drawFloat_widget("Speed", camera->speed, 80.0f);
+    ImGui::Spacing();
+  }
+
+  if (ImGui::CollapsingHeader("System")) {
+
+    ImGui::Spacing();
+    if (ImGui::SliderInt("Sphere count", &scene->ballCount, 1, 2500)) {
+      scene->clearSystem();
+      scene->setSphereCount();
+    }
+    ImGui::Spacing();
+    if (ImGui::SliderFloat("Sphere size", &scene->ballSize, 0.3f, 1.f)) {
+      scene->setSphereSize();
+    }
+
     ImGui::Spacing();
   }
 

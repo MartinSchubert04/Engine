@@ -13,6 +13,6 @@ protected:
 public:
   std::unique_ptr<Mesh> mesh;
 
-  virtual void update(Shader *shader) = 0;
+  virtual void update(glm::vec3 force, float delta) = 0;
   virtual void draw(Shader *shader) = 0;
 };
