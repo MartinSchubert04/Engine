@@ -47,7 +47,7 @@ void GLwindow::render() {
   updateTitle();
 
   // render scene to framebuffer and add it to scene view
-  mScene->render();
+  mScene->render(mDeltaTime);
 
   mPropertyPanel->render(mScene.get());
 

@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include "common.h"
 #include "elements/Input.h"
+#include "imgui/imgui.h"
 
 namespace UI {
 
@@ -23,7 +24,7 @@ void Scene::loadModel(const std::string &filepath) {
   mModel = std::make_unique<Model>(filepath);
 }
 
-void Scene::render() {
+void Scene::render(float delta) {
 
   mShader->use();
 
@@ -42,6 +43,18 @@ void Scene::render() {
     mModel->draw(*mShader.get());
   }
 
+  glm::vec3 gravity = {0.f, -9.81f, 0.f};
+
+  for (auto &contBound : mContainerBoudaries) {
+    contBound->draw(mShader.get());
+  }
+
+  // mSystem->updatePhysics(gravity, delta);
+
+  mSystem->update(gravity, delta);
+  for (auto &p : mSystem->planets) {
+    p->checkCollision(mContainer->radius);
+  }
   mSystem->draw(mShader.get());
 
   mFrameBuffer->unbind();

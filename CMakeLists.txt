@@ -78,6 +78,7 @@ set(SOURCES
 
     src/Sim/Planet.cpp
     src/Sim/System.cpp
+    src/Sim/Solver.cpp
 
 
     src/common.cpp

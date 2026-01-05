@@ -111,7 +111,7 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir, bool hasTex) {
     vec3 baseColor = hasTex ? texture(material.texture_diffuse1, TexCoord).rgb : vec3(1.0);
     
     // 2. Obtener color especular
-    vec3 specColor = hasTex ? texture(material.texture_specular1, TexCoord).rgb : vec3(0.5);
+    vec3 specColor = hasTex ? texture(material.texture_specular1, TexCoord).rgb : vec3(0.0);
 
     // Ambient
     vec3 ambient = light.ambient * baseColor;
