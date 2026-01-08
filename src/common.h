@@ -30,10 +30,9 @@
 
 #include "utils/Error.h"
 
-#define BIND_FN(fn) \
-  [this](auto &&...args) -> decltype(auto) { \
-    return this->fn(std::forward<decltype(args)>(args)...); \
-  }
+#define BIND_FN(fn) [this](auto &&...args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+
+#define BIT(x) (1 << x)
 
 #define BLACK glm::vec3(0, 0, 0)
 #define WHITE glm::vec3(1, 1, 1)
