@@ -62,12 +62,6 @@ void Panel::render(UI::Scene *scene) {
     }
 
     ImGui::Spacing();
-    if (ImGui::DragFloat("Gravitational constant", &universe::Gconstant, 1.f,
-                         0.1f, 10000.f)) {
-      scene->setSphereSize();
-    }
-
-    ImGui::Spacing();
   }
 
   ImGui::End();

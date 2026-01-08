@@ -52,9 +52,7 @@ void Solver::solveGravity(Planet *self, Planet *other) {
 
   glm::vec3 forceDir = glm::normalize(diff);
 
-  glm::vec3 force =
-      forceDir * (universe::Gconstant * (self->mass * other->mass) /
-                  distanceSqr);  // avoid div by 0
+  glm::vec3 force = forceDir * (universe::Gconstant * (self->mass * other->mass) / distanceSqr);  // avoid div by 0
 
   self->applyForce(force);
   other->applyForce(-force);

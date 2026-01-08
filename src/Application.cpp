@@ -1,13 +1,6 @@
 #include "Application.h"
-#include <memory>
-
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
+#include "common.h"
+#include "elements/Log.h"
 namespace Core {
 
 Application::Application(const std::string &app_name) {
@@ -16,6 +9,9 @@ Application::Application(const std::string &app_name) {
 }
 
 void Application::run() {
+  Engine::Log::init();
+  CORE_INFO("RUNNING APP");
+
   while (mWindow->isRunning()) {
     mWindow->render();
   }

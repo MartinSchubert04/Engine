@@ -78,6 +78,7 @@ set(SOURCES
     src/Core/elements/Model.cpp
     src/Core/elements/Shader.cpp
     src/Core/elements/Texture.cpp
+    src/Core/elements/Log.cpp
     
     src/Core/ui/Scene.cpp
     src/Core/ui/Panel.cpp

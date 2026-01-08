@@ -17,3 +17,9 @@ public:
   void draw(Shader *shader) override;
   void update(glm::vec3 force, float delta) override;
 };
+
+class Grid3D {
+
+public:
+  Grid3D(glm::vec3 size, glm::vec3 position, float squareLenght);
+};
