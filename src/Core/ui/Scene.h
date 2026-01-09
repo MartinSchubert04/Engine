@@ -11,8 +11,7 @@
 #include "elements/Input.h"
 #include "elements/Model.h"
 #include "Sim/System.h"
-#include <memory>
-#include <vector>
+#include "Sim/Grid.h"
 
 namespace UI {
 
@@ -38,7 +37,7 @@ public:
     mContainer =
         std::make_unique<Planet>(10, glm::vec2(10, 10), glm::vec3(0, 0, 0));
 
-    mSystem = std::make_unique<System>();
+    mSystem = std::make_unique<universe::System>();
 
     std::vector<glm::vec3> positions = mContainer->getVerticesPos();
 
@@ -47,8 +46,6 @@ public:
           std::make_unique<Planet>(0.1, glm::vec2(15, 15), p);
       mContainerBoudaries.push_back(std::move(sphere));
     }
-
-    setSphereCount();
   }
 
   ~Scene() { mShader->unload(); }
@@ -93,8 +90,10 @@ private:
   std::unique_ptr<Shader> mShader;
   std::unique_ptr<Light> mLight;
   std::shared_ptr<Model> mModel;
-  std::shared_ptr<System> mSystem;
+  std::shared_ptr<universe::System> mSystem;
   std::shared_ptr<Planet> mContainer;
+
+  Grid grid = Grid(glm::vec2(200, 200), glm::vec3(.0f, -5.f, .0f));
 
   std::vector<std::unique_ptr<Planet>> mContainerBoudaries;
 

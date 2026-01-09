@@ -12,6 +12,8 @@ public:
 
   void preRender() override;
 
+  void drawLines();
+
   void postRender() override;
 
   void end() override;

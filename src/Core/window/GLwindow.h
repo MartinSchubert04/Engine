@@ -63,8 +63,6 @@ private:
   std::unique_ptr<Scene> mScene;
   std::unique_ptr<Panel> mPropertyPanel;
 
-  Camera mCamera;
-
   void setTitle(std::string newTitle);
   void updateTitle();
   float getFPS();

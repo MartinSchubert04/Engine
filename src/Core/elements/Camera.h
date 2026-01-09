@@ -5,43 +5,10 @@
 #include "Shader.h"
 
 // Defines several possible options for camera movement
-enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
-
-// Default camera values
-constexpr float YAW = -90.0f;
-constexpr float PITCH = 0.0f;
-constexpr float SPEED = 2.5f;
-constexpr float SENSITIVITY = 0.1f;
-constexpr float ZOOM = 45.0f;
 
 class Camera {
 public:
-  // Camera Attributes
-  glm::vec3 Position;
-
-  glm::vec3 Front;
-  glm::vec3 Up;
-  glm::vec3 Right;
-  glm::vec3 WorldUp;
-
-  // Euler Angles
-  float Yaw;
-  float Pitch;
-
-  // Camera options
-  float MovementSpeed;
-  float MouseSensitivity;
-  float Zoom;
-
-  float speed = 10.0f;
-
-  // Constructors
-  Camera(glm::vec3 position = glm::vec3(0.0f),
-         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW,
-         float pitch = PITCH);
-
-  Camera(float posX, float posY, float posZ, float upX, float upY, float upZ,
-         float yaw, float pitch);
+  float speed = 70.0f;
 
   Camera(const glm::vec3 &position, float fov, float aspect, float near,
          float far) {
@@ -55,14 +22,6 @@ public:
 
     updateViewMatrix();
   }
-
-  // // Camera methods
-  glm::mat4 GetViewMatrix();
-
-  void ProcessKeyboard(Camera_Movement direction, float deltaTime);
-  void ProcessMouseMovement(float xoffset, float yoffset,
-                            GLboolean constrainPitch = true);
-  void ProcessMouseScroll(float yoffset);
 
   // ------------------------------
   // NEW CAMERA IMPEMENTATION
@@ -147,8 +106,6 @@ public:
   }
 
 private:
-  void updateCameraVectors();
-
   glm::mat4 mViewMatrix;
   glm::mat4 mProjection = glm::mat4{1.0f};
   glm::vec3 mPosition = {0.0f, 0.0f, 0.0f};

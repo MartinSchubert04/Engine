@@ -1,4 +1,5 @@
 #include "Panel.h"
+#include "System.h"
 #include "imgui/imgui.h"
 #include "utils/imgui_widgets.h"
 
@@ -25,6 +26,7 @@ void Panel::render(UI::Scene *scene) {
                             ImGuiColorEditFlags_DisplayRGB);
     ImGui::SliderFloat("Roughness", &model->roughness, 0.0f, 1.0f);
     ImGui::SliderFloat("Metallic", &model->metallic, 0.0f, 1.0f);
+    ImGui::SliderFloat3("Size", glm::value_ptr(model->size), 0.1f, 30.0f);
   }
 
   if (ImGui::CollapsingHeader("Light")) {
@@ -46,12 +48,16 @@ void Panel::render(UI::Scene *scene) {
   if (ImGui::CollapsingHeader("System")) {
 
     ImGui::Spacing();
-    if (ImGui::SliderInt("Sphere count", &scene->ballCount, 1, 2500)) {
+
+    ImGui::SameLine();
+    if (ImGui::DragInt("Ball count", &scene->ballCount, 1, 1, 30000.0f,
+                       "%.i")) {
       scene->clearSystem();
       scene->setSphereCount();
-    }
+    };
+
     ImGui::Spacing();
-    if (ImGui::SliderFloat("Sphere size", &scene->ballSize, 0.3f, 1.f)) {
+    if (ImGui::DragFloat("Sphere size", &scene->ballSize, 0.001f, 0.3f, 1.f)) {
       scene->setSphereSize();
     }
 

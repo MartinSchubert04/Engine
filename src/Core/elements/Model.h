@@ -15,6 +15,7 @@ public:
   glm::vec4 color = {1.0f, 1.0f, 1.0f, 1.0f};
   float roughness = 0.2f;
   float metallic = 0.1f;
+  glm::vec3 size;
 
   Model(string path);
 
@@ -25,8 +26,6 @@ private:
   vector<unique_ptr<Mesh>> meshes;
   string directory;
   vector<shared_ptr<Texture>> texturesLoaded;
-
-  glm::vec3 mSize;
 
   void loadModel(string path);
   void processNode(aiNode *node, const aiScene *scene);

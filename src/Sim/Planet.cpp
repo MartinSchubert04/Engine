@@ -3,9 +3,14 @@
 #include "glm/fwd.hpp"
 #include <vector>
 
-Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass)
-    : radius(radius), segments(segments), position(pos), scaleFactor(1),
-      speed(0.0f), acceleration(0.0f), mass(mass) {
+Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass) :
+    radius(radius),
+    segments(segments),
+    position(pos),
+    scaleFactor(1),
+    speed(0.0f),
+    acceleration(0.0f),
+    mass(mass) {
 
   float PI = 3.14159265359f;
   this->color = glm::vec4(.8, .8, .8, .8);

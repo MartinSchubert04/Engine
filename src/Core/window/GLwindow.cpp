@@ -1,4 +1,5 @@
 #include "GLwindow.h"
+#include "GLFW/glfw3.h"
 #include "common.h"
 
 #include "utils/Timer.h"
@@ -47,6 +48,8 @@ void GLwindow::render() {
   updateTitle();
 
   // render scene to framebuffer and add it to scene view
+  handleInput();
+
   mScene->render(mDeltaTime);
 
   mPropertyPanel->render(mScene.get());
@@ -56,8 +59,6 @@ void GLwindow::render() {
 
   // Render end, swap buffers
   mRender->postRender();
-
-  handleInput();
 }
 
 void GLwindow::onResize(int width, int height) {
@@ -79,6 +80,9 @@ void GLwindow::handleInput() {
   auto camera = mScene->getCamera();
   if (!camera)
     return;
+  if (glfwGetKey(mWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    mIsRunning = false;
+  }
 
   if (glfwGetKey(mWindow, GLFW_KEY_W) == GLFW_PRESS) {
     mScene->onMouseWheel(-camera->speed * mDeltaTime);

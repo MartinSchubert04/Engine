@@ -30,7 +30,18 @@
 
 #include "utils/Error.h"
 
-#define BIND_FN(fn) \
-  [this](auto &&...args) -> decltype(auto) { \
-    return this->fn(std::forward<decltype(args)>(args)...); \
-  }
+#define BIND_FN(fn) [this](auto &&...args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+
+#define BIT(x) (1 << x)
+
+#define BLACK glm::vec3(0, 0, 0)
+#define WHITE glm::vec3(1, 1, 1)
+#define RED glm::vec3(1, 0, 0)
+#define BLUE glm::vec3(0, 0, 1)
+#define GREEN glm::vec3(0, 1, 0)
+#define YELLOW glm::vec3(1, 1, 0)
+#define LIGHT_BLUE glm::vec3(0, 1, 1)
+#define PURPLE glm::vec3(1, 0, 1)
+#define GREY glm::vec3(0.25f)
+// #define GRID_COLOR glm::vec3(0.509, 0.333, 0.490) * 0.5f
+#define GRID_COLOR glm::vec3(.8, .8, .8)

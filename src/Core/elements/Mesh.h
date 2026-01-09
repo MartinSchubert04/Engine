@@ -7,6 +7,7 @@
 
 using namespace render;
 
+enum class DrawType { TRIANGLES, LINES, LINE_STRIP };
 class Mesh {
 public:
   std::vector<Vertex> vertices;
@@ -17,7 +18,7 @@ public:
        std::vector<std::shared_ptr<Texture>> textures);
   ~Mesh();
 
-  void draw(Shader &shader);
+  void draw(Shader &shader, DrawType type = DrawType::TRIANGLES);
 
   // Getters
   inline size_t getVertexCount() const { return vertices.size(); }

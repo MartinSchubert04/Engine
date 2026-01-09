@@ -53,6 +53,12 @@ set(IMGUI_SOURCES
     include/imgui/imgui_widgets.cpp
     include/imgui/imgui_impl_glfw.cpp
     include/imgui/imgui_impl_opengl3.cpp
+
+    include/imguizmo/GraphEditor.cpp
+    include/imguizmo/ImCurveEdit.cpp
+    include/imguizmo/ImGradient.cpp
+    include/imguizmo/ImGuizmo.cpp
+    include/imguizmo/ImSequencer.cpp
 )
 
 set(SOURCES
@@ -67,11 +73,12 @@ set(SOURCES
     src/Core/renderer/Buffers/VertexArray.cpp
     src/Core/renderer/Buffers/IndexBuffer.cpp
 
-    src/Core/elements/Camera.cpp
+    src/Core/elements/CameraFPS.cpp
     src/Core/elements/Mesh.cpp
     src/Core/elements/Model.cpp
     src/Core/elements/Shader.cpp
     src/Core/elements/Texture.cpp
+    src/Core/elements/Log.cpp
     
     src/Core/ui/Scene.cpp
     src/Core/ui/Panel.cpp
@@ -79,9 +86,7 @@ set(SOURCES
     src/Sim/Planet.cpp
     src/Sim/System.cpp
     src/Sim/Solver.cpp
-
-
-    src/common.cpp
+    src/Sim/Grid.cpp
 
     include/stb/stb_image.cpp
     ${IMGUI_SOURCES}
@@ -100,6 +105,7 @@ add_executable(${APP}
 # ===============================
 target_include_directories(${APP} PRIVATE
     include
+    include/imgui
     src
     src/Core/
     src/Sim/

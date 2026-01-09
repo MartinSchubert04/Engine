@@ -8,7 +8,7 @@
   if (!(x)) \
     __builtin_trap();
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 #define GLcall(x) \

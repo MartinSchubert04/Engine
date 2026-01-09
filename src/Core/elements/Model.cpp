@@ -21,12 +21,7 @@ void Model::update(Shader *shader) {
 
   glm::mat4 model{1.0f};
 
-  float scale = 1.0f;  // Queremos que mida 1 unidad de alto
-  float factor = scale / mSize.y;
-
-  if (mSize.y >= 20.f || mSize.x >= 20.f || mSize.z >= 20.f) {
-    model = glm::scale(model, glm::vec3(factor));
-  }
+  model = glm::scale(model, size);
 
   shader->setMat4("model", model);
 }
@@ -56,7 +51,7 @@ void Model::loadModel(string path) {
   directory = path.substr(0, path.find_last_of('/'));
 
   processNode(scene->mRootNode, scene);
-  mSize = calculateSize(scene);
+  size = calculateSize(scene);
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene) {
