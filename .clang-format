@@ -3,8 +3,8 @@ Language: Cpp
 
 # === Indentación / cortes de línea ===
 IndentWidth: 2
-ContinuationIndentWidth: 4
-ColumnLimit: 80
+# ContinuationIndentWidth: 4
+ColumnLimit: 120
 
 # === Comentarios (NO tocarlos) ===
 ReflowComments: true
@@ -36,4 +36,12 @@ UseTab: Never
 TabWidth: 8
 LineEnding: LF
 InsertNewlineAtEOF: true
+
+
+
+ConstructorInitializerIndentWidth: 4
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+AllowAllConstructorInitializersOnNextLine: true
+# Pone la coma al principio de la línea
+BreakConstructorInitializers: AfterColon
 ...

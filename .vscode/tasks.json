@@ -11,7 +11,7 @@
         "-I${workspaceFolder}/include",
         "-I${workspaceFolder}/resources",
         "-I${workspaceFolder}/src",
-        "-L${workspaceFolder}/lib",
+        "-L${workspaceFolder}/Engine/lib",
         "${file}",
         "${workspaceFolder}/src/glad.c",
         "-lglfw3dll",

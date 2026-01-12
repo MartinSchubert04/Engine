@@ -13,13 +13,13 @@ REM ================================
 REM Detectar modo
 REM ================================
 if /I "%~1"=="debug" (
-    echo [INFO] Debug mode enabled
+    echo [BUILD INFO] Debug mode enabled
     set BUILD_TYPE=Debug
     call :check_gdb
 )
 
 if /I "%~1"=="rebuild" (
-    echo [INFO] Rebuild mode enabled
+    echo [BUILD INFO] Rebuild mode enabled
     if exist build rd /s /q build
 )
 
@@ -27,14 +27,14 @@ REM ================================
 REM Verificar Ninja
 REM ================================
 where ninja >nul 2>nul || (
-    echo [INFO] Ninja not found. Installing...
+    echo [BUILD INFO] Ninja not found. Installing...
     winget install Ninja-build.Ninja -e --source winget || exit /b 1
 )
 
 REM ================================
 REM Configurar y compilar
 REM ================================
-echo [INFO] Configuring and Building (%BUILD_TYPE%)...
+echo [BUILD INFO] Configuring and Building (%BUILD_TYPE%)...
 
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=%BUILD_TYPE% || exit /b 1
 cmake --build build || exit /b 1
@@ -44,12 +44,12 @@ REM Ejecutar y limpiar (Release)
 REM ================================
 if "%BUILD_TYPE%"=="Release" (
     if exist openGL.exe (
-        echo [INFO] Running application...
+        echo [BUILD INFO] Executing...
         .\openGL.exe
         del /f openGL.exe
-        echo [SUCCESS] Executable removed.
+        echo [BUILD SUCCESS] Executable removed.
     ) else (
-        echo [ERROR] openGL.exe not found.
+        echo [BUILD ERROR] .exe not found.
     )
 )
 
