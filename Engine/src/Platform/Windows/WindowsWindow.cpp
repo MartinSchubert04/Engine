@@ -39,6 +39,7 @@ void WindowsWindow::init(const WindowProps &props) {
 
     mWindow = glfwCreateWindow(props._width, props._height, props._title.c_str(), nullptr, nullptr);
     ++s_GLFWWindowCOunt;
+    CORE_ASSERT(mWindow, "Failed to create window context");
   }
 
   glfwMakeContextCurrent(mWindow);

@@ -47,3 +47,6 @@ constexpr Ref<T> createRef(Args &&...args) {
 }
 
 }  // namespace Engine
+
+#include "Core/Log.h"
+#include "Core/Assert.h"

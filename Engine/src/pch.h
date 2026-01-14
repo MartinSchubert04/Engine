@@ -3,11 +3,12 @@
 #include "Core/PlataformDetection.h"
 
 #ifdef PLATAFORM_WINDOWS
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
+  #ifndef NOMINMAX
+    #define NOMINMAX
+  #endif
 #endif
 #include "Core/Base.h"
+#include "Core/Log.h"
 
 // Std includes
 #include <iostream>
@@ -42,7 +43,7 @@
 #include "utils/Error.h"
 
 #ifdef PLATAFORM_WINDOWS
-#include <Windows.h>
+  #include <Windows.h>
 #endif
 
 #define BLACK glm::vec3(0, 0, 0)

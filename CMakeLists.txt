@@ -39,11 +39,14 @@ else()
     FetchContent_MakeAvailable(glfw)
 endif()
 
+add_compile_options(-fdiagnostics-color=always)
+
+
 # ===============================
 # Sources
 # ===============================
 set(SOURCE_FILE
-    Engine/src/main.cpp
+    Sim/src/SandBox.cpp
 )
 
 set(IMGUI_SOURCES
@@ -63,7 +66,6 @@ set(IMGUI_SOURCES
 
 set(SOURCES
     Engine/include/glad/glad.c
-    Engine/src/Application.cpp
     Engine/src/Engine/window/GLwindow.cpp
 
     Engine/src/Engine/Renderer/GLrenderer.cpp
@@ -73,6 +75,8 @@ set(SOURCES
     Engine/src/Engine/Renderer/VertexArray.cpp
     Engine/src/Engine/Renderer/IndexBuffer.cpp
 
+    Engine/src/Engine/Core/Application.cpp
+    Engine/src/Engine/Core/Window.cpp
     Engine/src/Engine/Core/CameraFPS.cpp
     Engine/src/Engine/Core/Mesh.cpp
     Engine/src/Engine/Core/Model.cpp
@@ -82,6 +86,8 @@ set(SOURCES
     
     Engine/src/Engine/ui/Scene.cpp
     Engine/src/Engine/ui/Panel.cpp
+    
+    Engine/src/Platform/Windows/WindowsWindow.cpp
 
     Sim/src/Planet.cpp
     Sim/src/System.cpp

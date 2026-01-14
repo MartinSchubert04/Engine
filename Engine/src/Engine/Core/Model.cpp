@@ -3,7 +3,7 @@
 #include "pch.h"
 #include "renderer/Render.h"
 
-Model::Model(string path) {
+Model::Model(std::string path) {
   loadModel(path);
 }
 
@@ -26,7 +26,7 @@ void Model::update(Shader *shader) {
   shader->setMat4("model", model);
 }
 
-void Model::loadModel(string path) {
+void Model::loadModel(std::string path) {
   Assimp::Importer import;
 
   const uint32_t cMeshImportFlags = aiProcess_CalcTangentSpace | aiProcess_Triangulate | aiProcess_SortByPType |
@@ -38,7 +38,7 @@ void Model::loadModel(string path) {
   const aiScene *scene = import.ReadFile(path, cMeshImportFlags);
 
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-    cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
+    std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
     return;
   }
 
@@ -64,10 +64,10 @@ void Model::processNode(aiNode *node, const aiScene *scene) {
   }
 }
 
-unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
-  vector<Vertex> vertices;
-  vector<unsigned int> indices;
-  vector<shared_ptr<Texture>> textures;
+std::unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
+  std::vector<Vertex> vertices;
+  std::vector<unsigned int> indices;
+  std::vector<std::shared_ptr<Texture>> textures;
 
   for (unsigned int i{0}; i < mesh->mNumVertices; i++) {
     Vertex vertex;
@@ -128,14 +128,15 @@ unique_ptr<Mesh> Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   return make_unique<Mesh>(vertices, indices, textures);
 }
 
-vector<shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName) {
+std::vector<std::shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type,
+                                                                  std::string typeName) {
 
-  vector<shared_ptr<Texture>> textures;
+  std::vector<std::shared_ptr<Texture>> textures;
   for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
     aiString filename;
     mat->GetTexture(type, i, &filename);
 
-    string path = directory + "/" + string(filename.C_Str());
+    std::string path = directory + "/" + std::string(filename.C_Str());
 
     bool skip = false;
     for (unsigned int j = 0; j < texturesLoaded.size(); j++) {

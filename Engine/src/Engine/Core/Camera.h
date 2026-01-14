@@ -10,11 +10,11 @@ class Camera {
 public:
   float speed = 70.0f;
 
-  Camera(const glm::vec3 &position, float fov, float aspect, float near, float far) {
+  Camera(const glm::vec3 &position, float fov, float aspect, float nearPlane, float farPlane) {
     mPosition = position;
     mAspect = aspect;
-    mNear = near;
-    mFar = far;
+    mNear = nearPlane;
+    mFar = farPlane;
     mFOV = fov;
 
     setAspect(mAspect);

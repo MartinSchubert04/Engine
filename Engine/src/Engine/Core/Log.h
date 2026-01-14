@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Base.h"
 #include "spdlog/spdlog.h"
 #include "pch.h"
 

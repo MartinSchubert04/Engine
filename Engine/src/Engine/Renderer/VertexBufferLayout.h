@@ -19,7 +19,7 @@ struct VertexBufferElement {
       return 1;
     }
 
-    ASSERT(false);
+    CORE_ASSERT(false);
     return 0;
   }
 };

@@ -1,5 +1,5 @@
 #include "Core/Window.h"
-#include "GLFW/glfw3.h"
+#include "pch.h"
 
 namespace Engine {
 
@@ -11,11 +11,11 @@ public:
 
   void onUpdate() override;
 
-  uint32_t getWidth() const override;
-  uint32_t getHeight() const override;
+  uint32_t getWidth() const override { return mData.width; };
+  uint32_t getHeight() const override { return mData.height; };
 
   // Window attributes
-  void setEventCallback(const EventCallbackFn &callback) override;
+  void setEventCallback(const EventCallbackFn &callback) override { mData.EventCallback = callback; };
   void setVSync(bool enabled) override;
   bool isVSync() const override { return mData.vsync; };
 
