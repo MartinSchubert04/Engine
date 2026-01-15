@@ -9,9 +9,8 @@ public:
 
 int main() {
   Engine::Log::init();
-  E_INFO("INIT");
   auto app = Engine::createApplication();
-  E_INFO("App creada");
+  E_INFO("App created");
   app->run();
   delete app;
 }

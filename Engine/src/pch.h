@@ -7,6 +7,11 @@
     #define NOMINMAX
   #endif
 #endif
+
+#ifndef SPDLOG_HEADER_ONLY
+  #define SPDLOG_HEADER_ONLY
+#endif
+
 #include "Core/Base.h"
 #include "Core/Log.h"
 

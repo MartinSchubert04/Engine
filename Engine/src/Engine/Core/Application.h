@@ -14,6 +14,7 @@ public:
   virtual ~Application();
 
   void run();
+  void onEvent(Event &e);
 
 private:
   Scope<Window> mWindow;  // only this class owns it

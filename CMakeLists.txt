@@ -66,6 +66,8 @@ set(IMGUI_SOURCES
 
 set(SOURCES
     Engine/include/glad/glad.c
+    Engine/src/pch.cpp
+    
     Engine/src/Engine/window/GLwindow.cpp
 
     Engine/src/Engine/Renderer/GLrenderer.cpp

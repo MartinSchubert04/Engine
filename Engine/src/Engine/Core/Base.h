@@ -28,7 +28,11 @@
 #define EXPAND_MACRO(x) x
 #define STRINGIFY_MACRO(x) #x
 
+/*
 #define BIND_FN(fn) [this](auto &&...args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
+*/
+
+#define BIND_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 namespace Engine {
 
