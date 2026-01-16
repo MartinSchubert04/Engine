@@ -50,18 +50,7 @@ set(SOURCE_FILE
 )
 
 set(IMGUI_SOURCES
-    Engine/include/imgui/imgui.cpp
-    Engine/include/imgui/imgui_draw.cpp
-    Engine/include/imgui/imgui_tables.cpp
-    Engine/include/imgui/imgui_widgets.cpp
-    Engine/include/imgui/imgui_impl_glfw.cpp
-    Engine/include/imgui/imgui_impl_opengl3.cpp
-
-    Engine/include/imguizmo/GraphEditor.cpp
-    Engine/include/imguizmo/ImCurveEdit.cpp
-    Engine/include/imguizmo/ImGradient.cpp
-    Engine/include/imguizmo/ImGuizmo.cpp
-    Engine/include/imguizmo/ImSequencer.cpp
+    Engine/src/Engine/ImGui/ImGuiBuild.cpp
 )
 
 set(SOURCES
@@ -85,6 +74,10 @@ set(SOURCES
     Engine/src/Engine/Core/Shader.cpp
     Engine/src/Engine/Core/Texture.cpp
     Engine/src/Engine/Core/Log.cpp
+    Engine/src/Engine/Core/LayerStack.cpp
+    Engine/src/Engine/Core/Layer.cpp
+    
+    Engine/src/Engine/ImGui/ImGuiLayer.cpp
     
     Engine/src/Engine/ui/Scene.cpp
     Engine/src/Engine/ui/Panel.cpp
@@ -113,10 +106,11 @@ add_executable(${APP}
 # ===============================
 target_include_directories(${APP} PRIVATE
     ${PROJECT_SOURCE_DIR}
-    Engine/include
+    Engine/include/
     Engine/include/imgui
-    Engine/src
+    Engine/src/
     Engine/src/Engine/
+    Engine/src/Editor/
     Sim/Assets/
 )
 
