@@ -1,5 +1,7 @@
-#include "pch.h"
+#pragma once
 
+#include "pch.h"
+#include "Events/Event.h"
 namespace Engine {
 
 class Layer {
@@ -13,9 +15,8 @@ public:
 
   virtual void onAttach() {};
   virtual void onDetach() {};
-  virtual void onUpdate(double dt) {};
-  // requieres event system implementation
-  // virtual void  OnEvent(Event& event) {};
+  virtual void onUpdate() {};
+  virtual void onEvent(Event &event) {};
 
   inline const std::string &getName() { return mDebugName; }
 };

@@ -71,6 +71,7 @@ public:
 
 class MouseButtonReleasedEvent : public MouseButtonEvent {
 
+public:
   MouseButtonReleasedEvent(const MouseCode button) : MouseButtonEvent(button) {}
 
   std::string toString() const override {

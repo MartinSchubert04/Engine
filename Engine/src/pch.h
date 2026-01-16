@@ -3,11 +3,17 @@
 #include "Core/PlataformDetection.h"
 
 #ifdef PLATAFORM_WINDOWS
-#ifndef NOMINMAX
-#define NOMINMAX
+  #ifndef NOMINMAX
+    #define NOMINMAX
+  #endif
 #endif
+
+#ifndef SPDLOG_HEADER_ONLY
+  #define SPDLOG_HEADER_ONLY
 #endif
+
 #include "Core/Base.h"
+#include "Core/Log.h"
 
 // Std includes
 #include <iostream>
@@ -32,6 +38,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+#ifndef IMGUI_IMPL_OPENGL_LOADER_GLAD
+  #define IMGUI_IMPL_OPENGL_LOADER_GLAD
+#endif
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -42,7 +53,7 @@
 #include "utils/Error.h"
 
 #ifdef PLATAFORM_WINDOWS
-#include <Windows.h>
+  #include <Windows.h>
 #endif
 
 #define BLACK glm::vec3(0, 0, 0)

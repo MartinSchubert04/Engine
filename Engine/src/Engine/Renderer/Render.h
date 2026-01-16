@@ -4,19 +4,19 @@
 #include "Core/Vertex.h"
 #include <vector>
 
-#define ASSERT(x) \
-  if (!(x)) \
-    __builtin_trap();
+// #define CORE_CORE_ASSERT(x) \
+//   if (!(x)) \
+//     __builtin_trap();
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
-#define GLcall(x) \
-  GLClearError(); \
-  x; \
-  ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+  #define GLcall(x) \
+    GLClearError(); \
+    x; \
+    CORE_ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 #else
-#define GLcall(x) x
+  #define GLcall(x) x
 #endif
 
 namespace render {
