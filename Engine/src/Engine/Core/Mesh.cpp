@@ -27,10 +27,10 @@ void Mesh::setupMesh() {
   ib->bind();
 
   Engine::BufferLayout layout = {
-      {Engine::Types::ShaderDataType::float3, "a_Pos"},
+      {Engine::Types::ShaderDataType::float3, "aPos"},
       // {Engine::Types::ShaderDataType::float3, "a_Normal"},
       // {Engine::Types::ShaderDataType::float2, "a_TextCoords"},
-      {Engine::Types::ShaderDataType::float4, "a_Color"},
+      {Engine::Types::ShaderDataType::float4, "aColor"},
   };
   vb->setLayout(layout);
 

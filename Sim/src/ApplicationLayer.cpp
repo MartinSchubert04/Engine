@@ -5,55 +5,17 @@
 #include "Renderer/Buffer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/VertexArray.h"
+#include "glm/detail/qualifier.hpp"
 #include "pch.h"
 #include <vector>
 
 ApplicationLayer::ApplicationLayer() : Layer("App layer") {
 
-  // vertexArray = Engine::VertexArray::create();
-  // std::vector<glm::vec3> positions = {{-0.5f, -0.5f, 0.0f}, {0.5f, -0.5, 0.0f}, {0.0f, 0.5f, 0.0f}};
-  // std::vector<glm::vec4> colors = {{1.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}};
-  // std::vector<Vertex> vertices;
+  mSkybox.loadCubeMap(std::vector<std::string>({"Sim/Assets/textures/px.jpg", "Sim/Assets/textures/nx.jpg",
+                                                "Sim/Assets/textures/py.jpg", "Sim/Assets/textures/ny.jpg",
+                                                "Sim/Assets/textures/pz.jpg", "Sim/Assets/textures/nz.jpg"}));
 
-  // for (unsigned int i{0}; i < 3; i++) {
-  //   Vertex v;
-  //   v.position = positions[i];
-  //   v.color = colors[i];
-
-  //   vertices.push_back(v);
-  // }
-
-  // vertexBuffer = Engine::VertexBuffer::create(vertices);
-
-  // // fill layout with buffer elements then gets added to vertex array
-  // Engine::BufferLayout layout = {
-  //     {Engine::Types::ShaderDataType::float3, "a_Pos"},
-  //     {Engine::Types::ShaderDataType::float4, "a_Color"},
-  // };
-
-  // vertexBuffer->setLayout(layout);
-  // vertexArray->addVertexBuffer(vertexBuffer);
-
-  // std::vector<uint32_t> indices = {0, 1, 2};
-  // indexBuffer = Engine::IndexBuffer::create(indices);
-
-  // vertexArray->setIndexBuffer(indexBuffer);
-
-  //------------------------------------------------------------------------------------------------------------------------
-
-  mSkybox.loadCubeMap(std::vector<std::string>({"Sim/Assets/textures/skybox.png", "Sim/Assets/textures/skybox.png",
-                                                "Sim/Assets/textures/skybox.png", "Sim/Assets/textures/skybox.png",
-                                                "Sim/Assets/textures/skybox.png", "Sim/Assets/textures/skybox.png"}));
-
-  mSkyboxVAO = Engine::VertexArray::create();
-  Engine::Ref<Engine::VertexBuffer> skyboxVBO = Engine::VertexBuffer::create(mSkybox.getVertices());
-  Engine::Ref<Engine::IndexBuffer> skyboxIBO = Engine::IndexBuffer::create(mSkybox.getIndices());
-
-  Engine::BufferLayout skyboxLayout = {{Engine::Types::ShaderDataType::float3, "aPos"}};
-
-  skyboxVBO->setLayout(skyboxLayout);
-  mSkyboxVAO->addVertexBuffer(skyboxVBO);
-  mSkyboxVAO->setIndexBuffer(skyboxIBO);
+  mSphere = Planet(1, glm::vec2(12, 12), glm::vec3(0, 0, 0), 1);
 
   mShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/triangle.vs", "Sim/Assets/shaders/triangle.fs");
   mSkyboxShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");
@@ -69,24 +31,19 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   Engine::Renderer::beginScene();
   glEnable(GL_DEPTH_TEST);
 
-  mCamera->update(mShader.get());
-  mCamera->update(mSkyboxShader.get());
-
-  mShader->bind();
-
-  // Planet sphere(1, glm::vec2(12, 12), glm::vec3(0, 0, 0), 1);
-  // sphere.draw(mShader);
-
+  // mCamera->update(mShader.get());
+  // mShader->bind();
+  // mSphere.draw(mShader);
   // Engine::Transform transform;
   // transform.setModel(mShader);
 
-  glDepthMask(GL_FALSE);
+  glDepthFunc(GL_LEQUAL);
+  mCamera->update(mSkyboxShader.get());
   mSkyboxShader->bind();
-  mSkyboxVAO->bind();
-  mSkybox.bind();
-  glDrawArrays(GL_TRIANGLES, 0, 36);
-
-  glDepthMask(GL_TRUE);
+  mSkyboxShader->setInt("skybox", 0);
+  mSkyboxShader->setMat4("view", glm::mat4(glm::mat3(mCamera->getViewMatrix())));
+  mSkybox.draw();
+  glDepthFunc(GL_LESS);
 
   // Engine::Renderer::submit(vertexArray);
 

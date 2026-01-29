@@ -15,6 +15,7 @@ public:
   glm::vec3 speed;
   glm::vec3 acceleration;
 
+  Planet() = default;
   Planet(float radius, glm::vec2 segments, glm::vec3 position, float mass = 0);
 
   void draw(Ref<Shader> shader) override;

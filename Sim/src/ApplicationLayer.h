@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/DeltaTime.h"
 #include <Engine.h>
-
+#include "Planet.h"
 class ApplicationLayer : public Engine::Layer {
 
 public:
@@ -20,12 +20,13 @@ private:
   Engine::Ref<Engine::Shader> mShader;
   Engine::Ref<Engine::Shader> mSkyboxShader;
   Engine::Skybox mSkybox;
-  Engine::Ref<Engine::VertexArray> mSkyboxVAO;
 
   Engine::Ref<Engine::VertexArray> vertexArray;
   Engine::Ref<Engine::VertexBuffer> vertexBuffer;
   Engine::Ref<Engine::IndexBuffer> indexBuffer;
   Engine::Scope<Engine::Camera> mCamera;
+
+  Planet mSphere;
 
   Engine::DeltaTime mDeltaTime;
 };

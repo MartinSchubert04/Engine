@@ -1,8 +1,9 @@
 #pragma once
+#include "Core/Base.h"
 #include "Core/Vertex.h"
+#include "Renderer/Buffer.h"
+#include "Renderer/VertexArray.h"
 #include "pch.h"
-#include <cstdint>
-#include <vector>
 
 namespace Engine {
 
@@ -38,57 +39,79 @@ public:
       mVertices.push_back(v);
     }
 
-    mIndices = {// front
-                0, 1, 3, 1, 2, 3,
-                // back
-                4, 5, 7, 5, 6, 7,
-                // right
-                0, 1, 4, 1, 4, 5,
-                // left
-                2, 3, 7, 2, 6, 7,
-                // top
-                0, 3, 4, 3, 4, 7,
-                // bottom
-                1, 2, 5, 2, 5, 6};
+    mVAO = VertexArray::create();
+    mVBO = VertexBuffer::create(mVertices);
+
+    Engine::BufferLayout layout = {
+        {Engine::Types::ShaderDataType::float3, "aPos"},
+        {Engine::Types::ShaderDataType::float4, "aColor"},
+    };
+
+    mVBO->setLayout(layout);
+    mVAO->addVertexBuffer(mVBO);
   };
 
   void loadCubeMap(std::vector<std::string> faces) {
-
     mFaces = faces;
 
     glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
-    int width, height, nrChannels;
+    int width, height, nrComponents;
     unsigned char *data;
     for (uint32_t i{0}; i < mFaces.size(); i++) {
-      data = stbi_load(mFaces[i].c_str(), &width, &height, &nrChannels, 0);
+      mFaces = faces;
+      glGenTextures(1, &textureID);
+      glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);  // <--- DEBE SER CUBE_MAP
 
-      if (data) {
+      int width, height, nrComponents;
+      for (uint32_t i = 0; i < mFaces.size(); i++) {
+        unsigned char *data = stbi_load(mFaces[i].c_str(), &width, &height, &nrComponents, 0);
+        if (data) {
 
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-      } else {
-        CORE_ERROR("Cubemap error loading texture - Path: {0}", faces[i]);
+          GLenum format;
+          if (nrComponents == 1)
+            format = GL_RED;
+          else if (nrComponents == 3)
+            format = GL_RGB;
+          else if (nrComponents == 4)
+            format = GL_RGBA;
+
+          glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+          glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+          stbi_image_free(data);
+        } else {
+          CORE_ERROR("Error loading: {0}", mFaces[i]);
+        }
       }
-    }
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+      // Parámetros obligatorios para Cubemaps
+      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    }
   }
 
   void bind() { glBindTexture(GL_TEXTURE_CUBE_MAP, textureID); }
 
+  void draw() {
+    mVAO->bind();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+  }
+
   std::vector<Vertex> &getVertices() { return mVertices; }
-  std::vector<unsigned int> &getIndices() { return mIndices; }
 
 private:
   uint32_t textureID;
   std::vector<std::string> mFaces;
   std::vector<Vertex> mVertices;
-  std::vector<unsigned int> mIndices;
+
+  Ref<VertexBuffer> mVBO;
+  Ref<VertexArray> mVAO;
 };
 
 }  // namespace Engine
