@@ -7,6 +7,7 @@
 #include "Engine/Core/Layer.h"
 #include "Engine/Core/DeltaTime.h"
 #include "Engine/Core/Vertex.h"
+#include "Engine/Core/Skybox.h"
 
 #include "Engine/Events/MouseCodes.h"
 #include "Engine/Events/KeyCodes.h"

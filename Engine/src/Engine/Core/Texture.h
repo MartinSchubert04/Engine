@@ -2,6 +2,8 @@
 
 #include "pch.h"
 
+namespace Engine {
+
 class Texture {
 private:
   std::string mFilepath;
@@ -26,3 +28,5 @@ public:
   inline void setType(std::string type) { mType = type; };
   inline bool isValid() const { return mID != 0; }
 };
+
+}  // namespace Engine

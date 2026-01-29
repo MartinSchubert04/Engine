@@ -1,4 +1,5 @@
 #pragma once
+#include "Core/DeltaTime.h"
 #include <Engine.h>
 
 class ApplicationLayer : public Engine::Layer {
@@ -17,8 +18,14 @@ private:
 
 private:
   Engine::Ref<Engine::Shader> mShader;
+  Engine::Ref<Engine::Shader> mSkyboxShader;
+  Engine::Skybox mSkybox;
+  Engine::Ref<Engine::VertexArray> mSkyboxVAO;
+
   Engine::Ref<Engine::VertexArray> vertexArray;
   Engine::Ref<Engine::VertexBuffer> vertexBuffer;
   Engine::Ref<Engine::IndexBuffer> indexBuffer;
   Engine::Scope<Engine::Camera> mCamera;
+
+  Engine::DeltaTime mDeltaTime;
 };

@@ -15,6 +15,8 @@ public:
 
   void setModel(Ref<Shader> shader, std::string name = "model") { shader->setMat4(name, mModel); }
 
+  void reset() { mModel = glm::mat4(1.0f); }
+
 private:
   glm::mat4 mModel;
 };

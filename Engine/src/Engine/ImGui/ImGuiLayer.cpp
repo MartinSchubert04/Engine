@@ -124,9 +124,21 @@ void ImGuiLayer::onImGuiRender() {
   ImGui::End();
   // end of Root docking env, all ImGui widget must go under this code
 
-  bool show = true;
+  static float timeAccum = 0.0f;
+  static int frameCount = 0;
+  static int fps = 0;
 
-  ImGui::ShowDemoWindow(&show);
+  timeAccum += io.DeltaTime;
+  frameCount++;
+
+  if (timeAccum >= 1.0f) {
+    fps = frameCount;
+    frameCount = 0;
+    timeAccum -= 1.0f;  // o = 0.0f
+  }
+  ImGui::Begin("Scene");
+  ImGui::Text("FPS: %d", fps);
+  ImGui::End();
 }
 
 }  // namespace Engine

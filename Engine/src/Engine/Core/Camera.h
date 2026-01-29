@@ -11,7 +11,7 @@
 namespace Engine {
 class Camera {
 public:
-  float speed = 70.0f;
+  float speed = 200.0f;
 
   Camera(const glm::vec3 &position, float fov, float aspect, float nearPlane, float farPlane) {
     mPosition = position;

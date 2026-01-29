@@ -1,6 +1,8 @@
 #include "Texture.h"
+#include "Core/Log.h"
 #include "pch.h"
-#include "imgui/imgui_internal.h"
+
+namespace Engine {
 
 Texture::Texture(std::string path) : mFilepath(path), mLocalBuff(nullptr), mWidth(0), mHeight(0), mBPP(0) {
 
@@ -24,7 +26,7 @@ Texture::Texture(std::string path) : mFilepath(path), mLocalBuff(nullptr), mWidt
 
     stbi_image_free(mLocalBuff);
   } else {
-    std::cout << "Texture failed to load at path: " << path << std::endl;
+    CORE_ERROR("Texture failed to load at path: {0}", path);
   }
 }
 
@@ -43,3 +45,5 @@ void Texture::bind(unsigned int slot) const {
 void Texture::unbind() const {
   glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+}  // namespace Engine
