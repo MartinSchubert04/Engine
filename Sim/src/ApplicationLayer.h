@@ -1,6 +1,8 @@
 #pragma once
+#include "Core/Base.h"
 #include "Core/DeltaTime.h"
 #include <Engine.h>
+#include "Core/Light.h"
 #include "Planet.h"
 class ApplicationLayer : public Engine::Layer {
 
@@ -25,7 +27,7 @@ private:
   Engine::Ref<Engine::VertexBuffer> vertexBuffer;
   Engine::Ref<Engine::IndexBuffer> indexBuffer;
   Engine::Scope<Engine::Camera> mCamera;
-  // Engine::Scope<Engine::CameraFPS> mCamera;
+  Engine::Ref<Engine::Light> mLight;
 
   Planet mSphere;
 

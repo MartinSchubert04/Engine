@@ -1,4 +1,6 @@
 #include "ApplicationLayer.h"
+#include "Core/Application.h"
+#include "Core/Base.h"
 #include "Core/DeltaTime.h"
 #include "Core/Log.h"
 #include "Events/ApplicationEvent.h"
@@ -16,14 +18,16 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
                                                 "Sim/Assets/textures/py.jpg", "Sim/Assets/textures/ny.jpg",
                                                 "Sim/Assets/textures/pz.jpg", "Sim/Assets/textures/nz.jpg"}));
 
-  mSphere = Planet(1, glm::vec2(12, 12), glm::vec3(0, 0, 0), 1);
+  mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
 
-  mShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/triangle.vs", "Sim/Assets/shaders/triangle.fs");
+  mShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/model.vs", "Sim/Assets/shaders/model.fs");
   mSkyboxShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");
   mSkyboxShader->setInt("skybox", 0);
 
-  mCamera = Engine::createScope<Engine::Camera>(glm::vec3(0, 0, 1), 45.0f, 1.3f, 0.1f, 1000);
-  // mCamera = Engine::createScope<Engine::CameraFPS>(glm::vec3(0, 0, 5));
+  float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();
+
+  mCamera = Engine::createScope<Engine::Camera>(glm::vec3(0, 0, 1), 45.0f, aspect, 0.1f, 1000);
+  mLight = Engine::createRef<Engine::Light>();
 }
 
 void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
@@ -37,6 +41,8 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
   mShader->bind();
   mCamera->update(mShader.get());
+
+  mLight->update(mShader.get());
   mSphere.draw(mShader);
 
   glDepthFunc(GL_LEQUAL);
@@ -47,8 +53,6 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   mSkybox.draw();
   glDepthFunc(GL_LESS);
 
-  // Engine::Renderer::submit(vertexArray);
-
   Engine::Renderer::endScene();
 }
 
@@ -58,7 +62,7 @@ void ApplicationLayer::onEvent(Engine::Event &e) {
 
   dispatcher.dispatch<Engine::KeyPressedEvent>(BIND_FN(ApplicationLayer::onKeyPressedEvent));
   dispatcher.dispatch<Engine::MouseMovedEvent>(BIND_FN(ApplicationLayer::onMouseMoved));
-  // dispatcher.dispatch<Engine::WindowResizeEvent>(BIND_FN(ApplicationLayer::onWindowResize));
+  dispatcher.dispatch<Engine::WindowResizeEvent>(BIND_FN(ApplicationLayer::onWindowResize));
 }
 
 bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
@@ -71,26 +75,21 @@ bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
   if (event.getKeyCode() == Engine::Key::S) {
     mCamera->onMouseWheel(mCamera->speed * mDeltaTime.getSeconds());
   }
-  // if (event.getKeyCode() == Engine::Key::D) {
-  //   mCamera->Position.x += mCamera->MovementSpeed * mDeltaTime.getSeconds();
-  // }
-  // if (event.getKeyCode() == Engine::Key::A) {
-  //   mCamera->Position.x -= mCamera->MovementSpeed * mDeltaTime.getSeconds();
-  // }
 
   return false;
 }
 
 bool ApplicationLayer::onMouseMoved(Engine::MouseMovedEvent &event) {
-  // if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonRight)) {
-  //   mCamera->onMouseMove(event.getX(), event.getY(), Engine::Mouse::ButtonRight);
-  // }
+  if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonRight)) {
+    mCamera->onMouseMove(event.getX(), event.getY(), Engine::Mouse::ButtonRight);
+  }
 
   return false;
 }
 
-bool ApplicationLayer::onWindowResize(WindowResizeEvent &e) {
-  mCamera->setAspect((float)e.getWidth() / (float)e.getHeight());
+bool ApplicationLayer::onWindowResize(WindowResizeEvent &event) {
+  mCamera->setAspect((float)event.getWidth() / (float)event.getHeight());
+
   return false;
 }
 

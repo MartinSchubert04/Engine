@@ -2,8 +2,9 @@
 
 #include "pch.h"
 
-#include "Shader.h"
+#include "Renderer/Shader.h"
 
+namespace Engine {
 class Light {
 public:
   Light() {
@@ -26,3 +27,5 @@ public:
   glm::vec3 color;
   float strength;
 };
+
+}  // namespace Engine

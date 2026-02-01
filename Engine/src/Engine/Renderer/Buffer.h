@@ -119,6 +119,7 @@ public:
   virtual const BufferLayout &getLayout() const = 0;
 
   static Ref<VertexBuffer> create(std::vector<Vertex> vertices);
+  static Ref<VertexBuffer> create(std::vector<float> vertices);
 };
 
 class IndexBuffer {

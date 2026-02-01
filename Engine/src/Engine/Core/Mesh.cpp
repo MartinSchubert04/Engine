@@ -27,11 +27,11 @@ void Mesh::setupMesh() {
   ib->bind();
 
   Engine::BufferLayout layout = {
-      {Engine::Types::ShaderDataType::float3, "aPos"},
-      // {Engine::Types::ShaderDataType::float3, "a_Normal"},
-      // {Engine::Types::ShaderDataType::float2, "a_TextCoords"},
-      {Engine::Types::ShaderDataType::float4, "aColor"},
+      {Engine::Types::ShaderDataType::float3, "aPos"},       {Engine::Types::ShaderDataType::float3, "aNormal"},
+      {Engine::Types::ShaderDataType::float2, "aTexCoords"}, {Engine::Types::ShaderDataType::float4, "aColor"},
+      {Engine::Types::ShaderDataType::float1, "UseTexture"},
   };
+
   vb->setLayout(layout);
 
   va->addVertexBuffer(vb);

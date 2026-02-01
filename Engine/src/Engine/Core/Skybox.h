@@ -14,43 +14,45 @@ class Skybox {
 public:
   Skybox() {
 
-    std::vector<glm::vec3> vertices = {// positions
-                                       {-1.0f, 1.0f, -1.0f},  {-1.0f, -1.0f, -1.0f}, {1.0f, -1.0f, -1.0f},
-                                       {1.0f, -1.0f, -1.0f},  {1.0f, 1.0f, -1.0f},   {-1.0f, 1.0f, -1.0f},
+    mVertices = {// positions
+                 -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
+                 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
 
-                                       {-1.0f, -1.0f, 1.0f},  {-1.0f, -1.0f, -1.0f}, {-1.0f, 1.0f, -1.0f},
-                                       {-1.0f, 1.0f, -1.0f},  {-1.0f, 1.0f, 1.0f},   {-1.0f, -1.0f, 1.0f},
+                 -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f,
+                 -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,
 
-                                       {1.0f, -1.0f, -1.0f},  {1.0f, -1.0f, 1.0f},   {1.0f, 1.0f, 1.0f},
-                                       {1.0f, 1.0f, 1.0f},    {1.0f, 1.0f, -1.0f},   {1.0f, -1.0f, -1.0f},
+                 1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f,
 
-                                       {-1.0f, -1.0f, 1.0f},  {-1.0f, 1.0f, 1.0f},   {1.0f, 1.0f, 1.0f},
-                                       {1.0f, 1.0f, 1.0f},    {1.0f, -1.0f, 1.0f},   {-1.0f, -1.0f, 1.0f},
+                 -1.0f, -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f, -1.0f, 1.0f,
 
-                                       {-1.0f, 1.0f, -1.0f},  {1.0f, 1.0f, -1.0f},   {1.0f, 1.0f, 1.0f},
-                                       {1.0f, 1.0f, 1.0f},    {-1.0f, 1.0f, 1.0f},   {-1.0f, 1.0f, -1.0f},
+                 -1.0f, 1.0f,  -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,  -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f,  -1.0f,
 
-                                       {-1.0f, -1.0f, -1.0f}, {-1.0f, -1.0f, 1.0f},  {1.0f, -1.0f, -1.0f},
-                                       {1.0f, -1.0f, -1.0f},  {-1.0f, -1.0f, 1.0f},  {1.0f, -1.0f, 1.0f}};
+                 -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f,
+                 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, 1.0f};
 
-    for (unsigned int i{0}; i < 36; i++) {
-      Vertex v;
-      v.position = vertices[i];
-      v.color = {1.0f, 0.0f, 0.0f, 1.0f};
+    // for (unsigned int i{0}; i < 36; i++) {
+    //   Vertex v;
+    //   v.position = vertices[i];
+    //   v.color = {1.0f, 0.0f, 0.0f, 1.0f};
 
-      mVertices.push_back(v);
-    }
+    //   v.normal = glm::normalize(glm::vec3(0, 0, 0));
+    //   v.texCoords = glm::vec2(0.0f, 0.0f);
 
-    mVAO = VertexArray::create();
-    mVBO = VertexBuffer::create(mVertices);
+    //   mVertices.push_back(v);
+    // }
+
+    vertexArray = VertexArray::create();
+    vertexBuffer = VertexBuffer::create(mVertices);
 
     Engine::BufferLayout layout = {
         {Engine::Types::ShaderDataType::float3, "aPos"},
-        {Engine::Types::ShaderDataType::float4, "aColor"},
     };
 
-    mVBO->setLayout(layout);
-    mVAO->addVertexBuffer(mVBO);
+    vertexBuffer->setLayout(layout);
+    vertexArray->addVertexBuffer(vertexBuffer);
   };
 
   void loadCubeMap(std::vector<std::string> faces) {
@@ -92,18 +94,18 @@ public:
   void draw() {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-    Renderer::submitArrays(mVAO, mVertices.size());
+    Renderer::submitArrays(vertexArray, 36);
   }
 
-  std::vector<Vertex> &getVertices() { return mVertices; }
+  std::vector<float> &getVertices() { return mVertices; }
 
 private:
   uint32_t textureID;
   std::vector<std::string> mFaces;
-  std::vector<Vertex> mVertices;
+  std::vector<float> mVertices;
 
-  Ref<VertexBuffer> mVBO;
-  Ref<VertexArray> mVAO;
+  Ref<VertexBuffer> vertexBuffer;
+  Ref<VertexArray> vertexArray;
 };
 
 }  // namespace Engine

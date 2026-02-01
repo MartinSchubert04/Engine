@@ -7,19 +7,19 @@ struct Vertex {
   Vertex(glm::vec3 pos) { position = pos; };
   Vertex(glm::vec3 pos, glm::vec3 norm) {
     position = pos;
-    // normal = norm;
+    normal = norm;
   };
   Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 textureCoords) {
     position = pos;
-    // normal = norm;
-    // texCoords = textureCoords;
+    normal = norm;
+    texCoords = textureCoords;
   };
 
   glm::vec3 position;
-  // glm::vec3 normal;
-  // glm::vec2 texCoords;
+  glm::vec3 normal;
+  glm::vec2 texCoords;
   glm::vec4 color;
-  // float useDiffuseTexture;
+  float useDiffuseTexture;
 };
 
 struct Point {

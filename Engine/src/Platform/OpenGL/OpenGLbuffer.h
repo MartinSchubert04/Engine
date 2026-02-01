@@ -6,6 +6,7 @@ namespace Engine {
 class OpenGLvertexBuffer : public VertexBuffer {
 public:
   OpenGLvertexBuffer(std::vector<Vertex> vertices);
+  OpenGLvertexBuffer(std::vector<float> vertices);
   ~OpenGLvertexBuffer();
 
   void bind() const override;

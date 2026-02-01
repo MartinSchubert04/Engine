@@ -73,6 +73,7 @@ void Application::onEvent(Event &e) {
   EventDispatcher dispatcher(e);
 
   dispatcher.dispatch<WindowCloseEvent>(BIND_FN(Application::onWindowClose));
+  dispatcher.dispatch<WindowResizeEvent>(BIND_FN(Application::onWindowResize));
 
   if (e.getEventType() != EventType::MouseMoved)
     CORE_TRACE("{0}", e.toString());
@@ -91,7 +92,7 @@ bool Application::onWindowClose(WindowCloseEvent &e) {
 
 bool Application::onWindowResize(WindowResizeEvent &e) {
   glViewport(0, 0, e.getWidth(), e.getHeight());
-  return true;
+  return false;
 }
 
 }  // namespace Engine

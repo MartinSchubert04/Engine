@@ -5,7 +5,7 @@ Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass) :
     radius(radius), segments(segments), position(pos), scaleFactor(1), speed(0.0f), acceleration(0.0f), mass(mass) {
 
   float PI = 3.14159265359f;
-  this->color = glm::vec4(.8, .8, .8, .8);
+  this->color = glm::vec4(.8, .8, .8, 1);
 
   for (int y{0}; y <= segments.y; y++) {
     for (int x{0}; x <= segments.x; x++) {
@@ -21,9 +21,10 @@ Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass) :
       vertex.position = glm::vec3(xPos, yPos, zPos);
 
       // calculate normal
-      // vertex.normal = glm::normalize(glm::vec3(xPos, yPos, zPos));
-      // vertex.texCoords = glm::vec2(0.0f, 0.0f);
+      vertex.normal = glm::normalize(glm::vec3(xPos, yPos, zPos));
+      vertex.texCoords = glm::vec2(0.0f, 0.0f);
       vertex.color = color;
+      vertex.useDiffuseTexture = 0.0f;
 
       vertices.push_back(vertex);
     }
@@ -56,7 +57,7 @@ void Planet::draw(Ref<Shader> shader) {
   transform.translate(position);
   transform.setModel(shader);
 
-  // shader->setVec4("modelColor", color);
+  shader->setVec4("modelColor", color);
 
   mesh->draw(*shader);
 }
