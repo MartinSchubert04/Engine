@@ -11,4 +11,9 @@ void Renderer::submit(const Ref<VertexArray> &vertexArray) {
   RenderCommand::drawIndexed(vertexArray);
 }
 
+void Renderer::submitArrays(const Ref<VertexArray> &vertexArray, uint32_t count) {
+  vertexArray->bind();
+  RenderCommand::drawArrays(vertexArray, count);
+}
+
 }  // namespace Engine

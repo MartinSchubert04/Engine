@@ -10,11 +10,11 @@ public:
   void onUpdate(Engine::DeltaTime dt) override;
   void onEvent(Engine::Event &e) override;
 
+private:
   bool onKeyPressedEvent(Engine::KeyPressedEvent &e);
   bool onMouseMoved(Engine::MouseMovedEvent &event);
-
-private:
-  void close();
+  bool onWindowResize(WindowResizeEvent &ew);
+  void onClose();
 
 private:
   Engine::Ref<Engine::Shader> mShader;
@@ -25,6 +25,7 @@ private:
   Engine::Ref<Engine::VertexBuffer> vertexBuffer;
   Engine::Ref<Engine::IndexBuffer> indexBuffer;
   Engine::Scope<Engine::Camera> mCamera;
+  // Engine::Scope<Engine::CameraFPS> mCamera;
 
   Planet mSphere;
 

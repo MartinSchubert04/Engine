@@ -1,12 +1,15 @@
 
 #include "pch.h"
+#include "Renderer/Shader.h"
+
+namespace Engine {
 
 enum Camera_Movement { FORWARD, BACKWARD, LEFT, RIGHT, UP, DOWN };
 
 // Default camera values
 constexpr float YAW = -90.0f;
 constexpr float PITCH = 0.0f;
-constexpr float SPEED = 2.5f;
+constexpr float SPEED = 200.5f;
 constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM = 45.0f;
 
@@ -35,8 +38,16 @@ public:
 
   CameraFPS(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
+  void update(Shader *shader) {
+    shader->setMat4("view", getViewMatrix());
+    shader->setMat4("projection", getProjection());
+  }
+
+  void setAspect(float aspect) { mProjection = glm::perspective(45.0f, aspect, 0.1f, 1000.0f); }
+
   // // Camera methods
   glm::mat4 getViewMatrix();
+  glm::mat4 getProjection() { return mProjection; }
 
   void processKeyboard(Camera_Movement direction, float deltaTime);
   void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
@@ -44,4 +55,11 @@ public:
 
 private:
   void updateCameraVectors();
+
+private:
+  glm::mat4 mProjection = glm::mat4{1.0f};
+
+  glm::vec3 mPosition;
 };
+
+}  // namespace Engine

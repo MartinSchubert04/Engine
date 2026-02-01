@@ -18,6 +18,7 @@ public:
   virtual void clear() = 0;
 
   virtual void drawIndexed(const Ref<VertexArray> &vertexArray) = 0;
+  virtual void drawArrays(const Ref<VertexArray> &vertexArray, uint32_t count) = 0;
 
   inline static API getAPI() { return s_API; }
 

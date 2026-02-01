@@ -9,6 +9,7 @@ class OpenGLrendererAPI : public RendererAPI {
   void clear() override;
 
   void drawIndexed(const Ref<VertexArray> &vertexArray) override;
+  void drawArrays(const Ref<VertexArray> &vertexArray, uint32_t count) override;
 };
 
 }  // namespace Engine

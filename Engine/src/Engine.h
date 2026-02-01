@@ -2,6 +2,7 @@
 
 #include "Engine/Core/Application.h"
 #include "Engine/Core/Camera.h"
+#include "Engine/Core/CameraFPS.h"
 #include "Engine/Core/Base.h"
 #include "Engine/Core/Input.h"
 #include "Engine/Core/Layer.h"

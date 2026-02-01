@@ -44,8 +44,6 @@ public:
 
   const glm::mat4 &getProjection() const { return mProjection; }
 
-  glm::mat4 getViewProjection() const { return mProjection * getViewProjection(); }
-
   glm::vec3 getUp() const { return getDirection() * cUp; }
 
   glm::vec3 getRight() const { return getDirection() * cRight; }

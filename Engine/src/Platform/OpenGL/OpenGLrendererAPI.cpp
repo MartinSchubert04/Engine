@@ -16,4 +16,8 @@ void OpenGLrendererAPI::drawIndexed(const Ref<VertexArray> &vertexArray) {
   glDrawElements(GL_TRIANGLES, vertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
+void OpenGLrendererAPI::drawArrays(const Ref<VertexArray> &vertexArray, uint32_t count) {
+  glDrawArrays(GL_TRIANGLES, 0, count);
+}
+
 }  // namespace Engine
