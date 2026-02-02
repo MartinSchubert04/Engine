@@ -38,9 +38,9 @@ public:
         glm::vec3 pointOnUnitCube = mLocalUp + (percent.x - .5f) * 2 * mAxisA + (percent.y - .5f) * 2 * mAxisB;
 
         // normalize the point so all vertices are at the same distance from the center
-        glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube);
+        // glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube);
 
-        vertices.push_back(pointOnUnitSphere);
+        vertices.push_back(pointOnUnitCube);
 
         if (x != mResolution - 1 && y != mResolution - 1) {
           indices[triIndex] = i;
