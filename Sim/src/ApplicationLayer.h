@@ -4,6 +4,7 @@
 #include <Engine.h>
 #include "Core/Light.h"
 #include "Planet.h"
+#include "Sphere.h"
 class ApplicationLayer : public Engine::Layer {
 
 public:
@@ -29,7 +30,8 @@ private:
   Engine::Scope<Engine::Camera> mCamera;
   Engine::Ref<Engine::Light> mLight;
 
-  Planet mSphere;
+  // Planet mSphere;
+  Sphere mSphere;
 
   Engine::DeltaTime mDeltaTime;
 };

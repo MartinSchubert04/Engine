@@ -11,6 +11,7 @@
 #include "glm/detail/qualifier.hpp"
 #include "pch.h"
 #include <vector>
+#include "Sphere.h"
 
 ApplicationLayer::ApplicationLayer() : Layer("App layer") {
 
@@ -18,7 +19,8 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
                                                 "Sim/Assets/textures/py.jpg", "Sim/Assets/textures/ny.jpg",
                                                 "Sim/Assets/textures/pz.jpg", "Sim/Assets/textures/nz.jpg"}));
 
-  mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
+  // mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
+  mSphere = Sphere(10);
 
   mShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/model.vs", "Sim/Assets/shaders/model.fs");
   mSkyboxShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");

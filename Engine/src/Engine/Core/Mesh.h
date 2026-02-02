@@ -18,7 +18,8 @@ public:
   std::vector<unsigned int> indices;
   std::vector<Ref<Texture>> textures;
 
-  Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Ref<Texture>> textures);
+  Mesh() = default;
+  Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Ref<Texture>> textures = {});
 
   void draw(Shader &shader, DrawType type = DrawType::TRIANGLES);
 
