@@ -4,7 +4,7 @@
 class SandBox : public Engine::Application {
 
 public:
-  SandBox() { pushLayer(new ApplicationLayer); }
+  SandBox() { pushLayer(new ApplicationLayer()); }
   ~SandBox() {}
 };
 

@@ -1,16 +1,7 @@
 #include "ApplicationLayer.h"
-#include "Core/Application.h"
-#include "Core/Base.h"
-#include "Core/DeltaTime.h"
-#include "Core/Log.h"
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
 #include "Renderer/Buffer.h"
-#include "Renderer/FrameBuffer.h"
-#include "Renderer/Renderer.h"
-#include "Renderer/VertexArray.h"
-#include "glm/detail/qualifier.hpp"
-#include "imgui.h"
 #include "pch.h"
 #include <vector>
 #include "Sphere.h"
@@ -34,9 +25,20 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
   mLight = Engine::createRef<Engine::Light>();
 }
 
+void ApplicationLayer::onAttach() {
+
+  Engine::FrameBufferSpecification fbSpec;
+  fbSpec.width = 1600;
+  fbSpec.height = 900;
+  mFrameBuffer = Engine::FrameBuffer::create(fbSpec);
+}
+
+void ApplicationLayer::onDetach() {}
+
 void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   mDeltaTime = dt;
 
+  mFrameBuffer->bind();
   Engine::RenderCommand::setClearColor({.2, .2, .2, 1});
   Engine::RenderCommand::clear();
 
@@ -58,10 +60,35 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   glDepthFunc(GL_LESS);
 
   Engine::Renderer::endScene();
+  mFrameBuffer->unbind();
 }
 
 void ApplicationLayer::onImGuiRender() {
   ImGuiIO io = ImGui::GetIO();
+
+  // Create the docking environment
+  ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+                                 ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+                                 ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus |
+                                 ImGuiWindowFlags_NoBackground;
+
+  ImGuiViewport *viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(viewport->Pos);
+  ImGui::SetNextWindowSize(viewport->Size);
+  ImGui::SetNextWindowViewport(viewport->ID);
+
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+  ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
+  ImGui::PopStyleVar(3);
+
+  ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
+
+  ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+
+  ImGui::End();
+  // end of Root docking env, all ImGui widget must go under this code
 
   static float timeAccum = 0.0f;
   static int frameCount = 0;
@@ -88,19 +115,13 @@ void ApplicationLayer::onImGuiRender() {
   ImGui::End();
 
   ImGui::Begin("Viewport");
-  ImGui::GetMainViewport();
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+  ImVec2 viewportSize = ImGui::GetContentRegionAvail();  // Obtiene el tamaño de la ventana de ImGui
+  uint64_t textureID = mFrameBuffer->getColorAttachmentID();
+  ImGui::Image((void *)(textureID), ImVec2{viewportSize.x, viewportSize.y}, ImVec2(0, 1), ImVec2(1, 0));
+  ImGui::PopStyleVar();
   ImGui::End();
 }
-
-void ApplicationLayer::onAttach() {
-
-  Engine::FrameBufferSpecification fbSpec;
-  fbSpec.height = 1280;
-  fbSpec.width = 720;
-  mFrameBuffer = FrameBuffer::create(fbSpec);
-}
-
-void ApplicationLayer::onDetach() {}
 
 void ApplicationLayer::onEvent(Engine::Event &e) {
 

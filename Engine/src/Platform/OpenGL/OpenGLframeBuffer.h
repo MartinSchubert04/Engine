@@ -12,12 +12,13 @@ public:
   void unbind() const override;
   const FrameBufferSpecification &getSpecification() const override { return mSpecification; };
 
+  uint32_t getColorAttachmentID() override { return mColorAttachment; };
+
   void invalidate();
 
 private:
   uint32_t mRendererID;
-  uint32_t mColorAttachment;
-  uint32_t mDepthAttachment;
+  uint32_t mColorAttachment, mDepthAttachment;
 
   FrameBufferSpecification mSpecification;
 };

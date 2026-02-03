@@ -17,6 +17,7 @@ public:
   virtual void bind() const = 0;
   virtual void unbind() const = 0;
   virtual const FrameBufferSpecification &getSpecification() const = 0;
+  virtual uint32_t getColorAttachmentID() = 0;
 
   static Ref<FrameBuffer> create(FrameBufferSpecification &spec);
 };

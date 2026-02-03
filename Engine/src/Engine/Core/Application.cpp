@@ -46,8 +46,9 @@ void Application::run() {
     DeltaTime dt = time - mLastFrameTime;
     mLastFrameTime = time;
 
-    for (Layer *layer : mLayerStack)
+    for (Layer *layer : mLayerStack) {
       layer->onUpdate(dt);
+    }
 
     mImGuiLayer->begin();
     for (Layer *layer : mLayerStack)

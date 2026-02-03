@@ -17,7 +17,6 @@ public:
 
   void onAttach() override;
   void onDetach() override;
-  void onImGuiRender() override;
   void onEvent(Event &event) override;
 
   void blockEvents(bool block) { mBlockEvents = block; }
@@ -38,7 +37,7 @@ private:
 
 private:
   float mTime = (float)glfwGetTime();
-  bool mBlockEvents = true;
+  bool mBlockEvents = false;
 };
 
 }  // namespace Engine
