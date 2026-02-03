@@ -4,7 +4,7 @@
 #include "Platform/OpenGL/OpenGLframeBuffer.h"
 namespace Engine {
 
-static Ref<FrameBuffer> create(FrameBufferSpecification &spec) {
+Ref<FrameBuffer> FrameBuffer::create(FrameBufferSpecification &spec) {
   switch (Renderer::getAPI()) {
   case RendererAPI::API::None: {
     CORE_ASSERT(false, "Renderer API: returning nullptr (NO RENDERER API PROVIDED)");

@@ -1,3 +1,4 @@
+#include "Core/Log.h"
 #include "pch.h"
 #include <chrono>
 
@@ -6,7 +7,12 @@ namespace Engine {
 class Timer {
 
 public:
-  Timer() { reset(); }
+  Timer(const char *name) : mName(name) { reset(); }
+
+  ~Timer() {
+    if (!mStoped)
+      stop();
+  }
 
   void reset() { mStart = std::chrono::high_resolution_clock::now(); }
 
@@ -18,8 +24,12 @@ public:
 
   float elapsedMillis() { return elapsed() * 1000.0f; }
 
+  void stop() { CORE_TRACE("Duration"); }
+
 private:
+  const char *mName;
   std::chrono::time_point<std::chrono::high_resolution_clock> mStart;
+  bool mStoped;
 };
 
 }  // namespace Engine

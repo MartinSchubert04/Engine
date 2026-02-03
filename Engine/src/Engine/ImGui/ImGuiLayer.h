@@ -39,8 +39,6 @@ private:
 private:
   float mTime = (float)glfwGetTime();
   bool mBlockEvents = true;
-
-  bool mActivateWireFrame = false;
 };
 
 }  // namespace Engine

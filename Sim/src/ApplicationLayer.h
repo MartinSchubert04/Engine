@@ -1,6 +1,5 @@
 #pragma once
-#include "Core/Base.h"
-#include "Core/DeltaTime.h"
+
 #include <Engine.h>
 #include "Core/Light.h"
 #include "Planet.h"
@@ -12,6 +11,9 @@ public:
 
   void onUpdate(Engine::DeltaTime dt) override;
   void onEvent(Engine::Event &e) override;
+  void onImGuiRender() override;
+  void onAttach() override;
+  void onDetach() override;
 
 private:
   bool onKeyPressedEvent(Engine::KeyPressedEvent &e);
@@ -24,9 +26,7 @@ private:
   Engine::Ref<Engine::Shader> mSkyboxShader;
   Engine::Skybox mSkybox;
 
-  Engine::Ref<Engine::VertexArray> vertexArray;
-  Engine::Ref<Engine::VertexBuffer> vertexBuffer;
-  Engine::Ref<Engine::IndexBuffer> indexBuffer;
+  Engine::Ref<Engine::FrameBuffer> mFrameBuffer;
   Engine::Scope<Engine::Camera> mCamera;
   Engine::Ref<Engine::Light> mLight;
 
@@ -34,4 +34,6 @@ private:
   Sphere mSphere;
 
   Engine::DeltaTime mDeltaTime;
+
+  bool mActivateWireFrame = false;
 };

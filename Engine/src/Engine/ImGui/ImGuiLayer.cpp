@@ -123,30 +123,6 @@ void ImGuiLayer::onImGuiRender() {
 
   ImGui::End();
   // end of Root docking env, all ImGui widget must go under this code
-
-  static float timeAccum = 0.0f;
-  static int frameCount = 0;
-  static int fps = 0;
-
-  timeAccum += io.DeltaTime;
-  frameCount++;
-
-  if (timeAccum >= 1.0f) {
-    fps = frameCount;
-    frameCount = 0;
-    timeAccum -= 1.0f;  // o = 0.0f
-  }
-
-  if (mActivateWireFrame) {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  } else {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  }
-
-  ImGui::Begin("Scene");
-  ImGui::Text("FPS: %d", fps);
-  ImGui::Checkbox("Wireframe", &mActivateWireFrame);
-  ImGui::End();
 }
 
 }  // namespace Engine

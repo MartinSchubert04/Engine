@@ -19,5 +19,6 @@
 #include "Engine/Renderer/Renderer.h"
 #include "Engine/Renderer/Shader.h"
 #include "Engine/Renderer/VertexArray.h"
+#include "Engine/Renderer/FrameBuffer.h"
 #include "Engine/Renderer/Buffer.h"
 #include "Engine/Renderer/Transform.h"

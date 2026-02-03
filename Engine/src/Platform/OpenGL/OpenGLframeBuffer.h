@@ -10,7 +10,7 @@ public:
 
   void bind() const override;
   void unbind() const override;
-  const FrameBufferSpecification &getSpecification() const override;
+  const FrameBufferSpecification &getSpecification() const override { return mSpecification; };
 
   void invalidate();
 

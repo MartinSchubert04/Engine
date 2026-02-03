@@ -60,6 +60,7 @@ set(SOURCES
 
     # Renderer ( API agnostic)
     Engine/src/Engine/Renderer/Buffer.cpp
+    Engine/src/Engine/Renderer/FrameBuffer.cpp
     Engine/src/Engine/Renderer/Renderer.cpp
     Engine/src/Engine/Renderer/VertexArray.cpp
     Engine/src/Engine/Renderer/RendererAPI.cpp
@@ -89,6 +90,7 @@ set(SOURCES
     Engine/src/Platform/OpenGL/OpenGLrendererAPI.cpp
     Engine/src/Platform/OpenGL/OpenGLvertexArray.cpp
     Engine/src/Platform/OpenGL/OpenGLbuffer.cpp
+    Engine/src/Platform/OpenGL/OpenGLframeBuffer.cpp
     Engine/src/Platform/Windows/WindowsWindow.cpp
     Engine/src/Platform/Windows/WindowsInput.cpp
 

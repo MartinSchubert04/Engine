@@ -6,9 +6,11 @@
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
 #include "Renderer/Buffer.h"
+#include "Renderer/FrameBuffer.h"
 #include "Renderer/Renderer.h"
 #include "Renderer/VertexArray.h"
 #include "glm/detail/qualifier.hpp"
+#include "imgui.h"
 #include "pch.h"
 #include <vector>
 #include "Sphere.h"
@@ -58,6 +60,48 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   Engine::Renderer::endScene();
 }
 
+void ApplicationLayer::onImGuiRender() {
+  ImGuiIO io = ImGui::GetIO();
+
+  static float timeAccum = 0.0f;
+  static int frameCount = 0;
+  static int fps = 0;
+
+  timeAccum += io.DeltaTime;
+  frameCount++;
+
+  if (timeAccum >= 1.0f) {
+    fps = frameCount;
+    frameCount = 0;
+    timeAccum -= 1.0f;  // o = 0.0f
+  }
+
+  if (mActivateWireFrame) {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  } else {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  }
+
+  ImGui::Begin("Scene");
+  ImGui::Text("FPS: %d", fps);
+  ImGui::Checkbox("Wireframe", &mActivateWireFrame);
+  ImGui::End();
+
+  ImGui::Begin("Viewport");
+  ImGui::GetMainViewport();
+  ImGui::End();
+}
+
+void ApplicationLayer::onAttach() {
+
+  Engine::FrameBufferSpecification fbSpec;
+  fbSpec.height = 1280;
+  fbSpec.width = 720;
+  mFrameBuffer = FrameBuffer::create(fbSpec);
+}
+
+void ApplicationLayer::onDetach() {}
+
 void ApplicationLayer::onEvent(Engine::Event &e) {
 
   Engine::EventDispatcher dispatcher(e);
@@ -72,10 +116,10 @@ bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
     onClose();
   }
   if (event.getKeyCode() == Engine::Key::W) {
-    mCamera->onMouseWheel(-mCamera->speed * mDeltaTime.getSeconds());
+    mCamera->onMouseWheel(-mCamera->speed * 10 * mDeltaTime.getSeconds());
   }
   if (event.getKeyCode() == Engine::Key::S) {
-    mCamera->onMouseWheel(mCamera->speed * mDeltaTime.getSeconds());
+    mCamera->onMouseWheel(mCamera->speed * 10 * mDeltaTime.getSeconds());
   }
 
   return false;
