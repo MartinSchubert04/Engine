@@ -4,10 +4,11 @@
 
 namespace Engine {
 
+template <typename Fn>
 class Timer {
 
 public:
-  Timer(const char *name) : mName(name) { reset(); }
+  Timer(const char *name, Fn &&func) : mName(name), mFunc(func), mStoped(false) { reset(); }
 
   ~Timer() {
     if (!mStoped)
@@ -24,12 +25,16 @@ public:
 
   float elapsedMillis() { return elapsed() * 1000.0f; }
 
-  void stop() { CORE_TRACE("Duration"); }
+  void stop() {
+    auto duration = elapsedMillis();
+    mFunc({mName, duration});
+  }
 
 private:
   const char *mName;
   std::chrono::time_point<std::chrono::high_resolution_clock> mStart;
   bool mStoped;
+  Fn mFunc;
 };
 
 }  // namespace Engine

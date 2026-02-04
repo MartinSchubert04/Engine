@@ -9,6 +9,7 @@ class Renderer {
 public:
   static void beginScene();
   static void endScene();
+  static void onWindowResize(uint32_t width, uint32_t height);
 
   static void submit(const Ref<VertexArray> &vertexArray);
   static void submitArrays(const Ref<VertexArray> &vertexArray, uint32_t count);

@@ -38,6 +38,7 @@ private:
   bool mRunning = true;
   ImGuiLayer *mImGuiLayer;
   LayerStack mLayerStack;
+  bool mMinimized = false;
 
   float mLastFrameTime = 0.0f;
 

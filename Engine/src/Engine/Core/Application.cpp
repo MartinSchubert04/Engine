@@ -46,8 +46,10 @@ void Application::run() {
     DeltaTime dt = time - mLastFrameTime;
     mLastFrameTime = time;
 
-    for (Layer *layer : mLayerStack) {
-      layer->onUpdate(dt);
+    if (!mMinimized) {
+      for (Layer *layer : mLayerStack) {
+        layer->onUpdate(dt);
+      }
     }
 
     mImGuiLayer->begin();
@@ -56,6 +58,9 @@ void Application::run() {
     mImGuiLayer->end();
 
     mWindow->onUpdate();
+
+    Engine::RenderCommand::setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+    Engine::RenderCommand::clear();
   }
 }
 
@@ -76,8 +81,8 @@ void Application::onEvent(Event &e) {
   dispatcher.dispatch<WindowCloseEvent>(BIND_FN(Application::onWindowClose));
   dispatcher.dispatch<WindowResizeEvent>(BIND_FN(Application::onWindowResize));
 
-  if (e.getEventType() != EventType::MouseMoved)
-    CORE_TRACE("{0}", e.toString());
+  // if (e.getEventType() != EventType::MouseMoved)
+  //   CORE_TRACE("{0}", e.toString());
 
   for (auto it = mLayerStack.end(); it != mLayerStack.begin();) {
     (*--it)->onEvent(e);
@@ -92,7 +97,15 @@ bool Application::onWindowClose(WindowCloseEvent &e) {
 }
 
 bool Application::onWindowResize(WindowResizeEvent &e) {
-  glViewport(0, 0, e.getWidth(), e.getHeight());
+
+  if (e.getHeight() == 0 || e.getWidth() == 0) {
+    mMinimized = true;
+    return false;
+  }
+
+  mMinimized = false;
+
+  Renderer::onWindowResize(e.getWidth(), e.getHeight());
   return false;
 }
 

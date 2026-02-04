@@ -2,6 +2,7 @@
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
 #include "Renderer/Buffer.h"
+#include "imgui.h"
 #include "pch.h"
 #include <vector>
 #include "Sphere.h"
@@ -22,6 +23,7 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
   float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();
 
   mCamera = Engine::createScope<Engine::Camera>(glm::vec3(0, 0, 1), 45.0f, aspect, 0.1f, 1000);
+  mCamera->setDistance(.1);
   mLight = Engine::createRef<Engine::Light>();
 }
 
@@ -35,10 +37,17 @@ void ApplicationLayer::onAttach() {
 
 void ApplicationLayer::onDetach() {}
 
+#define PROFILE_SCOPE(name) \
+  Timer timer##__LINE__(name, [&](ProfileResult profileResult) { mProfileResults.push_back(profileResult); })
+
 void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
+
+  PROFILE_SCOPE("ApplicationLayer::onUpdate");
+
   mDeltaTime = dt;
 
   mFrameBuffer->bind();
+
   Engine::RenderCommand::setClearColor({.2, .2, .2, 1});
   Engine::RenderCommand::clear();
 
@@ -60,6 +69,7 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   glDepthFunc(GL_LESS);
 
   Engine::Renderer::endScene();
+
   mFrameBuffer->unbind();
 }
 
@@ -114,13 +124,19 @@ void ApplicationLayer::onImGuiRender() {
   ImGui::Checkbox("Wireframe", &mActivateWireFrame);
   ImGui::End();
 
-  ImGui::Begin("Viewport");
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+  ImGui::Begin("Viewport");
   ImVec2 viewportSize = ImGui::GetContentRegionAvail();  // Obtiene el tamaño de la ventana de ImGui
   uint64_t textureID = mFrameBuffer->getColorAttachmentID();
   ImGui::Image((void *)(textureID), ImVec2{viewportSize.x, viewportSize.y}, ImVec2(0, 1), ImVec2(1, 0));
-  ImGui::PopStyleVar();
   ImGui::End();
+  ImGui::PopStyleVar();
+
+  ImGui::Begin("Stats");
+  for (auto &r : mProfileResults)
+    ImGui::Text("%.3fms %s", r.time, r.name);
+  ImGui::End();
+  mProfileResults.clear();
 }
 
 void ApplicationLayer::onEvent(Engine::Event &e) {

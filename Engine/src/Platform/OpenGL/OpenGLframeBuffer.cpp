@@ -15,6 +15,10 @@ OpenGLframeBuffer::~OpenGLframeBuffer() {
 
 void OpenGLframeBuffer::invalidate() {
 
+  if (mRendererID) {
+    glDeleteFramebuffers(1, &mRendererID);
+  }
+
   glCreateFramebuffers(1, &mRendererID);
   glBindFramebuffer(GL_FRAMEBUFFER, mRendererID);
 

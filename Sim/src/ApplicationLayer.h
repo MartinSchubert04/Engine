@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine.h>
+#include <vector>
 #include "Core/Light.h"
 #include "Planet.h"
 #include "Sphere.h"
@@ -29,11 +30,17 @@ private:
   Engine::Ref<Engine::FrameBuffer> mFrameBuffer;
   Engine::Scope<Engine::Camera> mCamera;
   Engine::Ref<Engine::Light> mLight;
+  Engine::DeltaTime mDeltaTime;
 
   // Planet mSphere;
   Sphere mSphere;
 
-  Engine::DeltaTime mDeltaTime;
-
   bool mActivateWireFrame = false;
+
+  struct ProfileResult {
+    const char *name;
+    float time;
+  };
+
+  std::vector<ProfileResult> mProfileResults;
 };
