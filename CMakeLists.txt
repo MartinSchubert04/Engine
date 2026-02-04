@@ -80,6 +80,8 @@ set(SOURCES
     Engine/src/Engine/Core/CameraFPS.cpp
     # Engine/src/Engine/Core/Model.cpp
     
+    Engine/src/Engine/Debug/Instrumentor.cpp
+    
     Engine/src/Engine/ImGui/ImGuiLayer.cpp
     
     # Engine/src/Engine/ui/Scene.cpp

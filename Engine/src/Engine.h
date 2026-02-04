@@ -7,10 +7,11 @@
 #include "Engine/Core/Input.h"
 #include "Engine/Core/Layer.h"
 #include "Engine/Core/DeltaTime.h"
-#include "Engine/Core/Timer.h"
 #include "Engine/Core/Vertex.h"
 #include "Engine/Core/Skybox.h"
 #include "Engine/Core/Mesh.h"
+
+#include "Engine/Debug/Instrumentor.h"
 
 #include "Engine/Events/MouseCodes.h"
 #include "Engine/Events/KeyCodes.h"

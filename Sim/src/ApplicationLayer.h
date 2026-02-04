@@ -36,11 +36,4 @@ private:
   Sphere mSphere;
 
   bool mActivateWireFrame = false;
-
-  struct ProfileResult {
-    const char *name;
-    float time;
-  };
-
-  std::vector<ProfileResult> mProfileResults;
 };

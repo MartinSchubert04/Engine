@@ -12,12 +12,14 @@
 #include "Core/Base.h"
 #include "Core/Log.h"
 #include "Renderer/Renderer.h"
+#include "Debug/Instrumentor.h"
 
 namespace Engine {
 
 Application *Application::s_instance = nullptr;
 
 Application::Application() {
+  PROFILE_SCOPE("Application Init");
 
   CORE_ASSERT(!s_instance, "Error: Application instance already exists");
   s_instance = this;
@@ -41,20 +43,29 @@ void Application::run() {
   CORE_INFO("GLFW version: {0}", glfwGetVersionString());
 
   while (mRunning) {
+    PROFILE_SCOPE("Application Loop");
 
     float time = (float)glfwGetTime();
     DeltaTime dt = time - mLastFrameTime;
     mLastFrameTime = time;
 
     if (!mMinimized) {
-      for (Layer *layer : mLayerStack) {
-        layer->onUpdate(dt);
+      {
+        PROFILE_SCOPE("LayerStack onUpdate");
+
+        for (Layer *layer : mLayerStack) {
+          layer->onUpdate(dt);
+        }
       }
     }
 
     mImGuiLayer->begin();
-    for (Layer *layer : mLayerStack)
-      layer->onImGuiRender();
+    {
+      PROFILE_SCOPE("LayerStack onImGuiRender");
+
+      for (Layer *layer : mLayerStack)
+        layer->onImGuiRender();
+    }
     mImGuiLayer->end();
 
     mWindow->onUpdate();

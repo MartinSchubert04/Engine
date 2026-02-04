@@ -92,6 +92,8 @@ public:
   void bind() { glBindTexture(GL_TEXTURE_CUBE_MAP, textureID); }
 
   void draw() {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // only not wireframe the skybox, bad solution needs refactor
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     Renderer::submitArrays(vertexArray, 36);

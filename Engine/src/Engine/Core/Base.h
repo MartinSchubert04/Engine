@@ -8,6 +8,7 @@
 // displace 1 by x positions, always (e.j, x=1  BIT output 2, x=2 BIT output 4 )
 
 #define DEBUG
+#define PROFILING 1
 
 #ifdef DEBUG
   #if defined(PLATFORM_WINDOWS)

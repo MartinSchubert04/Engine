@@ -1,4 +1,5 @@
 #include "ApplicationLayer.h"
+#include "Engine.h"
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
 #include "Renderer/Buffer.h"
@@ -36,9 +37,6 @@ void ApplicationLayer::onAttach() {
 }
 
 void ApplicationLayer::onDetach() {}
-
-#define PROFILE_SCOPE(name) \
-  Timer timer##__LINE__(name, [&](ProfileResult profileResult) { mProfileResults.push_back(profileResult); })
 
 void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
@@ -133,10 +131,13 @@ void ApplicationLayer::onImGuiRender() {
   ImGui::PopStyleVar();
 
   ImGui::Begin("Stats");
-  for (auto &r : mProfileResults)
+  for (auto &r : Instrumentor::getProfileResults())
     ImGui::Text("%.3fms %s", r.time, r.name);
   ImGui::End();
-  mProfileResults.clear();
+  Instrumentor::clearResults();
+
+  bool show = true;
+  ImGui::ShowDemoWindow(&show);
 }
 
 void ApplicationLayer::onEvent(Engine::Event &e) {
