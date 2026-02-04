@@ -1,5 +1,6 @@
 
 #pragma once
+#include "Core/Base.h"
 #include "pch.h"
 #include <string>
 
@@ -33,6 +34,18 @@ private:
 
 private:
   uint32_t mRendererID;
+};
+
+class ShaderLibrary {
+
+public:
+  void add(const Ref<Shader> shader);
+  Ref<Shader> load(const std::string &filepath);
+  Ref<Shader> load(const std::string &name, const std::string &filepath);
+  Ref<Shader> get(const Ref<Shader> shader);
+
+private:
+  std::unordered_map<class Kty, class Ty> mShaders;
 };
 
 }  // namespace Engine
