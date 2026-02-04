@@ -1,14 +1,17 @@
 #pragma once
 
+#include "Events/KeyCodes.h"
+#include "Events/MouseCodes.h"
 #include "Input.h"
 #include "pch.h"
-#include "Shader.h"
+#include "Renderer/Shader.h"
 
 // Defines several possible options for camera movement
 
+namespace Engine {
 class Camera {
 public:
-  float speed = 70.0f;
+  float speed = 200.0f;
 
   Camera(const glm::vec3 &position, float fov, float aspect, float nearPlane, float farPlane) {
     mPosition = position;
@@ -41,8 +44,6 @@ public:
 
   const glm::mat4 &getProjection() const { return mProjection; }
 
-  glm::mat4 getViewProjection() const { return mProjection * getViewProjection(); }
-
   glm::vec3 getUp() const { return getDirection() * cUp; }
 
   glm::vec3 getRight() const { return getDirection() * cRight; }
@@ -65,10 +66,10 @@ public:
     updateViewMatrix();
   }
 
-  void onMouseMove(double x, double y, InputType button) {
+  void onMouseMove(double x, double y, MouseCode button) {
     glm::vec2 pos2d{x, y};
 
-    if (button == InputType::iRight) {
+    if (button == Mouse::ButtonRight) {
       glm::vec2 delta = (pos2d - mCurrentPos2d) * 0.004f;
 
       float sign = getUp().y < 0 ? -1.0f : 1.0f;
@@ -76,7 +77,7 @@ public:
       mPitch += delta.y * cRotationSpeed;
 
       updateViewMatrix();
-    } else if (button == InputType::iMiddle) {
+    } else if (button == Mouse::ButtonLeft) {
       // TODO: Adjust pan speed for distance
       glm::vec2 delta = (pos2d - mCurrentPos2d) * 0.003f;
 
@@ -120,3 +121,4 @@ private:
 
   const float cRotationSpeed = 2.0f;
 };
+}  // namespace Engine

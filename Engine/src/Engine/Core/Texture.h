@@ -1,9 +1,10 @@
 #pragma once
 
 #include "pch.h"
-"
 
-    class Texture {
+namespace Engine {
+
+class Texture {
 private:
   std::string mFilepath;
   unsigned char *mLocalBuff;
@@ -27,3 +28,5 @@ public:
   inline void setType(std::string type) { mType = type; };
   inline bool isValid() const { return mID != 0; }
 };
+
+}  // namespace Engine

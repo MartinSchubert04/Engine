@@ -1,10 +1,10 @@
-#include "Core/Log.h"
-#include "Engine.h"
-
+#include <Engine.h>
+#include "Engine/Core/EntryPoint.h"
+#include "ApplicationLayer.h"
 class SandBox : public Engine::Application {
 
 public:
-  SandBox() {}
+  SandBox() { pushLayer(new ApplicationLayer()); }
   ~SandBox() {}
 };
 

@@ -69,6 +69,7 @@ class EventDispatcher {
 public:
   EventDispatcher(Event &event) : mEvent(event) {}
 
+  // binds a event type to bool function that recives an event of that same type
   template <typename T, typename F>
   bool dispatch(const F &func) {
 

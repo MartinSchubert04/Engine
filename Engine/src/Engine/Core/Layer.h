@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "Events/Event.h"
+#include "Core/DeltaTime.h"
 namespace Engine {
 
 class Layer {
@@ -15,7 +16,7 @@ public:
 
   virtual void onAttach() {};
   virtual void onDetach() {};
-  virtual void onUpdate() {};
+  virtual void onUpdate(DeltaTime dt) {};
   virtual void onImGuiRender() {}
   virtual void onEvent(Event &event) {};
 

@@ -29,8 +29,8 @@ private:
 #define CORE_FATAL(...) ::Engine::Log::getCoreLogger()->fatal(__VA_ARGS__)
 
 // Client logger macros
-#define E_TRACE(...) ::Engine::Log::getClientLogger()->trace(__VA_ARGS__)
-#define E_INFO(...) ::Engine::Log::getClientLogger()->info(__VA_ARGS__)
-#define E_WARN(...) ::Engine::Log::getClientLogger()->warn(__VA_ARGS__)
-#define E_ERROR(...) ::Engine::Log::getClientLogger()->error(__VA_ARGS__)
-#define E_FATAL(...) ::Engine::Log::getClientLogger()->fatal(__VA_ARGS__)
+#define ENGINE_TRACE(...) ::Engine::Log::getClientLogger()->trace(__VA_ARGS__)
+#define ENGINE_INFO(...) ::Engine::Log::getClientLogger()->info(__VA_ARGS__)
+#define ENGINE_WARN(...) ::Engine::Log::getClientLogger()->warn(__VA_ARGS__)
+#define ENGINE_ERROR(...) ::Engine::Log::getClientLogger()->error(__VA_ARGS__)
+#define ENGINE_FATAL(...) ::Engine::Log::getClientLogger()->fatal(__VA_ARGS__)

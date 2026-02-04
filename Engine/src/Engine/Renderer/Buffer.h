@@ -1,20 +1,9 @@
 #pragma once
 #include "pch.h"
 #include "Types.h"
-#include <cstdint>
-#include <initializer_list>
-#include <vector>
+#include "Core/Vertex.h"
 
 namespace Engine {
-
-class Buffer {
-
-public:
-  virtual ~Buffer() = default;
-
-  virtual void bind() const = 0;
-  virtual void unbind() const = 0;
-};
 
 struct BufferElement {
 
@@ -120,28 +109,29 @@ private:
   uint32_t mStride;
 };
 
-class VertexBuffer : public Buffer {
+class VertexBuffer {
 public:
   virtual ~VertexBuffer() {};
 
-  virtual void bind() const override;
-  virtual void unbind() const override;
+  virtual void bind() const = 0;
+  virtual void unbind() const = 0;
   virtual void setLayout(const BufferLayout &layout) = 0;
   virtual const BufferLayout &getLayout() const = 0;
 
-  static Ref<VertexBuffer> create(float *vertices, uint32_t size);
+  static Ref<VertexBuffer> create(std::vector<Vertex> vertices);
+  static Ref<VertexBuffer> create(std::vector<float> vertices);
 };
 
-class IndexBuffer : public Buffer {
+class IndexBuffer {
 public:
   virtual ~IndexBuffer() {};
 
-  virtual void bind() const override;
-  virtual void unbind() const override;
+  virtual void bind() const = 0;
+  virtual void unbind() const = 0;
 
-  virtual uint32_t getCount();
+  virtual uint32_t getCount() = 0;
 
-  static Scope<IndexBuffer> create(uint32_t *indices, uint32_t size);
+  static Scope<IndexBuffer> create(std::vector<uint32_t> &indices);
 };
 
 }  // namespace Engine

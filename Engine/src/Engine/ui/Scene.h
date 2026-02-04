@@ -3,7 +3,7 @@
 #include "Core/Camera.h"
 #include "Core/Mesh.h"
 // #include "Core/light.h"
-#include "Core/Shader.h"
+#include "Renderer/Shader.h"
 #include "Core/Light.h"
 #include "Renderer/VertexBuffer.h "
 #include "Renderer/IndexBuffer.h "

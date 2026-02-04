@@ -1,13 +1,11 @@
 #include "Planet.h"
-#include "pch.h"
-#include "glm/fwd.hpp"
-#include <vector>
+#include "Engine.h"
 
 Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass) :
     radius(radius), segments(segments), position(pos), scaleFactor(1), speed(0.0f), acceleration(0.0f), mass(mass) {
 
   float PI = 3.14159265359f;
-  this->color = glm::vec4(.8, .8, .8, .8);
+  this->color = glm::vec4(.8, .8, .8, 1);
 
   for (int y{0}; y <= segments.y; y++) {
     for (int x{0}; x <= segments.x; x++) {
@@ -26,6 +24,7 @@ Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass) :
       vertex.normal = glm::normalize(glm::vec3(xPos, yPos, zPos));
       vertex.texCoords = glm::vec2(0.0f, 0.0f);
       vertex.color = color;
+      vertex.useDiffuseTexture = 0.0f;
 
       vertices.push_back(vertex);
     }
@@ -48,15 +47,16 @@ Planet::Planet(float radius, glm::vec2 segments, glm::vec3 pos, float mass) :
     }
   }
 
-  mesh = std::make_unique<Mesh>(vertices, indices, std::vector<std::shared_ptr<Texture>>{});
+  mesh = createScope<Mesh>(vertices, indices, std::vector<std::shared_ptr<Texture>>{});
 }
 
-void Planet::draw(Shader *shader) {
-  glm::mat4 model = glm::mat4(1.0f);
-  model = glm::translate(model, position);
-  model = glm::scale(model, glm::vec3(radius));
+void Planet::draw(Ref<Shader> shader) {
+  Engine::Transform transform;
 
-  shader->setMat4("model", model);
+  transform.scale(radius);
+  transform.translate(position);
+  transform.setModel(shader);
+
   shader->setVec4("modelColor", color);
 
   mesh->draw(*shader);

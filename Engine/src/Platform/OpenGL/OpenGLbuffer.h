@@ -1,11 +1,12 @@
+#include "Core/Vertex.h"
 #include "Renderer/Buffer.h"
-#include <cstdint>
 
 namespace Engine {
 
 class OpenGLvertexBuffer : public VertexBuffer {
 public:
-  OpenGLvertexBuffer(float *vertices, uint32_t size);
+  OpenGLvertexBuffer(std::vector<Vertex> vertices);
+  OpenGLvertexBuffer(std::vector<float> vertices);
   ~OpenGLvertexBuffer();
 
   void bind() const override;
@@ -21,7 +22,7 @@ private:
 
 class OpenGLindexBuffer : public IndexBuffer {
 public:
-  OpenGLindexBuffer(uint32_t *indices, uint32_t size);
+  OpenGLindexBuffer(std::vector<uint32_t> &indices);
   ~OpenGLindexBuffer();
 
   void bind() const override;

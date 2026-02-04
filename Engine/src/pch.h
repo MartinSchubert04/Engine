@@ -28,6 +28,7 @@
 #include <memory>
 #include <chrono>
 #include <cstdint>
+#include <unordered_map>
 
 // GL includes
 #include <glad/glad.h>

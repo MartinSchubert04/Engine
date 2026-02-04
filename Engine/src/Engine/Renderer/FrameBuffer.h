@@ -1,26 +1,25 @@
 #pragma once
+#include "pch.h"
 
-"
+namespace Engine {
 
-    namespace Engine {
+struct FrameBufferSpecification {
 
-  class FrameBuffer : render::Buffer {
+  uint32_t width, height;
+  uint32_t samples = 1;
 
-  private:
-    uint32_t mFBO = 0;
-    uint32_t mTexId = 0;
-    uint32_t mDepthId = 0;
-    int32_t mWidth = 0;
-    int32_t mHeight = 0;
+  bool swapChainTarget = false;
+};
 
-  public:
-    FrameBuffer() : mFBO(0), mDepthId(0) {}
+class FrameBuffer {
 
-    void create(int32_t width, int32_t height);
-    void bind() const override;
-    void unbind() const override;
-    void destroy() override;
-    uint32_t getTexture() const;
-  };
+public:
+  virtual void bind() const = 0;
+  virtual void unbind() const = 0;
+  virtual const FrameBufferSpecification &getSpecification() const = 0;
+  virtual uint32_t getColorAttachmentID() = 0;
+
+  static Ref<FrameBuffer> create(FrameBufferSpecification &spec);
+};
 
 }  // namespace Engine

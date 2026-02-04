@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Shader.h"
+#include "Renderer/Shader.h"
 #include "Core/Vertex.h"
 #include "Core/Mesh.h"
 

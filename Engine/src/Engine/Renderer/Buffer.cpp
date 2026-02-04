@@ -4,10 +4,11 @@
 #include "Platform/OpenGL/OpenGLbuffer.h"
 #include "Renderer.h"
 #include "RendererAPI.h"
+#include <vector>
 
 namespace Engine {
 
-Ref<VertexBuffer> VertexBuffer::create(float *vertices, uint32_t size) {
+Ref<VertexBuffer> VertexBuffer::create(std::vector<Vertex> vertices) {
 
   switch (Renderer::getAPI()) {
   case RendererAPI::API::None: {
@@ -17,7 +18,7 @@ Ref<VertexBuffer> VertexBuffer::create(float *vertices, uint32_t size) {
   }
 
   case RendererAPI::API::OpenGL: {
-    return createRef<OpenGLvertexBuffer>(vertices, size);
+    return createRef<OpenGLvertexBuffer>(vertices);
     break;
   }
   }
@@ -26,7 +27,7 @@ Ref<VertexBuffer> VertexBuffer::create(float *vertices, uint32_t size) {
   return nullptr;
 }
 
-Scope<IndexBuffer> IndexBuffer::create(uint32_t *indices, uint32_t size) {
+Ref<VertexBuffer> VertexBuffer::create(std::vector<float> vertices) {
 
   switch (Renderer::getAPI()) {
   case RendererAPI::API::None: {
@@ -36,7 +37,26 @@ Scope<IndexBuffer> IndexBuffer::create(uint32_t *indices, uint32_t size) {
   }
 
   case RendererAPI::API::OpenGL: {
-    return createScope<OpenGLindexBuffer>(indices, size);
+    return createRef<OpenGLvertexBuffer>(vertices);
+    break;
+  }
+  }
+
+  CORE_ASSERT(false, "Renderer API: returning nullptr (NO RENDERER API PROVIDED)");
+  return nullptr;
+}
+
+Scope<IndexBuffer> IndexBuffer::create(std::vector<uint32_t> &indices) {
+
+  switch (Renderer::getAPI()) {
+  case RendererAPI::API::None: {
+    CORE_ASSERT(false, "Renderer API: returning nullptr (NO RENDERER API PROVIDED)");
+    return nullptr;
+    break;
+  }
+
+  case RendererAPI::API::OpenGL: {
+    return createScope<OpenGLindexBuffer>(indices);
     break;
   }
   }

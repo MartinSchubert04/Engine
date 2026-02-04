@@ -1,5 +1,6 @@
 
 #pragma once
+#include "Core/Base.h"
 #include "pch.h"
 #include <string>
 
@@ -8,11 +9,18 @@ namespace Engine {
 class Shader {
 
 public:
+  Shader() = default;
+  Shader(const std::string &name, const std::string &vertexPath, const std::string &fragPath);
   Shader(const std::string &vertexPath, const std::string &fragPath);
   ~Shader();
 
   void bind();
   void unbind();
+
+  void compile(const std::string &vertexPath, const std::string &fragPath);
+  std::string ReadFromFile(const std::string &path);
+
+  const std::string &getName() const { return mName; };
 
   // utility uniform functions
   void setBool(const std::string &name, bool value) const;
@@ -33,6 +41,19 @@ private:
 
 private:
   uint32_t mRendererID;
+  std::string mName;
+};
+
+class ShaderLibrary {
+
+public:
+  void add(const Ref<Shader> &shader);
+  Ref<Shader> load(const std::string &vertexPath, const std::string &fragPath);
+  Ref<Shader> load(const std::string &name, const std::string &vertexPath, const std::string &fragxPath);
+  Ref<Shader> get(const Ref<Shader> shader);
+
+private:
+  std::unordered_map<std::string, Ref<Shader>> mShaders;
 };
 
 }  // namespace Engine

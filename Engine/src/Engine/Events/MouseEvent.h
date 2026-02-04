@@ -47,7 +47,7 @@ private:
 class MouseButtonEvent : public Event {
 
 public:
-  MouseCode GetMouseButton() const { return mButton; }
+  MouseCode getMouseButton() const { return mButton; }
 
   EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryMouseButton | EventCategoryInput)
 protected:

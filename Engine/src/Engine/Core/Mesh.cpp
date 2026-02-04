@@ -1,10 +1,13 @@
 #include "Mesh.h"
-#include "Shader.h"
+#include "Renderer/Buffer.h"
+#include "Renderer/Shader.h"
 #include "pch.h"
+#include "Renderer/Renderer.h"
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
-           std::vector<std::shared_ptr<Texture>> textures) :
-    va() {
+namespace Engine {
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Ref<Texture>> textures) {
+
   this->vertices = vertices;
   this->indices = indices;
   this->textures = textures;
@@ -12,31 +15,27 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
   setupMesh();
 }
 
-Mesh::~Mesh() {
-  vb.destroy();
-  ib.destroy();
-  va.destroy();
-}
-
 void Mesh::setupMesh() {
 
-  VertexBufferLayout layout;
+  va = VertexArray::create();
+  va->bind();
 
-  vb.create(vertices);
-  ib.create(indices);
+  vb = VertexBuffer::create(vertices);
+  ib = IndexBuffer::create(indices);
 
-  va.bind();
-  ib.bind();
+  vb->bind();
+  ib->bind();
 
-  layout.push<float>(3);  // position (location 0)
-  layout.push<float>(3);  // normal   (location 1)
-  layout.push<float>(2);  // texCoord (location 2)
-  layout.push<float>(4);  // color    (location 3)
-  layout.push<float>(1);  // useTex   (location 4)
+  Engine::BufferLayout layout = {
+      {Engine::Types::ShaderDataType::float3, "aPos"},       {Engine::Types::ShaderDataType::float3, "aNormal"},
+      {Engine::Types::ShaderDataType::float2, "aTexCoords"}, {Engine::Types::ShaderDataType::float4, "aColor"},
+      {Engine::Types::ShaderDataType::float1, "UseTexture"},
+  };
 
-  va.addBuffer(vb, layout);
+  vb->setLayout(layout);
 
-  va.unbind();
+  va->addVertexBuffer(vb);
+  va->setIndexBuffer(ib);
 }
 
 void Mesh::draw(Shader &shader, DrawType type) {
@@ -57,22 +56,26 @@ void Mesh::draw(Shader &shader, DrawType type) {
 
   // GLcall(glActiveTexture(GL_TEXTURE0));
 
-  va.bind();
+  Renderer::submit(va);
 
-  switch (type) {
+  // va->bind();
 
-  case DrawType::TRIANGLES:
-    GLcall(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
-    break;
-  case DrawType::LINES:
-    GLcall(glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0));
-    break;
-  case DrawType::LINE_STRIP:
-    GLcall(glDrawArrays(GL_LINE_STRIP, 0, vertices.size()));
-    break;
-  default:
-    GLcall(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
-  }
+  // switch (type) {
 
-  va.unbind();
+  // case DrawType::TRIANGLES:
+  //   glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+  //   break;
+  // case DrawType::LINES:
+  //   glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
+  //   break;
+  // case DrawType::LINE_STRIP:
+  //   glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
+  //   break;
+  // default:
+  //   glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+  // }
+
+  // va.unbind(); no need to loose copute time on this call
 }
+
+}  // namespace Engine

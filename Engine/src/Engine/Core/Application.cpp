@@ -1,8 +1,10 @@
 #include "Application.h"
 #include "Assert.h"
 #include "Core/Application.h"
+#include "DeltaTime.h"
 #include "Events/ApplicationEvent.h"
 #include "Events/Event.h"
+#include "GLFW/glfw3.h"
 #include "Renderer/Buffer.h"
 #include "Renderer/Types.h"
 #include "Renderer/VertexArray.h"
@@ -10,12 +12,14 @@
 #include "Core/Base.h"
 #include "Core/Log.h"
 #include "Renderer/Renderer.h"
+#include "Debug/Instrumentor.h"
 
 namespace Engine {
 
 Application *Application::s_instance = nullptr;
 
 Application::Application() {
+  PROFILE_SCOPE("Application Init");
 
   CORE_ASSERT(!s_instance, "Error: Application instance already exists");
   s_instance = this;
@@ -25,31 +29,6 @@ Application::Application() {
 
   mImGuiLayer = new ImGuiLayer;
   pushOverlay(mImGuiLayer);
-
-  va = VertexArray::create();
-
-  // std::vector<float> vertices = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5, 0.0f, 0.0f, 0.5f, 0.0f};
-  float vertices[7 * 3] = {
-      -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.5f, -0.5, 0.0f, 1.0f,
-      0.0f,  0.0f,  1.0f, 0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-  };
-  vb = VertexBuffer::create(vertices, sizeof(vertices));
-
-  // fill layout with buffer elements then gets added to vertex array
-  BufferLayout layout = {
-      {Types::ShaderDataType::float3, "a_Pos"},
-      {Types::ShaderDataType::float4, "a_Color"},
-  };
-
-  vb->setLayout(layout);
-  va->addVertexBuffer(vb);
-
-  unsigned int indices[3] = {0, 1, 2};
-  ib = IndexBuffer::create(indices, sizeof(indices) / sizeof(uint32_t));
-
-  va->setIndexBuffer(ib);
-
-  mShader = createScope<Shader>("Sim/Assets/shaders/triangle.vs", "Sim/Assets/shaders/triangle.fs");
 }
 
 Application::~Application() {}
@@ -64,27 +43,35 @@ void Application::run() {
   CORE_INFO("GLFW version: {0}", glfwGetVersionString());
 
   while (mRunning) {
+    PROFILE_SCOPE("Application Loop");
 
-    RenderCommand::setClearColor({.2, .2, .2, 1});
-    RenderCommand::clear();
+    float time = (float)glfwGetTime();
+    DeltaTime dt = time - mLastFrameTime;
+    mLastFrameTime = time;
 
-    Renderer::beginScene();
+    if (!mMinimized) {
+      {
+        PROFILE_SCOPE("LayerStack onUpdate");
 
-    mShader->bind();
-
-    Renderer::submit(va);
-
-    Renderer::endScene();
-
-    for (Layer *layer : mLayerStack)
-      layer->onUpdate();
+        for (Layer *layer : mLayerStack) {
+          layer->onUpdate(dt);
+        }
+      }
+    }
 
     mImGuiLayer->begin();
-    for (Layer *layer : mLayerStack)
-      layer->onImGuiRender();
+    {
+      PROFILE_SCOPE("LayerStack onImGuiRender");
+
+      for (Layer *layer : mLayerStack)
+        layer->onImGuiRender();
+    }
     mImGuiLayer->end();
 
     mWindow->onUpdate();
+
+    Engine::RenderCommand::setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+    Engine::RenderCommand::clear();
   }
 }
 
@@ -103,9 +90,10 @@ void Application::onEvent(Event &e) {
   EventDispatcher dispatcher(e);
 
   dispatcher.dispatch<WindowCloseEvent>(BIND_FN(Application::onWindowClose));
+  dispatcher.dispatch<WindowResizeEvent>(BIND_FN(Application::onWindowResize));
 
-  if (e.getEventType() != EventType::MouseMoved)
-    CORE_TRACE("{0}", e.toString());
+  // if (e.getEventType() != EventType::MouseMoved)
+  //   CORE_TRACE("{0}", e.toString());
 
   for (auto it = mLayerStack.end(); it != mLayerStack.begin();) {
     (*--it)->onEvent(e);
@@ -120,8 +108,16 @@ bool Application::onWindowClose(WindowCloseEvent &e) {
 }
 
 bool Application::onWindowResize(WindowResizeEvent &e) {
-  glViewport(0, 0, e.getWidth(), e.getHeight());
-  return true;
+
+  if (e.getHeight() == 0 || e.getWidth() == 0) {
+    mMinimized = true;
+    return false;
+  }
+
+  mMinimized = false;
+
+  Renderer::onWindowResize(e.getWidth(), e.getHeight());
+  return false;
 }
 
 }  // namespace Engine

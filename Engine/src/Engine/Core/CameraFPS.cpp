@@ -1,20 +1,21 @@
 #include "CameraFPS.h"
 
-CameraFPS::CameraFPS(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
-    : Front(0.0f, 0.0f, -1.0f), MovementSpeed(SPEED),
-      MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+namespace Engine {
+
+CameraFPS::CameraFPS(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
+    Front(0.0f, 0.0f, -1.0f), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
 
   Position = position;
   WorldUp = up;
   Yaw = yaw;
   Pitch = pitch;
   updateCameraVectors();
+
+  setAspect(1.3f);
 }
 
-CameraFPS::CameraFPS(float posX, float posY, float posZ, float upX, float upY,
-                     float upZ, float yaw, float pitch)
-    : Front(0.0f, 0.0f, -1.0f), MovementSpeed(SPEED),
-      MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+CameraFPS::CameraFPS(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) :
+    Front(0.0f, 0.0f, -1.0f), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
 
   Position = {posX, posY, posZ};
   WorldUp = {upX, upY, upZ};
@@ -43,8 +44,7 @@ void CameraFPS::processKeyboard(Camera_Movement direction, float deltaTime) {
     Position -= WorldUp * velocity;
 }
 
-void CameraFPS::processMouseMovement(float xoffset, float yoffset,
-                                     GLboolean constrainPitch) {
+void CameraFPS::processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch) {
   xoffset *= MouseSensitivity;
   yoffset *= MouseSensitivity;
 
@@ -79,3 +79,5 @@ void CameraFPS::updateCameraVectors() {
   Right = glm::normalize(glm::cross(Front, WorldUp));
   Up = glm::normalize(glm::cross(Right, Front));
 }
+
+}  // namespace Engine
