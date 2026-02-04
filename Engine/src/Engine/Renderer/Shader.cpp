@@ -1,40 +1,63 @@
 #include "Shader.h"
+#include "Core/Assert.h"
+#include "Core/Base.h"
 #include "Core/Log.h"
 #include "pch.h"
 
 namespace Engine {
 
+Shader::Shader(const std::string &name, const std::string &vertexPath, const std::string &fragPath) : mName(name) {
+  compile(vertexPath, fragPath);
+}
 Shader::Shader(const std::string &vertexPath, const std::string &fragPath) {
+
+  compile(vertexPath, fragPath);
+
+  auto lastSlash = vertexPath.find_last_of("/\\");
+  lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+  auto lastDot = vertexPath.rfind(".");
+  auto count = lastDot == std::string::npos ? vertexPath.size() - lastSlash : lastDot - lastSlash;
+  mName = vertexPath.substr(lastSlash, count);
+}
+
+std::string Shader::ReadFromFile(const std::string &filepath) {
   // 1. retrieve the vertex/fragment source code from filePath
-  std::string vertexCode;
-  std::string fragmentCode;
-  std::ifstream vShaderFile;
-  std::ifstream fShaderFile;
+  std::string filepathCode;
+  std::ifstream filepathFile;
+
   // ensure ifstream objects can throw exceptions:
-  vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-  fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  filepathFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
   try {
     // open files
-    vShaderFile.open(vertexPath);
-    fShaderFile.open(fragPath);
-    std::stringstream vShaderStream, fShaderStream;
+    filepathFile.open(filepath);
+    std::stringstream fileStream;
+
     // read file's buffer contents into streams
-    vShaderStream << vShaderFile.rdbuf();
-    fShaderStream << fShaderFile.rdbuf();
+    fileStream << filepathFile.rdbuf();
+
     // close file handlers
-    vShaderFile.close();
-    fShaderFile.close();
+    filepathFile.close();
+
     // convert stream into string
-    vertexCode = vShaderStream.str();
-    fragmentCode = fShaderStream.str();
+    filepathCode = fileStream.str();
+
   } catch (std::ifstream::failure &e) {
 
-    CORE_ERROR("ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: {} \n vertex shader: [{}]\n frag shader: [{}] ", e.what(),
-               vertexPath, fragPath);
+    CORE_ERROR("ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: {0} \n shader: [{1}] ", e.what(), filepath);
   }
-  const char *vShaderCode = vertexCode.c_str();
-  const char *fShaderCode = fragmentCode.c_str();
-  // 2. compile shaders
+
+  return filepathCode;
+}
+
+void Shader::compile(const std::string &vertexPath, const std::string &fragPath) {
+
+  std::string vertexSrc = ReadFromFile(vertexPath);
+  std::string fragmentSrc = ReadFromFile(fragPath);
+
+  const char *vShaderCode = vertexSrc.c_str();
+  const char *fShaderCode = fragmentSrc.c_str();
+
   unsigned int vertex, fragment;
   // vertex shader
   vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -123,16 +146,46 @@ void Shader::checkCompileErrors(GLuint shader, std::string type) {
     if (!success) {
       glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 
-      CORE_ERROR("ERROR::SHADER_COMPILATION_ERROR of type: {}\n{}", type, infoLog);
+      CORE_ERROR("ERROR::SHADER_COMPILATION_ERROR of type: {0}\n{1}", type, infoLog);
     }
   } else {
     glGetProgramiv(shader, GL_LINK_STATUS, &success);
     if (!success) {
       glGetProgramInfoLog(shader, 1024, NULL, infoLog);
 
-      CORE_ERROR("ERROR::PROGRAM_LINKING_ERROR of type: {}\n{}", type, infoLog);
+      CORE_ERROR("ERROR::PROGRAM_LINKING_ERROR of type: {0}\n{1}", type, infoLog);
     }
   }
+}
+
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+
+void ShaderLibrary::add(const Ref<Shader> &shader) {
+  auto &name = shader->getName();
+  CORE_ASSERT(mShaders.find(name) == mShaders.end(), "Shader already exists!");
+  mShaders[name] = shader;
+}
+
+Ref<Shader> ShaderLibrary::load(const std::string &vertexPath, const std::string &fragxPath) {
+  auto shader = createRef<Shader>(vertexPath, fragxPath);
+  add(shader);
+  return shader;
+}
+
+Ref<Shader> ShaderLibrary::load(const std::string &name, const std::string &vertexPath, const std::string &fragxPath) {
+  auto shader = createRef<Shader>(name, vertexPath, fragxPath);
+  add(shader);
+  return shader;
+}
+
+Ref<Shader> ShaderLibrary::get(const Ref<Shader> shader) {
+  auto &name = shader->getName();
+  CORE_ASSERT(mShaders.find(name) != mShaders.end(), "Shader does not exist in shader library");
+
+  return mShaders[name];
 }
 
 }  // namespace Engine

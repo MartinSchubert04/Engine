@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/Base.h"
+#include "Renderer/Shader.h"
 #include "Renderer/VertexArray.h"
 #include "pch.h"
 namespace Engine {
@@ -22,9 +23,11 @@ public:
   virtual void drawArrays(const Ref<VertexArray> &vertexArray, uint32_t count) = 0;
 
   inline static API getAPI() { return s_API; }
+  inline static ShaderLibrary getShaderLibrary() { return s_ShaderLib; }
 
 private:
   static API s_API;
+  static ShaderLibrary s_ShaderLib;
 };
 
 }  // namespace Engine

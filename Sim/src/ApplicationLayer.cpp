@@ -17,8 +17,8 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
   // mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
   mSphere = Sphere(10);
 
-  mShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/model.vs", "Sim/Assets/shaders/model.fs");
-  mSkyboxShader = Engine::createScope<Engine::Shader>("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");
+  mShader = Renderer::getShaderLibrary().load("Sim/Assets/shaders/model.vs", "Sim/Assets/shaders/model.fs");
+  mSkyboxShader = Renderer::getShaderLibrary().load("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");
   mSkyboxShader->setInt("skybox", 0);
 
   float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();
@@ -135,9 +135,6 @@ void ApplicationLayer::onImGuiRender() {
     ImGui::Text("%.3fms %s", r.time, r.name);
   ImGui::End();
   Instrumentor::clearResults();
-
-  bool show = true;
-  ImGui::ShowDemoWindow(&show);
 }
 
 void ApplicationLayer::onEvent(Engine::Event &e) {
