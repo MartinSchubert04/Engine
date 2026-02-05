@@ -78,6 +78,7 @@ set(SOURCES
     Engine/src/Engine/Core/Mesh.cpp
     Engine/src/Engine/Core/Texture.cpp
     Engine/src/Engine/Core/CameraFPS.cpp
+    Engine/src/Engine/Core/CameraController.cpp
     # Engine/src/Engine/Core/Model.cpp
     
     Engine/src/Engine/Debug/Instrumentor.cpp

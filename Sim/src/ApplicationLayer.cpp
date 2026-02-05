@@ -1,4 +1,5 @@
 #include "ApplicationLayer.h"
+#include "Core/CameraController.h"
 #include "Engine.h"
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
@@ -23,8 +24,8 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
 
   float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();
 
-  mCamera = Engine::createScope<Engine::Camera>(glm::vec3(0, 0, 1), 45.0f, aspect, 0.1f, 1000);
-  mCamera->setDistance(.1);
+  mCameraController = Engine::createScope<Engine::CameraController>(aspect);
+  mCameraController->getCamera().setDistance(.1);
   mLight = Engine::createRef<Engine::Light>();
 }
 
@@ -42,6 +43,8 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
   PROFILE_SCOPE("ApplicationLayer::onUpdate");
 
+  mCameraController->onUpdate(dt);
+
   mDeltaTime = dt;
 
   mFrameBuffer->bind();
@@ -53,16 +56,16 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   glEnable(GL_DEPTH_TEST);
 
   mShader->bind();
-  mCamera->update(mShader.get());
+  mCameraController->getCamera().update(mShader.get());
 
   mLight->update(mShader.get());
   mSphere.draw(mShader);
 
   glDepthFunc(GL_LEQUAL);
-  mCamera->update(mSkyboxShader.get());
+  mCameraController->getCamera().update(mSkyboxShader.get());
   mSkyboxShader->bind();
-  mSkyboxShader->setMat4("projection", mCamera->getProjection());
-  mSkyboxShader->setMat4("view", glm::mat4(glm::mat3(mCamera->getViewMatrix())));
+  mSkyboxShader->setMat4("projection", mCameraController->getCamera().getProjection());
+  mSkyboxShader->setMat4("view", glm::mat4(glm::mat3(mCameraController->getCamera().getViewMatrix())));
   mSkybox.draw();
   glDepthFunc(GL_LESS);
 
@@ -139,37 +142,31 @@ void ApplicationLayer::onImGuiRender() {
 
 void ApplicationLayer::onEvent(Engine::Event &e) {
 
-  Engine::EventDispatcher dispatcher(e);
+  mCameraController->onEvent(e);
 
+  Engine::EventDispatcher dispatcher(e);
   dispatcher.dispatch<Engine::KeyPressedEvent>(BIND_FN(ApplicationLayer::onKeyPressedEvent));
-  dispatcher.dispatch<Engine::MouseMovedEvent>(BIND_FN(ApplicationLayer::onMouseMoved));
-  dispatcher.dispatch<Engine::WindowResizeEvent>(BIND_FN(ApplicationLayer::onWindowResize));
+  // dispatcher.dispatch<Engine::MouseMovedEvent>(BIND_FN(ApplicationLayer::onMouseMoved));
+  // dispatcher.dispatch<Engine::WindowResizeEvent>(BIND_FN(ApplicationLayer::onWindowResize));
 }
 
 bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
-  if (event.getKeyCode() == Engine::Key::Escape) {
+  if (Engine::Input::isKeyPressed(Engine::Key::Escape)) {
     onClose();
   }
-  if (event.getKeyCode() == Engine::Key::W) {
-    mCamera->onMouseWheel(-mCamera->speed * 10 * mDeltaTime.getSeconds());
-  }
-  if (event.getKeyCode() == Engine::Key::S) {
-    mCamera->onMouseWheel(mCamera->speed * 10 * mDeltaTime.getSeconds());
-  }
-
   return false;
 }
 
 bool ApplicationLayer::onMouseMoved(Engine::MouseMovedEvent &event) {
-  if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonRight)) {
-    mCamera->onMouseMove(event.getX(), event.getY(), Engine::Mouse::ButtonRight);
-  }
+  // if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonRight)) {
+  //   mCamera->onMouseMove(event.getX(), event.getY(), Engine::Mouse::ButtonRight);
+  // }
 
   return false;
 }
 
 bool ApplicationLayer::onWindowResize(WindowResizeEvent &event) {
-  mCamera->setAspect((float)event.getWidth() / (float)event.getHeight());
+  // mCamera->setAspect((float)event.getWidth() / (float)event.getHeight());
 
   return false;
 }
