@@ -28,7 +28,7 @@ private:
   Engine::Skybox mSkybox;
 
   Engine::Ref<Engine::FrameBuffer> mFrameBuffer;
-  Engine::Scope<Engine::CameraController> mCameraController;
+  Engine::CameraController mCameraController;
   Engine::Ref<Engine::Light> mLight;
   Engine::DeltaTime mDeltaTime;
 

@@ -12,6 +12,8 @@ public:
   CameraController(float aspect);
 
   void onUpdate(DeltaTime dt);
+  void updateShader(Ref<Shader> shader);
+
   void onEvent(Event &e);
 
   void reset();

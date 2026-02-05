@@ -9,14 +9,14 @@
 #include <vector>
 #include "Sphere.h"
 
-ApplicationLayer::ApplicationLayer() : Layer("App layer") {
+ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(1600.0f / 900.0f) {
 
   mSkybox.loadCubeMap(std::vector<std::string>({"Sim/Assets/textures/px.jpg", "Sim/Assets/textures/nx.jpg",
                                                 "Sim/Assets/textures/py.jpg", "Sim/Assets/textures/ny.jpg",
                                                 "Sim/Assets/textures/pz.jpg", "Sim/Assets/textures/nz.jpg"}));
 
   // mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
-  mSphere = Sphere(10);
+  mSphere = Sphere(100);
 
   mShader = Renderer::getShaderLibrary().load("Sim/Assets/shaders/model.vs", "Sim/Assets/shaders/model.fs");
   mSkyboxShader = Renderer::getShaderLibrary().load("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");
@@ -24,8 +24,7 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer") {
 
   float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();
 
-  mCameraController = Engine::createScope<Engine::CameraController>(aspect);
-  mCameraController->getCamera().setDistance(.1);
+  mCameraController.getCamera().setDistance(.1);
   mLight = Engine::createRef<Engine::Light>();
 }
 
@@ -43,7 +42,7 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
   PROFILE_SCOPE("ApplicationLayer::onUpdate");
 
-  mCameraController->onUpdate(dt);
+  mCameraController.onUpdate(dt);
 
   mDeltaTime = dt;
 
@@ -56,16 +55,16 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   glEnable(GL_DEPTH_TEST);
 
   mShader->bind();
-  mCameraController->getCamera().update(mShader.get());
+  mCameraController.updateShader(mShader);
 
-  mLight->update(mShader.get());
+  mLight->update(mShader);
   mSphere.draw(mShader);
 
   glDepthFunc(GL_LEQUAL);
-  mCameraController->getCamera().update(mSkyboxShader.get());
+  mCameraController.updateShader(mSkyboxShader);
   mSkyboxShader->bind();
-  mSkyboxShader->setMat4("projection", mCameraController->getCamera().getProjection());
-  mSkyboxShader->setMat4("view", glm::mat4(glm::mat3(mCameraController->getCamera().getViewMatrix())));
+  mSkyboxShader->setMat4("projection", mCameraController.getCamera().getProjection());
+  mSkyboxShader->setMat4("view", glm::mat4(glm::mat3(mCameraController.getCamera().getViewMatrix())));
   mSkybox.draw();
   glDepthFunc(GL_LESS);
 
@@ -142,12 +141,10 @@ void ApplicationLayer::onImGuiRender() {
 
 void ApplicationLayer::onEvent(Engine::Event &e) {
 
-  mCameraController->onEvent(e);
+  mCameraController.onEvent(e);
 
   Engine::EventDispatcher dispatcher(e);
   dispatcher.dispatch<Engine::KeyPressedEvent>(BIND_FN(ApplicationLayer::onKeyPressedEvent));
-  // dispatcher.dispatch<Engine::MouseMovedEvent>(BIND_FN(ApplicationLayer::onMouseMoved));
-  // dispatcher.dispatch<Engine::WindowResizeEvent>(BIND_FN(ApplicationLayer::onWindowResize));
 }
 
 bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
@@ -158,9 +155,6 @@ bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
 }
 
 bool ApplicationLayer::onMouseMoved(Engine::MouseMovedEvent &event) {
-  // if (Engine::Input::isMouseButtonPressed(Engine::Mouse::ButtonRight)) {
-  //   mCamera->onMouseMove(event.getX(), event.getY(), Engine::Mouse::ButtonRight);
-  // }
 
   return false;
 }

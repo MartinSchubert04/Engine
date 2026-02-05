@@ -24,6 +24,12 @@ void CameraController::onUpdate(DeltaTime dt) {
   }
 }
 
+void CameraController::updateShader(Ref<Shader> shader) {
+  shader->setMat4("view", mCamera.getViewMatrix());
+  shader->setMat4("projection", mCamera.getProjection());
+  shader->setVec3("camPos", mCamera.getPosition());
+}
+
 void CameraController::onEvent(Event &e) {
 
   EventDispatcher dispatcher(e);
@@ -37,7 +43,7 @@ bool CameraController::onMouseMoved(MouseMovedEvent &e) {
   glm::vec2 pos2d{e.getX(), e.getY()};
 
   if (Input::isMouseButtonPressed(Mouse::ButtonRight)) {
-    glm::vec2 delta = (pos2d - mCamera.getPosition()) * mDelta.getSeconds();
+    glm::vec2 delta = (pos2d - mCamera.getPosition2D()) * mDelta.getSeconds();
 
     float sign = mCamera.getUp().y < 0 ? -1.0f : 1.0f;
     mCamera.yaw += sign * delta.x * cRotationSpeed;
@@ -46,10 +52,10 @@ bool CameraController::onMouseMoved(MouseMovedEvent &e) {
     mCamera.updateViewMatrix();
   } else if (Input::isMouseButtonPressed(Mouse::ButtonLeft)) {
     // TODO: Adjust pan speed for distance|
-    glm::vec2 delta = (pos2d - mCamera.getPosition()) * mDelta.getSeconds();
+    glm::vec2 delta = (pos2d - mCamera.getPosition2D()) * mCamera.displaceSpeed * mDelta.getSeconds();
 
-    mCamera.mFocus += -mCamera.getRight() * delta.x * mCamera.distance;
-    mCamera.mFocus += mCamera.getUp() * delta.y * mCamera.distance;
+    mCamera.focusPoint += -mCamera.getRight() * delta.x * mCamera.distance;
+    mCamera.focusPoint += mCamera.getUp() * delta.y * mCamera.distance;
 
     mCamera.updateViewMatrix();
   }
@@ -59,7 +65,7 @@ bool CameraController::onMouseMoved(MouseMovedEvent &e) {
 }
 
 void CameraController::reset() {
-  mCamera.mFocus = {0.0f, 0.0f, 0.0f};
+  mCamera.focusPoint = {0.0f, 0.0f, 0.0f};
   // distance = 5.0f;
   mCamera.updateViewMatrix();
 }
@@ -72,9 +78,8 @@ bool CameraController::onMouseScroll(MouseScrolledEvent &e) {
   onMouseWheel(mCamera.scrollSpeed * e.getOffsetY());
   return false;
 }
-
 void CameraController::onMouseWheel(double offset) {
-  mCamera.setDistance(offset * 0.5f);
+  mCamera.setDistance(-offset * 0.5f);
   mCamera.updateViewMatrix();
 }
 

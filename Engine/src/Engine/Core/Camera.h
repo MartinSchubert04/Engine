@@ -10,11 +10,12 @@
 namespace Engine {
 class Camera {
 public:
-  float scrollSpeed = 100.0f;
+  float scrollSpeed = 70.0f;
+  float displaceSpeed = .1f;
   float distance = 5.0f;
   float pitch = 0.0f;
   float yaw = 0.0f;
-  glm::vec3 mFocus = {0.0f, 0.0f, 0.0f};
+  glm::vec3 focusPoint = {0.0f, 0.0f, 0.0f};
 
   Camera(const glm::vec3 &position, float fov, float aspect, float nearPlane, float farPlane) {
     mPosition = position;
@@ -28,19 +29,7 @@ public:
     updateViewMatrix();
   }
 
-  void update(Shader *shader) {
-    shader->setMat4("view", mViewMatrix);
-    shader->setMat4("projection", getProjection());
-    shader->setVec3("camPos", mPosition);
-  }
-
-  void updateViewMatrix() {
-    mPosition = mFocus - getForward() * distance;
-
-    glm::quat orientation = getDirection();
-    mViewMatrix = glm::translate(glm::mat4(1.0f), mPosition) * glm::mat4(orientation);
-    mViewMatrix = glm::inverse(mViewMatrix);
-  }
+  void updateViewMatrix();
 
   void setAspect(float aspect) { mProjection = glm::perspective(mFOV, aspect, mNear, mFar); }
 
@@ -55,10 +44,13 @@ public:
     updateViewMatrix();
   }
 
-  float getDistance() { return distance; }
-  glm::vec2 getPosition() { return mCurrentPos2d; }
+  glm::vec3 getPosition() { return mPosition; }
+
+  glm::vec2 getPosition2D() { return mCurrentPos2d; }
 
   const glm::mat4 &getProjection() const { return mProjection; }
+
+  glm::mat4 getViewMatrix() const { return mViewMatrix; }
 
   glm::vec3 getUp() const { return getDirection() * cUp; }
 
@@ -67,8 +59,6 @@ public:
   glm::vec3 getForward() const { return getDirection() * cForward; }
 
   glm::quat getDirection() const { return glm::quat(glm::vec3(-pitch, -yaw, 0.0f)); }
-
-  glm::mat4 getViewMatrix() const { return mViewMatrix; }
 
 private:
   glm::mat4 mViewMatrix;
