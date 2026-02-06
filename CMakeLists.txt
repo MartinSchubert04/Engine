@@ -58,7 +58,7 @@ set(SOURCES
     Engine/src/pch.cpp
     
 
-    # Renderer ( API agnostic)
+    # Renderer ( API agnostic) ------------
     Engine/src/Engine/Renderer/Buffer.cpp
     Engine/src/Engine/Renderer/FrameBuffer.cpp
     Engine/src/Engine/Renderer/Renderer.cpp
@@ -69,7 +69,7 @@ set(SOURCES
     Engine/src/Engine/Renderer/Shader.cpp
 
 
-    # Core
+    # Core --------------------------------
     Engine/src/Engine/Core/Application.cpp
     Engine/src/Engine/Core/Window.cpp
     Engine/src/Engine/Core/Log.cpp
@@ -89,7 +89,7 @@ set(SOURCES
     # Engine/src/Engine/ui/Scene.cpp
     # Engine/src/Engine/ui/Panel.cpp
     
-    # Platform dependent
+    # Platforms & APIs --------------------------
     Engine/src/Platform/OpenGL/OpenGLcontext.cpp
     Engine/src/Platform/OpenGL/OpenGLrendererAPI.cpp
     Engine/src/Platform/OpenGL/OpenGLvertexArray.cpp
@@ -98,6 +98,7 @@ set(SOURCES
     Engine/src/Platform/Windows/WindowsWindow.cpp
     Engine/src/Platform/Windows/WindowsInput.cpp
 
+    # Demos ----------------------------------
     Demos/Sim/src/ApplicationLayer.cpp
     Demos/Sim/src/Planet.cpp
     # Demos/Sim/src/System.cpp
