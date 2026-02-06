@@ -11,15 +11,16 @@
 
 ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(1600.0f / 900.0f) {
 
-  mSkybox.loadCubeMap(std::vector<std::string>({"Sim/Assets/textures/px.jpg", "Sim/Assets/textures/nx.jpg",
-                                                "Sim/Assets/textures/py.jpg", "Sim/Assets/textures/ny.jpg",
-                                                "Sim/Assets/textures/pz.jpg", "Sim/Assets/textures/nz.jpg"}));
+  mSkybox.loadCubeMap(std::vector<std::string>(
+      {"Demos/Sim/Assets/textures/px.jpg", "Demos/Sim/Assets/textures/nx.jpg", "Demos/Sim/Assets/textures/py.jpg",
+       "Demos/Sim/Assets/textures/ny.jpg", "Demos/Sim/Assets/textures/pz.jpg", "Demos/Sim/Assets/textures/nz.jpg"}));
 
   // mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
   mSphere = Sphere(100);
 
-  mShader = Renderer::getShaderLibrary().load("Sim/Assets/shaders/model.vs", "Sim/Assets/shaders/model.fs");
-  mSkyboxShader = Renderer::getShaderLibrary().load("Sim/Assets/shaders/skybox.vs", "Sim/Assets/shaders/skybox.fs");
+  mShader = Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/model.vs", "Demos/Sim/Assets/shaders/model.fs");
+  mSkyboxShader =
+      Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/skybox.vs", "Demos/Sim/Assets/shaders/skybox.fs");
   mSkyboxShader->setInt("skybox", 0);
 
   float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();

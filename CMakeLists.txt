@@ -46,7 +46,7 @@ add_compile_options(-fdiagnostics-color=always -w)
 # Sources
 # ===============================
 set(SOURCE_FILE
-    Sim/src/SandBox.cpp
+    Demos/Sim/src/SandBox.cpp
 )
 
 set(IMGUI_SOURCES
@@ -98,11 +98,11 @@ set(SOURCES
     Engine/src/Platform/Windows/WindowsWindow.cpp
     Engine/src/Platform/Windows/WindowsInput.cpp
 
-    Sim/src/ApplicationLayer.cpp
-    Sim/src/Planet.cpp
-    # Sim/src/System.cpp
-    # Sim/src/Solver.cpp
-    # Sim/src/Grid.cpp
+    Demos/Sim/src/ApplicationLayer.cpp
+    Demos/Sim/src/Planet.cpp
+    # Demos/Sim/src/System.cpp
+    # Demos/Sim/src/Solver.cpp
+    # Demos/Sim/src/Grid.cpp
 
     Engine/include/stb/stb_image.cpp
     ${IMGUI_SOURCES}
@@ -117,7 +117,7 @@ add_executable(${APP}
 )
 
 # ===============================
-# Includes (TARGET-BASED)
+# Included directories
 # ===============================
 target_include_directories(${APP} PRIVATE
     ${PROJECT_SOURCE_DIR}
@@ -126,6 +126,7 @@ target_include_directories(${APP} PRIVATE
     Engine/src
     Engine/src/Engine/
     Sim/Assets/
+    Demos/
 )
 
 # ===============================
