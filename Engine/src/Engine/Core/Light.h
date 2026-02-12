@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Base.h"
 #include "pch.h"
 
 #include "Renderer/Shader.h"
@@ -15,7 +16,7 @@ public:
 
   ~Light() {}
 
-  void update(Shader *shader) {
+  void update(Ref<Shader> shader) {
 
     shader->setVec3("dirLight.direction", position);
     shader->setVec3("dirLight.ambient", color * 0.4f);

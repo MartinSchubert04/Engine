@@ -5,9 +5,6 @@
 #include "Events/ApplicationEvent.h"
 #include "Events/Event.h"
 #include "GLFW/glfw3.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/Types.h"
-#include "Renderer/VertexArray.h"
 #include "pch.h"
 #include "Core/Base.h"
 #include "Core/Log.h"
@@ -87,13 +84,13 @@ void Application::pushOverlay(Layer *layer) {
 
 void Application::onEvent(Event &e) {
 
+  // if (e.getEventType() != EventType::MouseMoved)
+  //   CORE_TRACE("{0}", e.toString());
+
   EventDispatcher dispatcher(e);
 
   dispatcher.dispatch<WindowCloseEvent>(BIND_FN(Application::onWindowClose));
   dispatcher.dispatch<WindowResizeEvent>(BIND_FN(Application::onWindowResize));
-
-  // if (e.getEventType() != EventType::MouseMoved)
-  //   CORE_TRACE("{0}", e.toString());
 
   for (auto it = mLayerStack.end(); it != mLayerStack.begin();) {
     (*--it)->onEvent(e);

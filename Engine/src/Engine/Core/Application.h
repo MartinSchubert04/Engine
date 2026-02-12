@@ -1,6 +1,4 @@
 #pragma once
-#include "Renderer/Buffer.h"
-#include "pch.h"
 #include "Window.h"
 #include "Base.h"
 #include "Events/Event.h"
@@ -8,8 +6,6 @@
 #include "Core/LayerStack.h"
 #include "Engine/ImGui/ImGuiLayer.h"
 #include "Platform/OpenGL/OpenGLbuffer.h"
-#include "Renderer/VertexArray.h"
-#include "Renderer/Shader.h"
 
 namespace Engine {
 

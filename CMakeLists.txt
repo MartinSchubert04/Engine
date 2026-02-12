@@ -46,7 +46,7 @@ add_compile_options(-fdiagnostics-color=always -w)
 # Sources
 # ===============================
 set(SOURCE_FILE
-    Sim/src/SandBox.cpp
+    Demos/Sim/src/SandBox.cpp
 )
 
 set(IMGUI_SOURCES
@@ -58,7 +58,7 @@ set(SOURCES
     Engine/src/pch.cpp
     
 
-    # Renderer ( API agnostic)
+    # Renderer ( API agnostic) ------------
     Engine/src/Engine/Renderer/Buffer.cpp
     Engine/src/Engine/Renderer/FrameBuffer.cpp
     Engine/src/Engine/Renderer/Renderer.cpp
@@ -69,7 +69,7 @@ set(SOURCES
     Engine/src/Engine/Renderer/Shader.cpp
 
 
-    # Core
+    # Core --------------------------------
     Engine/src/Engine/Core/Application.cpp
     Engine/src/Engine/Core/Window.cpp
     Engine/src/Engine/Core/Log.cpp
@@ -78,6 +78,8 @@ set(SOURCES
     Engine/src/Engine/Core/Mesh.cpp
     Engine/src/Engine/Core/Texture.cpp
     Engine/src/Engine/Core/CameraFPS.cpp
+    Engine/src/Engine/Core/Camera.cpp
+    Engine/src/Engine/Core/CameraController.cpp
     # Engine/src/Engine/Core/Model.cpp
     
     Engine/src/Engine/Debug/Instrumentor.cpp
@@ -87,7 +89,7 @@ set(SOURCES
     # Engine/src/Engine/ui/Scene.cpp
     # Engine/src/Engine/ui/Panel.cpp
     
-    # Platform dependent
+    # Platforms & APIs --------------------------
     Engine/src/Platform/OpenGL/OpenGLcontext.cpp
     Engine/src/Platform/OpenGL/OpenGLrendererAPI.cpp
     Engine/src/Platform/OpenGL/OpenGLvertexArray.cpp
@@ -96,11 +98,12 @@ set(SOURCES
     Engine/src/Platform/Windows/WindowsWindow.cpp
     Engine/src/Platform/Windows/WindowsInput.cpp
 
-    Sim/src/ApplicationLayer.cpp
-    Sim/src/Planet.cpp
-    # Sim/src/System.cpp
-    # Sim/src/Solver.cpp
-    # Sim/src/Grid.cpp
+    # Demos ----------------------------------
+    Demos/Sim/src/ApplicationLayer.cpp
+    Demos/Sim/src/Planet.cpp
+    # Demos/Sim/src/System.cpp
+    # Demos/Sim/src/Solver.cpp
+    # Demos/Sim/src/Grid.cpp
 
     Engine/include/stb/stb_image.cpp
     ${IMGUI_SOURCES}
@@ -115,7 +118,7 @@ add_executable(${APP}
 )
 
 # ===============================
-# Includes (TARGET-BASED)
+# Included directories
 # ===============================
 target_include_directories(${APP} PRIVATE
     ${PROJECT_SOURCE_DIR}
@@ -124,6 +127,7 @@ target_include_directories(${APP} PRIVATE
     Engine/src
     Engine/src/Engine/
     Sim/Assets/
+    Demos/
 )
 
 # ===============================

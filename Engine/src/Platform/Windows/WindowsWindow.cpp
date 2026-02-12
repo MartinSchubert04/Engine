@@ -108,7 +108,7 @@ void WindowsWindow::init(const WindowProps &props) {
     }
   });
 
-  glfwSetScrollCallback(mWindow, [](GLFWwindow *window, double yOffset, double xOffset) {
+  glfwSetScrollCallback(mWindow, [](GLFWwindow *window, double xOffset, double yOffset) {
     WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
 
     MouseScrolledEvent event((float)xOffset, (float)yOffset);

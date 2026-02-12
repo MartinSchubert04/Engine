@@ -62,7 +62,7 @@ jobs:
           mv openGL.exe engine.exe
           # Crear un ZIP con el ejecutable, la DLL de Assimp y tus carpetas de datos
           # Agregamos 'resources' y 'shaders' (ajusta los nombres si son distintos)
-          7z a engine-windows-x64.zip engine.exe imgui.ini resources/ shaders/
+          7z a engine-windows-x64.zip engine.exe imgui.ini resources/ Sim/Assets/shaders/
 
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2
