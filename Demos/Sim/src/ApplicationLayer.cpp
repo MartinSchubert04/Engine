@@ -4,6 +4,8 @@
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
 #include "Renderer/Buffer.h"
+#include "Renderer/RenderCommand.h"
+#include "Renderer/Renderer.h"
 #include "imgui.h"
 #include "pch.h"
 #include <vector>
@@ -42,6 +44,12 @@ void ApplicationLayer::onDetach() {}
 void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
   PROFILE_SCOPE("ApplicationLayer::onUpdate");
+
+  auto spec = mFrameBuffer->getSpecification();
+  if (spec.width != (uint32_t)mViewportSize.x || spec.height != (uint32_t)mViewportSize.y) {
+    mFrameBuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+    mCameraController.getCamera().setAspect(mViewportSize.x / mViewportSize.y);
+  }
 
   mCameraController.onUpdate(dt);
 
@@ -128,6 +136,10 @@ void ApplicationLayer::onImGuiRender() {
   ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
   ImGui::Begin("Viewport");
   ImVec2 viewportSize = ImGui::GetContentRegionAvail();  // Obtiene el tamaño de la ventana de ImGui
+
+  if (viewportSize.x > 0 && viewportSize.y > 0)
+    mViewportSize = {viewportSize.x, viewportSize.y};
+
   uint64_t textureID = mFrameBuffer->getColorAttachmentID();
   ImGui::Image((void *)(textureID), ImVec2{viewportSize.x, viewportSize.y}, ImVec2(0, 1), ImVec2(1, 0));
   ImGui::End();
@@ -161,7 +173,7 @@ bool ApplicationLayer::onMouseMoved(Engine::MouseMovedEvent &event) {
 }
 
 bool ApplicationLayer::onWindowResize(WindowResizeEvent &event) {
-  // mCamera->setAspect((float)event.getWidth() / (float)event.getHeight());
+  // mCameraController.getCamera().setAspect((float)event.getWidth() / (float)event.getHeight());
 
   return false;
 }

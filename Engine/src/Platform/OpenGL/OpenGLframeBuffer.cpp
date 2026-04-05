@@ -5,6 +5,8 @@
 
 namespace Engine {
 
+static const uint32_t s_MaxFramebufferSize = 8192;
+
 OpenGLframeBuffer::OpenGLframeBuffer(const FrameBufferSpecification &spec) : mSpecification(spec) {
   invalidate();
 }
@@ -17,6 +19,11 @@ void OpenGLframeBuffer::invalidate() {
 
   if (mRendererID) {
     glDeleteFramebuffers(1, &mRendererID);
+    glDeleteTextures(1, &mColorAttachment);
+    glDeleteTextures(1, &mDepthAttachment);
+
+    mColorAttachment = 0;
+    mDepthAttachment = 0;
   }
 
   glCreateFramebuffers(1, &mRendererID);
@@ -52,6 +59,17 @@ void OpenGLframeBuffer::bind() const {
 
 void OpenGLframeBuffer::unbind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void OpenGLframeBuffer::resize(uint32_t width, uint32_t height) {
+  if (width == 0 || height == 0 || width > s_MaxFramebufferSize || height > s_MaxFramebufferSize) {
+    CORE_WARN("Attempted to rezize framebuffer to {0}, {1}", width, height);
+    return;
+  }
+  mSpecification.width = width;
+  mSpecification.height = height;
+
+  invalidate();
 }
 
 }  // namespace Engine

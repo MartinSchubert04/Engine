@@ -10,6 +10,7 @@ public:
 
   void bind() const override;
   void unbind() const override;
+  void resize(uint32_t width, uint32_t height) override;
   const FrameBufferSpecification &getSpecification() const override { return mSpecification; };
 
   uint32_t getColorAttachmentID() override { return mColorAttachment; };

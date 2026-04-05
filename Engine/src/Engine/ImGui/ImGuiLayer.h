@@ -34,6 +34,7 @@ private:
   bool onKeyTypedEvent(KeyTypedEvent &e);
   bool onWindowResizeEvent(WindowResizeEvent &e);
   bool onWindowCloseEvent(WindowCloseEvent &e);
+  void SetDarkThemeColors();
 
 private:
   float mTime = (float)glfwGetTime();

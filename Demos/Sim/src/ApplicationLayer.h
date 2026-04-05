@@ -32,6 +32,8 @@ private:
   Engine::Ref<Engine::Light> mLight;
   Engine::DeltaTime mDeltaTime;
 
+  glm::vec2 mViewportSize = {1600.0f, 900.0f};
+
   // Planet mSphere;
   Sphere mSphere;
 
