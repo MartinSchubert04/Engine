@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/Base.h"
 #include "Core/Mesh.h"
+#include "Core/Texture.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Transform.h"
 #include "glm/ext/matrix_transform.hpp"
@@ -11,16 +12,16 @@
 class TerrainFace {
 public:
   TerrainFace() = default;
-  TerrainFace(int resolution, glm::vec3 localUp) : mResolution(resolution), mLocalUp(localUp) {
+  TerrainFace(int resolution, glm::vec3 localUp, Ref<Engine::Texture> texture = nullptr) :
+      mTexture(texture), mResolution(resolution), mLocalUp(localUp) {
     mAxisA = glm::vec3(mLocalUp.y, mLocalUp.z, mLocalUp.x);
     mAxisB = glm::cross(mLocalUp, mAxisA);
-
-    createMesh();
+    createMesh(texture);
   }
 
-  void createMesh() {
-
+  void createMesh(Ref<Engine::Texture> texture = nullptr) {
     std::vector<uint32_t> indices;
+    std::vector<glm::vec2> uvs;
     // res - 1 = the amount of squares in a row (this is squeared given this is a face)
     // 6 represents: 2 (triangles per squeare) * 3 (vertices per triangle)
     indices.resize((mResolution - 1) * (mResolution - 1) * 6);
@@ -41,6 +42,7 @@ public:
         glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube);
 
         vertices.push_back(pointOnUnitSphere);
+        uvs.push_back(percent);
 
         if (x != mResolution - 1 && y != mResolution - 1) {
           indices[triIndex] = i;
@@ -58,18 +60,21 @@ public:
 
     std::vector<Vertex> meshVertices;
 
-    for (auto &vertex : vertices) {
+    for (int i = 0; i < vertices.size(); i++) {
       Vertex v;
-      v.position = vertex;
-      v.normal = vertex;
+      v.position = vertices[i];
+      v.normal = vertices[i];
       v.color = {0.8, 0.8, 0.8, 1};
-      v.texCoords = {0, 0};
-      v.useDiffuseTexture = 0;
-
+      v.texCoords = uvs[i];
+      v.useDiffuseTexture = 1;
       meshVertices.push_back(v);
     }
 
-    mMesh = Mesh(meshVertices, indices);
+    std::vector<Ref<Engine::Texture>> textures;
+    if (texture)
+      textures.push_back(texture);
+
+    mMesh = Mesh(meshVertices, indices, textures);
   }
 
   void draw(Ref<Shader> shader) {
@@ -87,18 +92,15 @@ private:
   glm::vec3 mLocalUp;
   glm::vec3 mAxisA;
   glm::vec3 mAxisB;
+  Ref<Texture> mTexture;
 };
 
 class Sphere {
 public:
   Sphere() = default;
-  Sphere(int resolution) : mFaceResolution(resolution) {
-
-    for (int i{0}; i < 6; i++) {
-      TerrainFace face(mFaceResolution, mDirections[i]);
-
-      mFaces.push_back(face);
-    }
+  Sphere(int resolution, Ref<Engine::Texture> cubemap = nullptr) : mFaceResolution(resolution) {
+    for (int i = 0; i < 6; i++)
+      mFaces.push_back(TerrainFace(mFaceResolution, mDirections[i], cubemap));
   }
 
   void draw(Ref<Shader> shader) {

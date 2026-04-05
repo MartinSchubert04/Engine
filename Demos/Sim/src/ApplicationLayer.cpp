@@ -13,14 +13,22 @@
 
 ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(1600.0f / 900.0f) {
 
-  mSkybox.loadCubeMap(std::vector<std::string>(
-      {"Demos/Sim/Assets/textures/px.jpg", "Demos/Sim/Assets/textures/nx.jpg", "Demos/Sim/Assets/textures/py.jpg",
-       "Demos/Sim/Assets/textures/ny.jpg", "Demos/Sim/Assets/textures/pz.jpg", "Demos/Sim/Assets/textures/nz.jpg"}));
+  mSkybox.loadCubeMap(
+      std::vector<std::string>({"Demos/Sim/Assets/textures/space/px.jpg", "Demos/Sim/Assets/textures/space/nx.jpg",
+                                "Demos/Sim/Assets/textures/space/py.jpg", "Demos/Sim/Assets/textures/space/ny.jpg",
+                                "Demos/Sim/Assets/textures/space/pz.jpg", "Demos/Sim/Assets/textures/space/nz.jpg"}));
 
-  // mSphere = Planet(1, glm::vec2(32, 32), glm::vec3(0, 0, 0), 1);
-  mSphere = Sphere(100);
-
-  mShader = Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/model.vs", "Demos/Sim/Assets/shaders/model.fs");
+  auto cubemap = Engine::Texture::createCubeMap({
+      "Demos/Sim/Assets/textures/earth/colormap/px.png",
+      "Demos/Sim/Assets/textures/earth/colormap/nx.png",
+      "Demos/Sim/Assets/textures/earth/colormap/py.png",
+      "Demos/Sim/Assets/textures/earth/colormap/ny.png",
+      "Demos/Sim/Assets/textures/earth/colormap/pz.png",
+      "Demos/Sim/Assets/textures/earth/colormap/nz.png",
+  });
+  mSphere = Sphere(100, cubemap);
+  mPlanetShader =
+      Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/planet.vs", "Demos/Sim/Assets/shaders/planet.fs");
   mSkyboxShader =
       Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/skybox.vs", "Demos/Sim/Assets/shaders/skybox.fs");
   mSkyboxShader->setInt("skybox", 0);
@@ -63,11 +71,11 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   Engine::Renderer::beginScene();
   glEnable(GL_DEPTH_TEST);
 
-  mShader->bind();
-  mCameraController.updateShader(mShader);
+  mPlanetShader->bind();
+  mCameraController.updateShader(mPlanetShader);
 
-  mLight->update(mShader);
-  mSphere.draw(mShader);
+  mLight->update(mPlanetShader);
+  mSphere.draw(mPlanetShader);
 
   glDepthFunc(GL_LEQUAL);
   mCameraController.updateShader(mSkyboxShader);

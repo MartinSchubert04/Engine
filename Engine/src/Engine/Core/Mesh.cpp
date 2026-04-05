@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Core/Log.h"
 #include "Renderer/Buffer.h"
 #include "Renderer/Shader.h"
 #include "pch.h"
@@ -41,41 +42,24 @@ void Mesh::setupMesh() {
 void Mesh::draw(Shader &shader, DrawType type) {
   unsigned int diffuseNr = 1;
   unsigned int specularNr = 1;
+  unsigned int cubemapNr = 1;
   for (unsigned int i = 0; i < textures.size(); i++) {
 
     std::string number;
     std::string name = textures[i]->getType();
+
     if (name == "texture_diffuse")
       number = std::to_string(diffuseNr++);
     else if (name == "texture_specular")
       number = std::to_string(specularNr++);
+    else if (name == "material_cubemap")
+      number = std::to_string(cubemapNr++);
 
     shader.setInt(("material." + name + number).c_str(), i);
     textures[i]->bind(i);
   }
 
-  // GLcall(glActiveTexture(GL_TEXTURE0));
-
   Renderer::submit(va);
-
-  // va->bind();
-
-  // switch (type) {
-
-  // case DrawType::TRIANGLES:
-  //   glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-  //   break;
-  // case DrawType::LINES:
-  //   glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
-  //   break;
-  // case DrawType::LINE_STRIP:
-  //   glDrawArrays(GL_LINE_STRIP, 0, vertices.size());
-  //   break;
-  // default:
-  //   glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-  // }
-
-  // va.unbind(); no need to loose copute time on this call
 }
 
 }  // namespace Engine

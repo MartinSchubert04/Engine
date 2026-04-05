@@ -23,7 +23,7 @@ private:
   void onClose();
 
 private:
-  Engine::Ref<Engine::Shader> mShader;
+  Engine::Ref<Engine::Shader> mPlanetShader;
   Engine::Ref<Engine::Shader> mSkyboxShader;
   Engine::Skybox mSkybox;
 
