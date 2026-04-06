@@ -61,7 +61,7 @@ public:
   uint32_t getID() const override { return mID; }
   int getWidth() const override { return mWidth; }
   int getHeight() const override { return mHeight; }
-  std::string getType() const override { return "material_cubemap"; }
+  std::string getType() const override { return mType; }
   std::string getPath() const override { return mFilepath; }
 
   void setType(std::string type) override { mType = type; }

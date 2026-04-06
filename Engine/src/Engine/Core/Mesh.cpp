@@ -52,7 +52,7 @@ void Mesh::draw(Shader &shader, DrawType type) {
       number = std::to_string(diffuseNr++);
     else if (name == "texture_specular")
       number = std::to_string(specularNr++);
-    else if (name == "material_cubemap")
+    else if (name == "texture_cubemap")
       number = std::to_string(cubemapNr++);
 
     shader.setInt(("material." + name + number).c_str(), i);

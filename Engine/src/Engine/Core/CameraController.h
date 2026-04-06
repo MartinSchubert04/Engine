@@ -34,7 +34,7 @@ private:
   const glm::vec3 cUp = {0.0f, 1.0f, 0.0f};
   const glm::vec3 cForward = {0.0f, 0.0f, -1.0f};
 
-  const float cRotationSpeed = 2.0f;
+  const float cRotationSpeed = 10.0f;
 };
 
 }  // namespace Engine

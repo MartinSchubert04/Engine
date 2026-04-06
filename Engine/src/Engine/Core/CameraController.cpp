@@ -14,10 +14,10 @@ void CameraController::onUpdate(DeltaTime dt) {
   mDelta = dt;
 
   if (Input::isKeyPressed(Engine::Key::W)) {
-    onMouseWheel(-mCamera.scrollSpeed * mDelta.getSeconds());
+    onMouseWheel(mCamera.scrollSpeed * mDelta.getSeconds());
   }
   if (Input::isKeyPressed(Engine::Key::S)) {
-    onMouseWheel(mCamera.scrollSpeed * mDelta.getSeconds());
+    onMouseWheel(-mCamera.scrollSpeed * mDelta.getSeconds());
   }
   if (Input::isKeyPressed(Engine::Key::R)) {
     reset();
@@ -45,9 +45,10 @@ bool CameraController::onMouseMoved(MouseMovedEvent &e) {
   if (Input::isMouseButtonPressed(Mouse::ButtonRight)) {
     glm::vec2 delta = (pos2d - mCamera.getPosition2D()) * mDelta.getSeconds();
 
-    float sign = mCamera.getUp().y < 0 ? -1.0f : 1.0f;
-    mCamera.yaw += sign * delta.x * cRotationSpeed;
+    mCamera.yaw += delta.x * cRotationSpeed;
     mCamera.pitch += delta.y * cRotationSpeed;
+
+    mCamera.pitch = glm::clamp(mCamera.pitch, -89.0f, 89.0f);
 
     mCamera.updateViewMatrix();
   } else if (Input::isMouseButtonPressed(Mouse::ButtonLeft)) {

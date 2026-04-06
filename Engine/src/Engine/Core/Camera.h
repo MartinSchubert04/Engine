@@ -10,8 +10,8 @@
 namespace Engine {
 class Camera {
 public:
-  float scrollSpeed = 70.0f;
-  float displaceSpeed = .1f;
+  float scrollSpeed = 50.0f;
+  float displaceSpeed = 3.0f;
   float distance = 5.0f;
   float pitch = 0.0f;
   float yaw = 0.0f;

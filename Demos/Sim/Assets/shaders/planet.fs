@@ -28,7 +28,7 @@ struct DirLight {
 struct Material {
   sampler2D texture_diffuse1;
   sampler2D texture_specular1;
-  samplerCube material_cubemap1;
+  samplerCube texture_cubemap1;
   // sampler2D emission1;
   // float shininess;
 };
@@ -74,7 +74,7 @@ void main() {
   vec3 norm = normalize(normal);
   vec3 viewDir = normalize(viewPos - FragPos);
 
-  vec3 texColor = texture(material.material_cubemap1, normalize(vLocalPos)).rgb;
+  vec3 texColor = texture(material.texture_cubemap1, normalize(vLocalPos)).rgb;
 
   // Iluminación aplicada sobre el color de la textura
   vec3 lightDir = normalize(-dirLight.direction);
@@ -86,7 +86,7 @@ void main() {
 
 vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, bool hasTex) {
   // 1. Obtener color base (difuso)
-  vec3 baseColor = hasTex ? texture(material.material_cubemap1, vLocalPos).rgb : vec3(1.0);
+  vec3 baseColor = hasTex ? texture(material.texture_cubemap1, vLocalPos).rgb : vec3(1.0);
 
   // 2. Obtener color especular
   vec3 specColor = hasTex ? texture(material.texture_specular1, TexCoord).rgb : vec3(0.5);
@@ -121,7 +121,7 @@ vec3 calcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, boo
 
 vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir, bool hasTex) {
   // 1. Obtener color base (difuso)
-  vec3 baseColor = hasTex ? texture(material.material_cubemap1, vLocalPos).rgb : vec3(1.0);
+  vec3 baseColor = hasTex ? texture(material.texture_cubemap1, vLocalPos).rgb : vec3(1.0);
 
   // 2. Obtener color especular
   vec3 specColor = hasTex ? texture(material.texture_specular1, TexCoord).rgb : vec3(0.0);

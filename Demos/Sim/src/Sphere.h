@@ -1,13 +1,15 @@
 #pragma once
-#include "Core/Base.h"
-#include "Core/Mesh.h"
-#include "Core/Texture.h"
-#include "Renderer/Shader.h"
-#include "Renderer/Transform.h"
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/ext/quaternion_geometric.hpp"
+#include "glm/trigonometric.hpp"
 #include <Engine.h>
+#include <cstdint>
 #include <vector>
+
+struct PlanetProperties {
+  float size;
+  float rotationSpeed;
+  float angleTilt;
+  float orbitSpeed;
+};
 
 class TerrainFace {
 public:
@@ -42,7 +44,14 @@ public:
         glm::vec3 pointOnUnitSphere = glm::normalize(pointOnUnitCube);
 
         vertices.push_back(pointOnUnitSphere);
-        uvs.push_back(percent);
+
+        // u: angulo horizontal
+        float u = 0.5f + (atan2(pointOnUnitSphere.z, pointOnUnitSphere.x) / (2 * glm::pi<float>()));
+
+        // v: altura
+        float v = 0.5f - (asin(pointOnUnitSphere.y) / glm::pi<float>());
+
+        uvs.push_back({u, v});
 
         if (x != mResolution - 1 && y != mResolution - 1) {
           indices[triIndex] = i;
@@ -77,12 +86,16 @@ public:
     mMesh = Mesh(meshVertices, indices, textures);
   }
 
-  void draw(Ref<Shader> shader) {
-    Engine::Transform transform;
-    transform.setModel(shader);
+  void setTexture(Ref<Texture> texture) { mMesh.textures.push_back(texture); }
 
+  void draw(Ref<Shader> shader, PlanetProperties planetProps) {
+    Engine::Transform transform;
+    transform.rotate(glm::radians(planetProps.angleTilt), {0, 0, 1});
+    transform.rotate(planetProps.rotationSpeed, {0, 1, 0});
+    transform.scale(planetProps.size);
     shader->setVec4("modelColor", {.8, .8, .8, 1});
 
+    transform.setModel(shader);
     mMesh.draw(*shader);
   }
 
@@ -98,18 +111,32 @@ private:
 class Sphere {
 public:
   Sphere() = default;
-  Sphere(int resolution, Ref<Engine::Texture> cubemap = nullptr) : mFaceResolution(resolution) {
+  Sphere(int resolution, PlanetProperties props = {1.f, 1.f, 0.f, 0.f}) :
+      mFaceResolution(resolution), mProperties(props) {
     for (int i = 0; i < 6; i++)
-      mFaces.push_back(TerrainFace(mFaceResolution, mDirections[i], cubemap));
+      mFaces.push_back(TerrainFace(mFaceResolution, mDirections[i]));
   }
 
   void draw(Ref<Shader> shader) {
     for (auto &f : mFaces) {
-      f.draw(shader);
+      f.draw(shader, mProperties);
     }
   }
 
+  void onUpdate(Engine::DeltaTime dt) { mProperties.rotationSpeed += 20.0f * dt.getSeconds(); }
+
+  void setTextures(std::vector<Ref<Texture>> textures) {
+    for (uint32_t i{0}; i < mFaces.size(); i++) {
+      for (uint32_t j{0}; j < textures.size(); j++) {
+        mFaces[i].setTexture(textures[j]);
+      }
+    }
+  }
+
+  void setProperties(PlanetProperties props) { mProperties = props; }
+
 private:
+  PlanetProperties mProperties;
   int mFaceResolution;
   std::vector<TerrainFace> mFaces;
   std::vector<glm::vec3> mDirections = {{0, 1, 0}, {0, -1, 0}, {-1, 0, 0}, {1, 0, 0}, {0, 0, 1}, {0, 0, -1}};

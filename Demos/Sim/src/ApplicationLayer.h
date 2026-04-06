@@ -24,6 +24,7 @@ private:
 
 private:
   Engine::Ref<Engine::Shader> mPlanetShader;
+  Engine::Ref<Engine::Shader> mCloudShader;
   Engine::Ref<Engine::Shader> mSkyboxShader;
   Engine::Skybox mSkybox;
 
@@ -35,7 +36,8 @@ private:
   glm::vec2 mViewportSize = {1600.0f, 900.0f};
 
   // Planet mSphere;
-  Sphere mSphere;
+  Sphere mEarth;
+  Sphere mEarthClouds;
 
   bool mActivateWireFrame = false;
 };

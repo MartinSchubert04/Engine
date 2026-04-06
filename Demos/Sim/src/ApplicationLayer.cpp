@@ -26,7 +26,38 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(160
       "Demos/Sim/Assets/textures/earth/colormap/pz.png",
       "Demos/Sim/Assets/textures/earth/colormap/nz.png",
   });
-  mSphere = Sphere(100, cubemap);
+  cubemap->setType("texture_diffuse");
+
+  auto cloudmap = Engine::Texture::createCubeMap({
+      "Demos/Sim/Assets/textures/earth/cloud/px.png",
+      "Demos/Sim/Assets/textures/earth/cloud/nx.png",
+      "Demos/Sim/Assets/textures/earth/cloud/py.png",
+      "Demos/Sim/Assets/textures/earth/cloud/ny.png",
+      "Demos/Sim/Assets/textures/earth/cloud/pz.png",
+      "Demos/Sim/Assets/textures/earth/cloud/nz.png",
+  });
+  cloudmap->setType("texture_diffuse");
+
+  mEarth = Sphere(100);
+  mEarth.setProperties({
+      1.0f,  // size
+      10.0f,  // rotationSpeed
+      23.5f,  // angleTilt (realista)
+      0.0f  // orbitSpeed (si no orbitás)
+  });
+
+  mEarthClouds = Sphere(100);
+  mEarthClouds.setProperties({1.02f,  // un poco mas que el de la tierra
+                              12.0f,  // rotationSpeed (un poco más rápido)
+                              23.5f,  // mismo tilt
+                              0.0f});
+
+  mEarth.setTextures({cubemap});
+  mEarthClouds.setTextures({cloudmap});
+
+  mCloudShader =
+      Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/cloud.vs", "Demos/Sim/Assets/shaders/cloud.fs");
+
   mPlanetShader =
       Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/planet.vs", "Demos/Sim/Assets/shaders/planet.fs");
   mSkyboxShader =
@@ -40,7 +71,6 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(160
 }
 
 void ApplicationLayer::onAttach() {
-
   Engine::FrameBufferSpecification fbSpec;
   fbSpec.width = 1600;
   fbSpec.height = 900;
@@ -50,7 +80,6 @@ void ApplicationLayer::onAttach() {
 void ApplicationLayer::onDetach() {}
 
 void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
-
   PROFILE_SCOPE("ApplicationLayer::onUpdate");
 
   auto spec = mFrameBuffer->getSpecification();
@@ -70,12 +99,28 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
   Engine::Renderer::beginScene();
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  // PLANETA
   mPlanetShader->bind();
   mCameraController.updateShader(mPlanetShader);
-
   mLight->update(mPlanetShader);
-  mSphere.draw(mPlanetShader);
+
+  mEarth.onUpdate(dt);
+  mEarth.draw(mPlanetShader);
+
+  // NUBES
+  glDepthMask(GL_FALSE);
+
+  mCloudShader->bind();
+  mCameraController.updateShader(mCloudShader);
+  mLight->update(mCloudShader);
+
+  mEarthClouds.onUpdate(dt);
+  mEarthClouds.draw(mCloudShader);
+
+  glDepthMask(GL_TRUE);
 
   glDepthFunc(GL_LEQUAL);
   mCameraController.updateShader(mSkyboxShader);
@@ -161,7 +206,6 @@ void ApplicationLayer::onImGuiRender() {
 }
 
 void ApplicationLayer::onEvent(Engine::Event &e) {
-
   mCameraController.onEvent(e);
 
   Engine::EventDispatcher dispatcher(e);
@@ -176,7 +220,6 @@ bool ApplicationLayer::onKeyPressedEvent(Engine::KeyPressedEvent &event) {
 }
 
 bool ApplicationLayer::onMouseMoved(Engine::MouseMovedEvent &event) {
-
   return false;
 }
 
