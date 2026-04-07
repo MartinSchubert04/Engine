@@ -1,6 +1,13 @@
 #include "Renderer.h"
 namespace Engine {
 
+void Renderer::init() {
+  RenderCommand::init();
+}
+void Renderer::shutdown() {
+  // RenderCommand::shutdown();
+}
+
 void Renderer::beginScene() {}
 
 void Renderer::endScene() {}

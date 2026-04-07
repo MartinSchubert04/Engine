@@ -21,7 +21,7 @@ public:
   Mesh() = default;
   Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Ref<Texture>> textures = {});
 
-  void draw(Shader &shader, DrawType type = DrawType::TRIANGLES);
+  void draw(Ref<Shader> shader, DrawType type = DrawType::TRIANGLES);
 
   // Getters
   inline size_t getVertexCount() const { return vertices.size(); }

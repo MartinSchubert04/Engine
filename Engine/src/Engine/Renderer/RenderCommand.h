@@ -8,6 +8,8 @@ namespace Engine {
 
 class RenderCommand {
 public:
+  static void init() { s_RendererAPI->init(); }
+
   inline static void setClearColor(const glm::vec4 &color) { s_RendererAPI->setClearColor(color); }
   inline static void setViewport(uint32_t width, uint32_t height) { s_RendererAPI->setViewport(width, height); }
   inline static void clear() { s_RendererAPI->clear(); }

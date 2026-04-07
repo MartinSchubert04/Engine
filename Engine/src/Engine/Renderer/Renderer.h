@@ -8,6 +8,9 @@ namespace Engine {
 
 class Renderer {
 public:
+  static void init();
+  static void shutdown();
+
   static void beginScene();
   static void endScene();
   static void onWindowResize(uint32_t width, uint32_t height);

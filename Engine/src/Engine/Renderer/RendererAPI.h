@@ -8,13 +8,10 @@ namespace Engine {
 class RendererAPI {
 
 public:
-  enum class API {
-    None = 0,
-    OpenGL = 1
-
-  };
+  enum class API { None = 0, OpenGL = 1 };
 
 public:
+  virtual void init();
   virtual void setClearColor(const glm::vec4 &color) = 0;
   virtual void setViewport(uint32_t width, uint32_t height) = 0;
   virtual void clear() = 0;

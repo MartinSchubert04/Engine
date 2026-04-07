@@ -24,6 +24,8 @@ Application::Application() {
   mWindow = Scope<Window>(Window::create());
   mWindow->setEventCallback(BIND_FN(Application ::onEvent));
 
+  Renderer::init();
+
   mImGuiLayer = new ImGuiLayer;
   pushOverlay(mImGuiLayer);
 }
@@ -67,8 +69,8 @@ void Application::run() {
 
     mWindow->onUpdate();
 
-    Engine::RenderCommand::setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
-    Engine::RenderCommand::clear();
+    RenderCommand::setClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+    RenderCommand::clear();
   }
 }
 

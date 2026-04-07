@@ -46,7 +46,7 @@ add_compile_options(-fdiagnostics-color=always -w)
 # Sources
 # ===============================
 set(SOURCE_FILE
-    Demos/Sim/src/SandBox.cpp
+    Demos/Sim/src/App.cpp
 )
 
 set(IMGUI_SOURCES
@@ -65,7 +65,6 @@ set(SOURCES
     Engine/src/Engine/Renderer/VertexArray.cpp
     Engine/src/Engine/Renderer/RendererAPI.cpp
     Engine/src/Engine/Renderer/RenderCommand.cpp
-    Engine/src/Engine/Renderer/Renderer.cpp
     Engine/src/Engine/Renderer/Shader.cpp
 
 
@@ -100,7 +99,7 @@ set(SOURCES
 
     # Demos ----------------------------------
     Demos/Sim/src/ApplicationLayer.cpp
-    Demos/Sim/src/Planet.cpp
+    Demos/Sim/src/Sphere.cpp
     # Demos/Sim/src/System.cpp
     # Demos/Sim/src/Solver.cpp
     # Demos/Sim/src/Grid.cpp

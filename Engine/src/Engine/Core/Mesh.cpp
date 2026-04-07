@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Core/Base.h"
 #include "Core/Log.h"
 #include "Renderer/Buffer.h"
 #include "Renderer/Shader.h"
@@ -39,10 +40,12 @@ void Mesh::setupMesh() {
   va->setIndexBuffer(ib);
 }
 
-void Mesh::draw(Shader &shader, DrawType type) {
+void Mesh::draw(Ref<Shader> shader, DrawType type) {
   unsigned int diffuseNr = 1;
   unsigned int specularNr = 1;
-  unsigned int cubemapNr = 1;
+  unsigned int bumpNr = 1;
+  unsigned int lights = 1;
+
   for (unsigned int i = 0; i < textures.size(); i++) {
 
     std::string number;
@@ -52,10 +55,12 @@ void Mesh::draw(Shader &shader, DrawType type) {
       number = std::to_string(diffuseNr++);
     else if (name == "texture_specular")
       number = std::to_string(specularNr++);
-    else if (name == "texture_cubemap")
-      number = std::to_string(cubemapNr++);
+    else if (name == "texture_bump")
+      number = std::to_string(bumpNr++);
+    else if (name == "texture_lights")
+      number = std::to_string(bumpNr++);
 
-    shader.setInt(("material." + name + number).c_str(), i);
+    shader->setInt(("material." + name + number).c_str(), i);
     textures[i]->bind(i);
   }
 

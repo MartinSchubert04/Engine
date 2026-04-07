@@ -46,13 +46,13 @@ bool CameraController::onMouseMoved(MouseMovedEvent &e) {
     glm::vec2 delta = (pos2d - mCamera.getPosition2D()) * mDelta.getSeconds();
 
     mCamera.yaw += delta.x * cRotationSpeed;
-    mCamera.pitch += delta.y * cRotationSpeed;
+    mCamera.pitch -= delta.y * cRotationSpeed;
 
     mCamera.pitch = glm::clamp(mCamera.pitch, -89.0f, 89.0f);
 
     mCamera.updateViewMatrix();
   } else if (Input::isMouseButtonPressed(Mouse::ButtonLeft)) {
-    // TODO: Adjust pan speed for distance|
+    // TODO: Adjust pan speed for distance
     glm::vec2 delta = (pos2d - mCamera.getPosition2D()) * mCamera.displaceSpeed * mDelta.getSeconds();
 
     mCamera.focusPoint += -mCamera.getRight() * delta.x * mCamera.distance;

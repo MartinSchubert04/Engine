@@ -1,15 +1,13 @@
 #include "ApplicationLayer.h"
-#include "Core/CameraController.h"
 #include "Engine.h"
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
-#include "Renderer/Buffer.h"
-#include "Renderer/RenderCommand.h"
-#include "Renderer/Renderer.h"
 #include "imgui.h"
 #include "pch.h"
 #include <vector>
 #include "Sphere.h"
+
+using TextureArray = std::vector<Engine::Ref<Engine::Texture>>;
 
 ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(1600.0f / 900.0f) {
 
@@ -18,33 +16,54 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(160
                                 "Demos/Sim/Assets/textures/space/py.jpg", "Demos/Sim/Assets/textures/space/ny.jpg",
                                 "Demos/Sim/Assets/textures/space/pz.jpg", "Demos/Sim/Assets/textures/space/nz.jpg"}));
 
-  auto cubemap = Engine::Texture::createCubeMap({
-      "Demos/Sim/Assets/textures/earth/colormap/px.png",
-      "Demos/Sim/Assets/textures/earth/colormap/nx.png",
-      "Demos/Sim/Assets/textures/earth/colormap/py.png",
-      "Demos/Sim/Assets/textures/earth/colormap/ny.png",
-      "Demos/Sim/Assets/textures/earth/colormap/pz.png",
-      "Demos/Sim/Assets/textures/earth/colormap/nz.png",
-  });
-  cubemap->setType("texture_diffuse");
+  TextureArray diffuseMap = {
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/colormap/earth_colormap.jpg"),
+  };
+  TextureArray bumpMap = {
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/px.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/nx.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/py.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/ny.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/pz.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/nz.png"),
+  };
+  TextureArray specularMap = {
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/px.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/nx.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/py.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/ny.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/pz.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/nz.png"),
+  };
+  for (auto &t : specularMap) {
+    t->setType("texture_specular");
+  }
+  for (auto &t : diffuseMap) {
+    t->setType("texture_diffuse");
+  }
+  for (auto &t : bumpMap) {
+    t->setType("texture_bump");
+  }
 
-  auto cloudmap = Engine::Texture::createCubeMap({
-      "Demos/Sim/Assets/textures/earth/cloud/px.png",
-      "Demos/Sim/Assets/textures/earth/cloud/nx.png",
-      "Demos/Sim/Assets/textures/earth/cloud/py.png",
-      "Demos/Sim/Assets/textures/earth/cloud/ny.png",
-      "Demos/Sim/Assets/textures/earth/cloud/pz.png",
-      "Demos/Sim/Assets/textures/earth/cloud/nz.png",
-  });
-  cloudmap->setType("texture_diffuse");
+  TextureArray cloudMap = {
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/px.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/nx.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/py.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/ny.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/pz.png"),
+      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/nz.png"),
+  };
+  for (auto &t : cloudMap) {
+    t->setType("texture_diffuse");
+  }
 
-  mEarth = Sphere(100);
-  mEarth.setProperties({
-      1.0f,  // size
-      10.0f,  // rotationSpeed
-      23.5f,  // angleTilt (realista)
-      0.0f  // orbitSpeed (si no orbitás)
-  });
+  mEarth = Sphere(0.5f, {12, 12}, {0, 0, 0},
+                  {
+                      1.0f,  // size
+                      10.0f,  // rotationSpeed
+                      23.5f,  // angleTilt (realista)
+                      0.0f  // orbitSpeed (si no orbitás)
+                  });
 
   mEarthClouds = Sphere(100);
   mEarthClouds.setProperties({1.02f,  // un poco mas que el de la tierra
@@ -52,16 +71,18 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(160
                               23.5f,  // mismo tilt
                               0.0f});
 
-  mEarth.setTextures({cubemap});
-  mEarthClouds.setTextures({cloudmap});
+  mEarth.setTextures(diffuseMap);
+  mEarthClouds.setTexturesCubeSphere(cloudMap);
 
   mCloudShader =
       Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/cloud.vs", "Demos/Sim/Assets/shaders/cloud.fs");
 
   mPlanetShader =
       Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/planet.vs", "Demos/Sim/Assets/shaders/planet.fs");
+
   mSkyboxShader =
       Renderer::getShaderLibrary().load("Demos/Sim/Assets/shaders/skybox.vs", "Demos/Sim/Assets/shaders/skybox.fs");
+  mSkyboxShader->bind();
   mSkyboxShader->setInt("skybox", 0);
 
   float aspect = (float)Application::get().getWindow().getWidth() / (float)Application::get().getWindow().getHeight();
@@ -98,9 +119,6 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
   Engine::RenderCommand::clear();
 
   Engine::Renderer::beginScene();
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // PLANETA
   mPlanetShader->bind();
@@ -112,14 +130,12 @@ void ApplicationLayer::onUpdate(Engine::DeltaTime dt) {
 
   // NUBES
   glDepthMask(GL_FALSE);
-
   mCloudShader->bind();
   mCameraController.updateShader(mCloudShader);
   mLight->update(mCloudShader);
 
   mEarthClouds.onUpdate(dt);
-  mEarthClouds.draw(mCloudShader);
-
+  mEarthClouds.drawCubeSphere(mCloudShader);
   glDepthMask(GL_TRUE);
 
   glDepthFunc(GL_LEQUAL);

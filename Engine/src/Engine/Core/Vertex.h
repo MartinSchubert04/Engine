@@ -1,6 +1,8 @@
 #pragma once
 #include "pch.h"
 
+namespace Engine {
+
 struct Vertex {
 
   Vertex() = default;
@@ -27,3 +29,5 @@ struct Point {
 
   glm::vec3 position;
 };
+
+}  // namespace Engine
