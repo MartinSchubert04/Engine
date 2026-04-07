@@ -1,4 +1,5 @@
 #include "ApplicationLayer.h"
+#include "Core/Base.h"
 #include "Engine.h"
 #include "Events/ApplicationEvent.h"
 #include "Planet.h"
@@ -16,34 +17,31 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(160
                                 "Demos/Sim/Assets/textures/space/py.jpg", "Demos/Sim/Assets/textures/space/ny.jpg",
                                 "Demos/Sim/Assets/textures/space/pz.jpg", "Demos/Sim/Assets/textures/space/nz.jpg"}));
 
-  TextureArray diffuseMap = {
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/colormap/earth_colormap.jpg"),
-  };
-  TextureArray bumpMap = {
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/px.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/nx.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/py.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/ny.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/pz.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/nz.png"),
-  };
-  TextureArray specularMap = {
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/px.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/nx.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/py.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/ny.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/pz.png"),
-      Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/nz.png"),
-  };
-  for (auto &t : specularMap) {
-    t->setType("texture_specular");
-  }
-  for (auto &t : diffuseMap) {
-    t->setType("texture_diffuse");
-  }
-  for (auto &t : bumpMap) {
-    t->setType("texture_bump");
-  }
+  auto diffuseMap = Engine::createRef<Engine::Texture2D>("Demos/Sim/Assets/textures/earth/colormap/earth_colormap.jpg");
+  diffuseMap->setType("texture_diffuse");
+
+  // TextureArray bumpMap = {
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/px.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/nx.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/py.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/ny.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/pz.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/bump/nz.png"),
+  // };
+  // TextureArray specularMap = {
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/px.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/nx.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/py.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/ny.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/pz.png"),
+  //     Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/specular/nz.png"),
+  // };
+  // for (auto &t : specularMap) {
+  //   t->setType("texture_specular");
+  // }
+  // for (auto &t : bumpMap) {
+  //   t->setType("texture_bump");
+  // }
 
   TextureArray cloudMap = {
       Engine::Texture::create2D("Demos/Sim/Assets/textures/earth/cloud/px.png"),
@@ -71,7 +69,7 @@ ApplicationLayer::ApplicationLayer() : Layer("App layer"), mCameraController(160
                               23.5f,  // mismo tilt
                               0.0f});
 
-  mEarth.setTextures(diffuseMap);
+  mEarth.setTexture(diffuseMap);
   mEarthClouds.setTexturesCubeSphere(cloudMap);
 
   mCloudShader =

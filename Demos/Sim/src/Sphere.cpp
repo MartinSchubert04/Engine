@@ -81,9 +81,9 @@ void TerrainFace::draw(Ref<Shader> shader, PlanetProperties planetProps) {
 
 //  ── Sphere ───────────────────────────────────────────
 
-Sphere::Sphere(int resolution, PlanetProperties props) : mFaceResolution(resolution), mProperties(props) {
+Sphere::Sphere(int resolution, PlanetProperties props) : _faceResolution(resolution), _properties(props) {
   for (int i = 0; i < 6; i++)
-    mFaces.push_back(TerrainFace(mFaceResolution, mDirections[i]));
+    _faces.push_back(TerrainFace(_faceResolution, _directions[i]));
 }
 
 Sphere::Sphere(float radius, glm::vec2 segments, glm::vec3 pos, PlanetProperties props) {
@@ -139,9 +139,10 @@ Sphere::Sphere(float radius, glm::vec2 segments, glm::vec3 pos, PlanetProperties
 void Sphere::draw(Ref<Shader> shader) {
   Engine::Transform transform;
 
-  transform.rotate(glm::radians(mProperties.angleTilt), {0, 0, 1});
-  transform.rotate(glm::radians(mProperties.rotationSpeed), {0, 1, 0});
-  transform.scale(mProperties.size);
+  shader->setVec4("modelColor", {1.0f, 1.0f, 1.0f, 1.0f});  // ← falta esto
+  transform.rotate(glm::radians(_properties.angleTilt), {0, 0, 1});
+  transform.rotate(glm::radians(_properties.rotationSpeed), {0, 1, 0});
+  transform.scale(_properties.size);
 
   transform.setModel(shader);
 
@@ -149,25 +150,29 @@ void Sphere::draw(Ref<Shader> shader) {
 }
 
 void Sphere::drawCubeSphere(Ref<Shader> shader) {
-  for (auto &f : mFaces) {
-    f.draw(shader, mProperties);
+  for (auto &f : _faces) {
+    f.draw(shader, _properties);
   }
 }
 
 void Sphere::onUpdate(Engine::DeltaTime dt) {
-  mProperties.rotationSpeed += 20.0f * dt.getSeconds();
+  _properties.rotationSpeed += 20.0f * dt.getSeconds();
 }
 
 void Sphere::setTexturesCubeSphere(std::vector<Ref<Texture>> textures) {
-  for (uint32_t i{0}; i < mFaces.size(); i++) {
+  for (uint32_t i{0}; i < _faces.size(); i++) {
     for (uint32_t j{0}; j < textures.size(); j++) {
-      mFaces[i].setTexture(textures[j]);
+      _faces[i].setTexture(textures[j]);
     }
   }
 }
 
 void Sphere::setTextures(std::vector<Ref<Texture>> textures) {
   for (auto &t : textures) {
-    _mesh->textures.push_back(t);
+    _mesh->addTexture(t);
   }
+}
+
+void Sphere::setTexture(Ref<Texture> texture) {
+  _mesh->addTexture(texture);
 }

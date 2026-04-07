@@ -52,15 +52,17 @@ public:
 
   void setTexturesCubeSphere(std::vector<Ref<Texture>> textures);
   void setTextures(std::vector<Ref<Texture>> textures);
-  void setProperties(PlanetProperties props) { mProperties = props; }
+  void setTexture(Ref<Texture> texture);
+  void setProperties(PlanetProperties props) { _properties = props; }
+  void setColor(glm::vec4 color) { _color = color; }
 
 private:
   float _radius;
   Engine::Scope<Engine::Mesh> _mesh;
 
   glm::vec4 _color;
-  PlanetProperties mProperties;
-  int mFaceResolution;
-  std::vector<TerrainFace> mFaces;
-  std::vector<glm::vec3> mDirections = {{0, 1, 0}, {0, -1, 0}, {-1, 0, 0}, {1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
+  PlanetProperties _properties;
+  int _faceResolution;
+  std::vector<TerrainFace> _faces;
+  std::vector<glm::vec3> _directions = {{0, 1, 0}, {0, -1, 0}, {-1, 0, 0}, {1, 0, 0}, {0, 0, 1}, {0, 0, -1}};
 };

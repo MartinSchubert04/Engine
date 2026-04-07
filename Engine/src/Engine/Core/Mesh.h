@@ -28,6 +28,10 @@ public:
   inline size_t getIndexCount() const { return indices.size(); }
   inline size_t getTextureCount() const { return textures.size(); }
 
+  // Setters
+
+  inline void addTexture(Ref<Texture> t) { textures.push_back(t); }
+
 private:
   Ref<VertexBuffer> vb;
   Ref<IndexBuffer> ib;

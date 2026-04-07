@@ -16,15 +16,25 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+// void main() {
+//   TexCoord = aTexCoords;
+//   normal = mat3(transpose(inverse(model))) * aNormal;
+//   FragPos = vec3(model * vec4(aPos, 1.0));
+
+//   color = aColor;
+//   useTexture = UseTexture;
+
+//   vLocalPos = aPos;
+
+//   gl_Position = projection * view * model * vec4(aPos, 1.0);
+// }
+
 void main() {
   TexCoord = aTexCoords;
-  normal = mat3(transpose(inverse(model))) * aNormal;
+  normal = aNormal;  // sin normal matrix
   FragPos = vec3(model * vec4(aPos, 1.0));
-
   color = aColor;
   useTexture = UseTexture;
-
   vLocalPos = aPos;
-
   gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
